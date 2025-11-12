@@ -1,11 +1,11 @@
 {
   "name": "io.github.ykysnk.utils",
   "displayName": "Utils for VPM and Unity",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Utils for VPM and Unity",
   "gitDependencies": {},
   "vpmDependencies": {
-    "com.vrchat.base": "3.9.0"
+    "com.vrchat.base": ">=3.9.0"
   },
   "author": {
     "name": "yukiyosanako / \u3086\u304d\u3088\u3055\u306a\u3053",

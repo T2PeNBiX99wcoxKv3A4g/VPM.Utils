@@ -1,18 +1,16 @@
-
 using JetBrains.Annotations;
 #if UNITY_EDITOR
 using UnityEditor.SceneManagement;
 #endif
 
-namespace io.github.ykysnk.utils
+namespace io.github.ykysnk.utils;
+
+[PublicAPI]
+public static class Utils
 {
-    [PublicAPI]
-    public static class Utils
-    {
 #if UNITY_EDITOR
-        public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
+    public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
 #else
         public static bool IsInPrefab() => false;
 #endif
-    }
 }

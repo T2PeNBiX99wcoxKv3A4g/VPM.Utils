@@ -1,19 +1,19 @@
 {
-    "name": "io.github.ykysnk.utils.Editor",
-    "rootNamespace": "io.github.ykysnk.utils",
-    "references": [
-        "VRC.SDKBase",
-        "io.github.ykysnk.utils"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "io.github.ykysnk.utils.Editor",
+  "rootNamespace": "io.github.ykysnk.utils",
+  "references": [
+    "VRC.SDKBase",
+    "io.github.ykysnk.utils"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

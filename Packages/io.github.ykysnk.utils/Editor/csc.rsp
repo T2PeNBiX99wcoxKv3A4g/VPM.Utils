@@ -1,1 +1,1 @@
--nullable:enable
+-langversion:10 -nullable:enable
