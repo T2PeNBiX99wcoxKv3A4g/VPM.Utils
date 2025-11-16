@@ -6,7 +6,7 @@ namespace io.github.ykysnk.utils.Extensions
     [PublicAPI]
     public static class ListExtensions
     {
-        public static bool TryGetValue<T>(this IList<T> list, int index, out T? value)
+        public static bool TryGetValue<T>(this IList<T> list, int index, [CanBeNull] out T value)
         {
             if (index < 0 || index >= list.Count)
             {
@@ -18,7 +18,8 @@ namespace io.github.ykysnk.utils.Extensions
             return true;
         }
 
-        public static T? GetValueOrDefault<T>(this IList<T> list, int index) =>
+        [CanBeNull]
+        public static T GetValueOrDefault<T>(this IList<T> list, int index) =>
             list.TryGetValue(index, out var value) ? value : default;
 
         public static bool TrySetValue<T>(this IList<T> list, int index, T value)
@@ -28,7 +29,7 @@ namespace io.github.ykysnk.utils.Extensions
             return true;
         }
 
-        public static bool TryGetValue<T>(this T[] array, int index, out T? value)
+        public static bool TryGetValue<T>(this T[] array, int index, [CanBeNull] out T value)
         {
             if (index < 0 || index >= array.Length)
             {
@@ -40,7 +41,8 @@ namespace io.github.ykysnk.utils.Extensions
             return true;
         }
 
-        public static T? GetValueOrDefault<T>(this T[] array, int index) =>
+        [CanBeNull]
+        public static T GetValueOrDefault<T>(this T[] array, int index) =>
             array.TryGetValue(index, out var value) ? value : default;
 
         public static bool TrySetValue<T>(this T[] array, int index, T value)

@@ -7,7 +7,8 @@ namespace io.github.ykysnk.utils.Extensions
     [PublicAPI]
     public static class GameObjectExtensions
     {
-        public static string? FullName(this GameObject obj) =>
+        [CanBeNull]
+        public static string FullName(this GameObject obj) =>
             !Utilities.IsValid(obj.transform) ? null : obj.transform.FullName();
 
         public static bool IsCloseRange(this GameObject obj, GameObject other, float distance) =>
