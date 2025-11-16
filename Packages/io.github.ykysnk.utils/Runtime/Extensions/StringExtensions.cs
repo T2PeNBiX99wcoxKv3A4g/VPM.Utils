@@ -10,28 +10,28 @@ namespace io.github.ykysnk.utils.Extensions
         public static string FirstPath(this string str, char value)
         {
             var findEnd = str.LastIndexOf(value);
-            return findEnd < 0 ? null : str[..findEnd];
+            return findEnd < 0 ? null : str.Substring(0, findEnd);
         }
 
         [CanBeNull]
         public static string FirstPath(this string str, string value)
         {
             var findEnd = str.LastIndexOf(value, StringComparison.Ordinal);
-            return findEnd < 0 ? null : str[..(findEnd - value.Length + 1)];
+            return findEnd < 0 ? null : str.Substring(0, (findEnd - value.Length + 1));
         }
 
         [CanBeNull]
         public static string LastPath(this string str, char value)
         {
             var findStart = str.IndexOf(value);
-            return findStart < 0 ? null : str[(findStart + 1)..];
+            return findStart < 0 ? null : str.Substring(findStart + 1);
         }
 
         [CanBeNull]
         public static string LastPath(this string str, string value)
         {
             var findStart = str.IndexOf(value, StringComparison.Ordinal);
-            return findStart < 0 ? null : str[(findStart + value.Length)..];
+            return findStart < 0 ? null : str.Substring(findStart + value.Length);
         }
 
         [CanBeNull]
