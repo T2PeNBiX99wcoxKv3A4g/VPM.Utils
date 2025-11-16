@@ -8,7 +8,7 @@ namespace io.github.ykysnk.utils
     [PublicAPI]
     public static class Utils
     {
-#if UNITY_EDITOR
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
         public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
 #else
         public static bool IsInPrefab() => false;
