@@ -11,6 +11,6 @@ public static class Utils
 #if UNITY_EDITOR
     public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
 #else
-        public static bool IsInPrefab() => false;
+    public static bool IsInPrefab() => false;
 #endif
 }
