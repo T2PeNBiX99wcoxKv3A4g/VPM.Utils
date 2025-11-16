@@ -1,52 +1,53 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace io.github.ykysnk.utils.Extensions;
-
-[PublicAPI]
-public static class ListExtensions
+namespace io.github.ykysnk.utils.Extensions
 {
-    public static bool TryGetValue<T>(this IList<T> list, int index, out T? value)
+    [PublicAPI]
+    public static class ListExtensions
     {
-        if (index < 0 || index >= list.Count)
+        public static bool TryGetValue<T>(this IList<T> list, int index, out T? value)
         {
-            value = default;
-            return false;
+            if (index < 0 || index >= list.Count)
+            {
+                value = default;
+                return false;
+            }
+
+            value = list[index];
+            return true;
         }
 
-        value = list[index];
-        return true;
-    }
+        public static T? GetValueOrDefault<T>(this IList<T> list, int index) =>
+            list.TryGetValue(index, out var value) ? value : default;
 
-    public static T? GetValueOrDefault<T>(this IList<T> list, int index) =>
-        list.TryGetValue(index, out var value) ? value : default;
-
-    public static bool TrySetValue<T>(this IList<T> list, int index, T value)
-    {
-        if (index < 0 || index >= list.Count) return false;
-        list[index] = value;
-        return true;
-    }
-
-    public static bool TryGetValue<T>(this T[] array, int index, out T? value)
-    {
-        if (index < 0 || index >= array.Length)
+        public static bool TrySetValue<T>(this IList<T> list, int index, T value)
         {
-            value = default;
-            return false;
+            if (index < 0 || index >= list.Count) return false;
+            list[index] = value;
+            return true;
         }
 
-        value = array[index];
-        return true;
-    }
+        public static bool TryGetValue<T>(this T[] array, int index, out T? value)
+        {
+            if (index < 0 || index >= array.Length)
+            {
+                value = default;
+                return false;
+            }
 
-    public static T? GetValueOrDefault<T>(this T[] array, int index) =>
-        array.TryGetValue(index, out var value) ? value : default;
+            value = array[index];
+            return true;
+        }
 
-    public static bool TrySetValue<T>(this T[] array, int index, T value)
-    {
-        if (index < 0 || index >= array.Length) return false;
-        array[index] = value;
-        return true;
+        public static T? GetValueOrDefault<T>(this T[] array, int index) =>
+            array.TryGetValue(index, out var value) ? value : default;
+
+        public static bool TrySetValue<T>(this T[] array, int index, T value)
+        {
+            if (index < 0 || index >= array.Length) return false;
+            array[index] = value;
+            return true;
+        }
     }
 }
