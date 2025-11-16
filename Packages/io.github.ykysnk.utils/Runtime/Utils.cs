@@ -1,5 +1,5 @@
 using JetBrains.Annotations;
-#if UNITY_EDITOR
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using UnityEditor.SceneManagement;
 #endif
 
