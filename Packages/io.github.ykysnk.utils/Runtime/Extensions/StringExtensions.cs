@@ -17,7 +17,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static string FirstPath(this string str, string value)
         {
             var findEnd = str.LastIndexOf(value, StringComparison.Ordinal);
-            return findEnd < 0 ? null : str.Substring(0, (findEnd - value.Length + 1));
+            return findEnd < 0 ? null : str.Substring(0, findEnd - value.Length + 1);
         }
 
         [CanBeNull]
