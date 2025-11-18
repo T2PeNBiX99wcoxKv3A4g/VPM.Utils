@@ -6,12 +6,17 @@ namespace io.github.ykysnk.utils.Editor;
 
 public abstract class BasicEditor : UnityEditor.Editor
 {
+    protected virtual bool IsBaseOnOldInspectorGUI => false;
+
     protected virtual void OnEnable()
     {
     }
 
     public override void OnInspectorGUI()
     {
+        if (IsBaseOnOldInspectorGUI)
+            base.OnInspectorGUI();
+
         serializedObject.Update();
         EditorGUI.BeginChangeCheck();
 
