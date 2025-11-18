@@ -5,7 +5,7 @@ using VRC.SDKBase;
 namespace io.github.ykysnk.utils
 {
     [PublicAPI]
-    public abstract class YkyEditorComponent : MonoBehaviour, IEditorOnly
+    public abstract class BasicEditorComponent : MonoBehaviour, IEditorOnly
     {
         public virtual void OnInspectorGUI()
         {
