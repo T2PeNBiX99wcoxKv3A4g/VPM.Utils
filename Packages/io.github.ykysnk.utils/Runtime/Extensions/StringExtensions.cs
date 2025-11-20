@@ -14,7 +14,7 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         [CanBeNull]
-        public static string FirstPath(this string str, string value)
+        public static string FirstPath(this string str, [NotNull] string value)
         {
             var findEnd = str.LastIndexOf(value, StringComparison.Ordinal);
             return findEnd < 0 ? null : str.Substring(0, findEnd - value.Length + 1);
@@ -28,7 +28,7 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         [CanBeNull]
-        public static string LastPath(this string str, string value)
+        public static string LastPath(this string str, [NotNull] string value)
         {
             var findStart = str.IndexOf(value, StringComparison.Ordinal);
             return findStart < 0 ? null : str.Substring(findStart + value.Length);
@@ -38,7 +38,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static string MiddlePath(this string str, char first, char last) => str.FirstPath(last)?.LastPath(first);
 
         [CanBeNull]
-        public static string MiddlePath(this string str, string first, string last) =>
+        public static string MiddlePath(this string str, [NotNull] string first, [NotNull] string last) =>
             str.FirstPath(last)?.LastPath(first);
 
         [CanBeNull]
@@ -46,7 +46,7 @@ namespace io.github.ykysnk.utils.Extensions
             str.FirstPath(last)?.LastPath(first);
 
         [CanBeNull]
-        public static string MiddlePath(this string str, string first, char last) =>
+        public static string MiddlePath(this string str, [NotNull] string first, char last) =>
             str.FirstPath(last)?.LastPath(first);
 
         public static bool TryGetValue(this string str, int index, out char? value)

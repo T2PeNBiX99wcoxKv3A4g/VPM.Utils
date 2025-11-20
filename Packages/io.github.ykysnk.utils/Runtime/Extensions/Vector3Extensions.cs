@@ -8,7 +8,7 @@ namespace io.github.ykysnk.utils.Extensions
     {
         public static float Distance(this Vector3 a, Vector3 b) => Vector3.Distance(a, b);
 
-        public static float Distance(this Vector3 a, Transform b) => Vector3.Distance(a, b.position);
+        public static float Distance(this Vector3 a, [NotNull] Transform b) => Vector3.Distance(a, b.position);
 
         public static float Distance2D(this Vector3 a, Vector3 b)
         {
@@ -17,6 +17,6 @@ namespace io.github.ykysnk.utils.Extensions
             return Mathf.Sqrt(differenceX * differenceX + differenceZ * differenceZ);
         }
 
-        public static float Distance2D(this Vector3 a, Transform b) => a.Distance2D(b.position);
+        public static float Distance2D(this Vector3 a, [NotNull] Transform b) => a.Distance2D(b.position);
     }
 }

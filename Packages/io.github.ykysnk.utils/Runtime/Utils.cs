@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using UnityEngine;
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
@@ -32,18 +31,17 @@ namespace io.github.ykysnk.utils
 
         private const string LOGNameColor = "#D771C0";
 
-        public static void Log(string prefix, object message) =>
+        public static void Log([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.Log($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
-        public static void LogWarning(string prefix, object message) =>
+        public static void LogWarning([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogWarning($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
-        public static void LogError(string prefix, object message) =>
+        public static void LogError([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogError($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
         private const float MinSpeed = 0.05f;
 
-        [SuppressMessage("ReSharper", "MergeIntoPattern")]
         public static bool IsMoved(float value) => value < -MinSpeed && value > MinSpeed;
     }
 }

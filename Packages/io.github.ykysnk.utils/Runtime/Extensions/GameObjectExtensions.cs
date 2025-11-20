@@ -11,10 +11,10 @@ namespace io.github.ykysnk.utils.Extensions
         public static string FullName(this GameObject obj) =>
             !Utilities.IsValid(obj.transform) ? null : obj.transform.FullName();
 
-        public static bool IsCloseRange(this GameObject obj, GameObject other, float distance) =>
+        public static bool IsCloseRange(this GameObject obj, [NotNull] GameObject other, float distance) =>
             obj.transform.IsCloseRange(other.transform, distance);
 
-        public static bool IsCloseRange2D(this GameObject obj, GameObject other, float distance) =>
+        public static bool IsCloseRange2D(this GameObject obj, [NotNull] GameObject other, float distance) =>
             obj.transform.IsCloseRange2D(other.transform, distance);
 
         public static bool IsPlayerCloseRange(this GameObject obj, float distance) =>

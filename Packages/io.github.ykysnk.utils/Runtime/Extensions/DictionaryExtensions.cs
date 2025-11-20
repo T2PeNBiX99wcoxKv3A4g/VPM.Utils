@@ -7,7 +7,7 @@ namespace io.github.ykysnk.utils.Extensions
     public static class DictionaryExtensions
     {
         [CanBeNull]
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) =>
+        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, [NotNull] TKey key) =>
             dict.TryGetValue(key, out var value) ? value : default;
     }
 }
