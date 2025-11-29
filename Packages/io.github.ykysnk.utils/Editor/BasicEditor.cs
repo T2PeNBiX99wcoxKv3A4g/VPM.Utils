@@ -8,7 +8,22 @@ namespace io.github.ykysnk.utils.Editor;
 [PublicAPI]
 public abstract class BasicEditor : UnityEditor.Editor
 {
+    /// <summary>
+    ///     Gets or sets a value indicating whether the inspector GUI should use the old rendering style.
+    /// </summary>
+    /// <remarks>
+    ///     When set to <c>true</c>, the inspector GUI reverts to the legacy layout and behavior.
+    ///     This can be useful for maintaining compatibility with older workflows or debugging purposes.
+    /// </remarks>
     protected virtual bool IsBaseOnOldInspectorGUI => false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether detailed console logging is enabled.
+    /// </summary>
+    /// <remarks>
+    ///     Enabling this property allows for verbose logging of runtime information, which can be useful for debugging
+    ///     or understanding application behavior. When disabled, the console output will be hidden.
+    /// </remarks>
     protected virtual bool ConsoleLog => false;
 
     /// <summary>
