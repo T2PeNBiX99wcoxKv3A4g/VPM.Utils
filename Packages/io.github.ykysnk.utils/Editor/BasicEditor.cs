@@ -25,6 +25,7 @@ public abstract class BasicEditor : UnityEditor.Editor
     /// </remarks>
     protected virtual bool ConsoleLog => false;
 
+    // ReSharper disable once Unity.RedundantEventFunction
     /// <summary>
     ///     Called when the script is enabled in the Unity Editor.
     ///     This method can be overridden in derived classes to perform additional initialization
