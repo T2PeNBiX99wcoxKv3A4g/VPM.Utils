@@ -1,9 +1,11 @@
 using System;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
 namespace io.github.ykysnk.utils.Editor;
 
+[PublicAPI]
 public abstract class BasicEditor : UnityEditor.Editor
 {
     protected virtual bool IsBaseOnOldInspectorGUI => false;
