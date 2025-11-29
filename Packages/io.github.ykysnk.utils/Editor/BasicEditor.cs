@@ -12,8 +12,7 @@ public abstract class BasicEditor : UnityEditor.Editor
     ///     Gets or sets a value indicating whether the inspector GUI should use the old rendering style.
     /// </summary>
     /// <remarks>
-    ///     When set to <c>true</c>, the inspector GUI reverts to the legacy layout and behavior.
-    ///     This can be useful for maintaining compatibility with older workflows or debugging purposes.
+    ///     When set to <c>true</c>, the inspector GUI will be based on the old Unity Editor GUI.
     /// </remarks>
     protected virtual bool IsBaseOnOldInspectorGUI => false;
 
