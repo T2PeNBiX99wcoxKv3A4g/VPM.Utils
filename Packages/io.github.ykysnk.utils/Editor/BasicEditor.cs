@@ -7,11 +7,22 @@ namespace io.github.ykysnk.utils.Editor;
 public abstract class BasicEditor : UnityEditor.Editor
 {
     protected virtual bool IsBaseOnOldInspectorGUI => false;
+    protected virtual bool ConsoleLog => false;
 
+    /// <summary>
+    ///     Called when the script is enabled in the Unity Editor.
+    ///     This method can be overridden in derived classes to perform additional initialization
+    ///     logic or to set up resources needed by the custom editor.
+    /// </summary>
     protected virtual void OnEnable()
     {
     }
 
+    /// <summary>
+    ///     Called to render and handle the custom inspector GUI for the associated object.
+    ///     This method can be overridden in derived classes to implement specific logic for
+    ///     displaying and managing the inspector interface of a custom editor.
+    /// </summary>
     public override void OnInspectorGUI()
     {
         if (IsBaseOnOldInspectorGUI)
@@ -26,14 +37,42 @@ public abstract class BasicEditor : UnityEditor.Editor
         }
         catch (Exception e)
         {
-            Debug.LogException(e);
+            if (ConsoleLog)
+                Debug.LogException(e);
+            OnError(e);
             EditorGUILayout.HelpBox($"Editor Error: {e.Message}\n{e.StackTrace}", MessageType.Error, true);
         }
 
-        if (EditorGUI.EndChangeCheck())
-            serializedObject.ApplyModifiedProperties();
+        if (!EditorGUI.EndChangeCheck())
+            return;
+        OnChange();
+        serializedObject.ApplyModifiedProperties();
     }
 
+    /// <summary>
+    ///     Called when changes are detected in the custom editor's inspector.
+    ///     This method can be overridden in derived classes to handle any logic
+    ///     that should occur in response to user modifications in the inspector.
+    /// </summary>
+    protected virtual void OnChange()
+    {
+    }
+
+    /// <summary>
+    ///     Called when an exception occurs during the custom editor's OnInspectorGUI process.
+    ///     This method can be overridden in derived classes to handle error logging, display custom
+    ///     error messages, or execute additional recovery logic after an exception is thrown.
+    /// </summary>
+    /// <param name="e">The exception object that contains details about the error.</param>
+    protected virtual void OnError(Exception e)
+    {
+    }
+
+    /// <summary>
+    ///     Called to handle the drawing of the custom editor's inspector GUI.
+    ///     This method can be overridden in derived classes to implement custom rendering logic,
+    ///     allowing the editor to display and manage specific data or controls within the inspector.
+    /// </summary>
     protected virtual void OnInspectorGUIDraw()
     {
     }
