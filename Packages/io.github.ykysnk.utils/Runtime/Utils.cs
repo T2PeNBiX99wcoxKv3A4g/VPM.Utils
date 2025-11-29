@@ -35,26 +35,26 @@ namespace io.github.ykysnk.utils
         public static void Log([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.Log($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
-        public static void Log([NotNull] string prefix, [CanBeNull] object message, [CanBeNull] Object context) =>
+        public static void Log([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.Log($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
         public static void LogWarning([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogWarning($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
-        public static void LogWarning([NotNull] string prefix, [CanBeNull] object message, [CanBeNull] Object context) =>
+        public static void LogWarning([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.LogWarning($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
         public static void LogError([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogError($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
-        public static void LogError([NotNull] string prefix, [CanBeNull] object message, [CanBeNull] Object context) =>
+        public static void LogError([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.LogError($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
         public static void LogAssert(bool condition, [NotNull] string prefix, [CanBeNull] object message) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
         public static void LogAssert(bool condition, [NotNull] string prefix, [CanBeNull] object message,
-            [CanBeNull] Object context) =>
+            [NotNull] Object context) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
         private const float MinSpeed = 0.05f;
