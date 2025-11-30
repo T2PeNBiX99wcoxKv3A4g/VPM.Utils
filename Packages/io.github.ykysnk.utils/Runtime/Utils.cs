@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
+using UnityEditor;
 using UnityEditor.SceneManagement;
 #endif
 
@@ -12,8 +13,10 @@ namespace io.github.ykysnk.utils
     {
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
+        public static bool IsPlaying() => EditorApplication.isPlayingOrWillChangePlaymode;
 #else
         public static bool IsInPrefab() => false;
+        public static bool IsPlaying() => true;
 #endif
 
         public static int ToLayer(LayerMask mask)
