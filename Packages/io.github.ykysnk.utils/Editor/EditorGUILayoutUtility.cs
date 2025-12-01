@@ -5,7 +5,7 @@ using UnityEngine;
 namespace io.github.ykysnk.utils.Editor;
 
 [PublicAPI]
-public static class Utils
+public static class EditorGUILayoutUtility
 {
     private static readonly GUIContent LabelContent = new();
 
@@ -47,4 +47,17 @@ public static class Utils
 
         return label;
     }
+
+    public static void Line(Color color, float space = 20f, float lineHeight = 1f)
+    {
+        EditorGUILayout.BeginVertical();
+
+        GUILayout.Space(space / 2);
+        EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, lineHeight), color);
+        GUILayout.Space(space / 2);
+
+        EditorGUILayout.EndVertical();
+    }
+
+    public static void Line(float space = 20f, float lineHeight = 1f) => Line(Color.gray, space, lineHeight);
 }
