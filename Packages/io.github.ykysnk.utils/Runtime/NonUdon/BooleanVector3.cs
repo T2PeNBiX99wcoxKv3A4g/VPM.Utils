@@ -76,10 +76,10 @@ namespace io.github.ykysnk.utils.NonUdon
         }
 
         public static bool operator true(BooleanVector3 booleanVector3) =>
-            booleanVector3 is { x: true, y: true, z: true };
+            booleanVector3.Flags == (int)Flag.All;
 
         public static bool operator false(BooleanVector3 booleanVector3) =>
-            booleanVector3 is { x: false, y: false, z: false };
+            booleanVector3.Flags == (int)Flag.None;
 
         [PublicAPI]
         public enum Flag
