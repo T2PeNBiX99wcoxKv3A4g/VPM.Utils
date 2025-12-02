@@ -14,7 +14,7 @@ namespace io.github.ykysnk.utils.NonUdon
         public int Flags
         {
             get => (x ? (int)Flag.X : 0) | (y ? (int)Flag.Y : 0) | (z ? (int)Flag.Z : 0);
-            private set
+            set
             {
                 x = (value & (int)Flag.X) != 0;
                 y = (value & (int)Flag.Y) != 0;
