@@ -57,6 +57,18 @@ namespace io.github.ykysnk.utils.NonUdon
 
         public static BooleanVector3 False => new();
 
+        public static BooleanVector3 operator !(BooleanVector3 booleanVector3)
+        {
+            booleanVector3.Invert();
+            return booleanVector3;
+        }
+
+        public static bool operator true(BooleanVector3 booleanVector3) =>
+            booleanVector3 is { x: true, y: true, z: true };
+
+        public static bool operator false(BooleanVector3 booleanVector3) =>
+            booleanVector3 is { x: false, y: false, z: false };
+
         public enum Flag
         {
             X = 1,
