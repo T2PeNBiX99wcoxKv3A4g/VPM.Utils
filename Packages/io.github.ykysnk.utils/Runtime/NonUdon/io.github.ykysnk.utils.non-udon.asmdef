@@ -1,14 +1,10 @@
 {
-  "name": "io.github.ykysnk.utils.Editor",
+  "name": "io.github.ykysnk.utils.non-udon",
   "rootNamespace": "io.github.ykysnk.utils",
   "references": [
-    "GUID:3456780c4fb2d324ab9c633d6f1b0ddb",
-    "GUID:f78f49d6b1186ed4eb32fce8b9ae90e2",
-    "GUID:64dbe11f127907f468534e4672df66a0"
+    "GUID:3456780c4fb2d324ab9c633d6f1b0ddb"
   ],
-  "includePlatforms": [
-    "Editor"
-  ],
+  "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": false,
