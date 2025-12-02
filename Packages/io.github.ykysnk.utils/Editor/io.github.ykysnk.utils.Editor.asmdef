@@ -1,20 +1,20 @@
 {
-  "name": "io.github.ykysnk.utils.Editor",
-  "rootNamespace": "io.github.ykysnk.utils",
-  "references": [
-    "GUID:3456780c4fb2d324ab9c633d6f1b0ddb",
-    "GUID:f78f49d6b1186ed4eb32fce8b9ae90e2",
-    "GUID:64dbe11f127907f468534e4672df66a0"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "io.github.ykysnk.utils.Editor",
+    "rootNamespace": "io.github.ykysnk.utils",
+    "references": [
+        "VRC.SDKBase",
+        "io.github.ykysnk.utils",
+        "io.github.ykysnk.utils.non-udon"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -1,16 +1,16 @@
 {
-  "name": "io.github.ykysnk.utils",
-  "rootNamespace": "io.github.ykysnk.utils",
-  "references": [
-    "GUID:3456780c4fb2d324ab9c633d6f1b0ddb"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "io.github.ykysnk.utils",
+    "rootNamespace": "io.github.ykysnk.utils",
+    "references": [
+        "VRC.SDKBase"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
