@@ -72,9 +72,9 @@ namespace io.github.ykysnk.utils.NonUdon
         [PublicAPI]
         public enum Flag
         {
-            X = 1,
-            Y = 2,
-            Z = 4,
+            X = 1 << 0,
+            Y = 1 << 1,
+            Z = 1 << 2,
             None = 0,
             All = X | Y | Z
         }
