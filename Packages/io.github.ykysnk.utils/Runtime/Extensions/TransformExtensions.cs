@@ -20,6 +20,7 @@ namespace io.github.ykysnk.utils.Extensions
             return tmpName;
         }
 
+        // Refs: https://discussions.unity.com/t/world-scale/374693
         public static Vector3 GetWorldScale(this Transform transform)
         {
             var worldScale = Vector3.one;
