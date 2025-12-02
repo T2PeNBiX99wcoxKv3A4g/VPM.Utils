@@ -20,15 +20,14 @@ namespace io.github.ykysnk.utils.Extensions
             return tmpName;
         }
 
-        // Refs: https://discussions.unity.com/t/world-scale/374693
         public static Vector3 GetWorldScale(this Transform transform)
         {
-            var worldScale = transform.localScale;
+            var worldScale = Vector3.one;
             var parent = transform.parent;
 
             while (parent)
             {
-                worldScale = Vector3.Scale(worldScale, parent.localScale);
+                worldScale = parent.InverseTransformVector(worldScale);
                 parent = parent.parent;
             }
 
