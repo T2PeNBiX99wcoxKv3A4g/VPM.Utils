@@ -69,11 +69,14 @@ namespace io.github.ykysnk.utils.NonUdon
         public static bool operator false(BooleanVector3 booleanVector3) =>
             booleanVector3 is { x: false, y: false, z: false };
 
+        [PublicAPI]
         public enum Flag
         {
             X = 1,
             Y = 2,
-            Z = 4
+            Z = 4,
+            None = 0,
+            All = X | Y | Z
         }
     }
 }
