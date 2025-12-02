@@ -11,7 +11,7 @@ namespace io.github.ykysnk.utils.NonUdon
         public bool y;
         public bool z;
 
-        public override string ToString() => $"LockVector3(x:{x},y:{y},z:{z})";
+        public override string ToString() => $"BooleanVector3(x:{x},y:{y},z:{z})";
 
         public static BooleanVector3 True => new()
         {
