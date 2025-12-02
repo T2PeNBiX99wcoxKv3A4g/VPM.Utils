@@ -33,10 +33,14 @@ namespace io.github.ykysnk.utils.NonUdon
 
         public void AddFlag(Flag flag) => Flags |= (int)flag;
         public void AddFlags(params Flag[] flags) => Flags |= flags.Aggregate(0, (current, flag) => current | (int)flag);
+
         public void RemoveFlag(Flag flag) => Flags &= ~(int)flag;
 
         public void RemoveFlags(params Flag[] flags) =>
             Flags &= ~flags.Aggregate(0, (current, flag) => current | (int)flag);
+
+        public void SetFlag(Flag flag) => Flags = (int)flag;
+        public void SetFlags(params Flag[] flags) => Flags = flags.Aggregate(0, (current, flag) => current | (int)flag);
 
         public void Set(bool x2, bool y2, bool z2)
         {
