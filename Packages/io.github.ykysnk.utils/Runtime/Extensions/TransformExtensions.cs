@@ -35,19 +35,8 @@ namespace io.github.ykysnk.utils.Extensions
             return worldScale;
         }
 
-        public static Vector3 GetLocalScaleFromWorldScale(this Transform transform)
-        {
-            var worldScale = Vector3.one;
-            var parent = transform.parent;
-
-            while (parent)
-            {
-                worldScale = parent.InverseTransformVector(worldScale);
-                parent = parent.parent;
-            }
-
-            return worldScale;
-        }
+        public static Vector3 GetLocalScaleFromWorldScale(this Transform transform) =>
+            transform.parent.InverseTransformVector(Vector3.one);
 
         public static float Distance(this Transform transform, [NotNull] Transform other) =>
             transform.position.Distance(other.position);
