@@ -20,7 +20,7 @@ namespace io.github.ykysnk.utils.Extensions
             return tmpName;
         }
 
-        // Refs: https://discussions.unity.com/t/world-scale/374693
+        // Refs: https://discussions.unity.com/t/world-scale/374693, https://stackoverflow.com/questions/47669172/unity-scale-a-gameobject-in-world-space
         public static Vector3 GetWorldScale(this Transform transform)
         {
             var worldScale = Vector3.one;
