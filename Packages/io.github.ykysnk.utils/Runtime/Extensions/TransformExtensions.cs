@@ -23,6 +23,20 @@ namespace io.github.ykysnk.utils.Extensions
         // Refs: https://discussions.unity.com/t/world-scale/374693, https://stackoverflow.com/questions/47669172/unity-scale-a-gameobject-in-world-space
         public static Vector3 GetWorldScale(this Transform transform)
         {
+            var worldScale = transform.localScale;
+            var parent = transform.parent;
+
+            while (parent)
+            {
+                worldScale = Vector3.Scale(worldScale, parent.localScale);
+                parent = parent.parent;
+            }
+
+            return worldScale;
+        }
+
+        public static Vector3 GetLocalScaleFromWorldScale(this Transform transform)
+        {
             var worldScale = Vector3.one;
             var parent = transform.parent;
 
