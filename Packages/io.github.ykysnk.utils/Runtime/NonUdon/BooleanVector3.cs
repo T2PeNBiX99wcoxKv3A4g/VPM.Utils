@@ -79,7 +79,7 @@ namespace io.github.ykysnk.utils.NonUdon
             booleanVector3.Flags == (int)Flag.All;
 
         public static bool operator false(BooleanVector3 booleanVector3) =>
-            booleanVector3.Flags == (int)Flag.None;
+            booleanVector3.Flags != (int)Flag.All;
 
         [PublicAPI]
         public enum Flag
