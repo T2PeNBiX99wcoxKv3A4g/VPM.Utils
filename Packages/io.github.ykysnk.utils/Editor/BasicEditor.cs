@@ -51,7 +51,7 @@ public abstract class BasicEditor : UnityEditor.Editor
 
         try
         {
-            OnInspectorGUIDraw();
+            OnInnerInspectorGUI();
         }
         catch (Exception e)
         {
@@ -71,7 +71,7 @@ public abstract class BasicEditor : UnityEditor.Editor
     {
         try
         {
-            return CreateInspectorGUIDraw();
+            return CreateInnerInspectorGUI();
         }
         // If an exception happens, create a new error UI. return null should not have an exception, so ignore it.
         catch (Exception e)
@@ -123,9 +123,9 @@ public abstract class BasicEditor : UnityEditor.Editor
     ///     This method can be overridden in derived classes to implement custom rendering logic,
     ///     allowing the editor to display and manage specific data or controls within the inspector.
     /// </summary>
-    protected virtual void OnInspectorGUIDraw()
+    protected virtual void OnInnerInspectorGUI()
     {
     }
 
-    protected virtual VisualElement? CreateInspectorGUIDraw() => null;
+    protected virtual VisualElement? CreateInnerInspectorGUI() => null;
 }
