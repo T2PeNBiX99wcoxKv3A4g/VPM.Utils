@@ -13,7 +13,7 @@ namespace io.github.ykysnk.utils
 #if UTILS_NDMF
         : INDMFEditorOnly
 #elif UTILS_VRC_SDK3_BASE
-    : IEditorOnly
+        : IEditorOnly
 #endif
     {
     }
