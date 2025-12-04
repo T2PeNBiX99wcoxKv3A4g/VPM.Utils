@@ -2,6 +2,7 @@ using System;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace io.github.ykysnk.utils.Editor;
 
@@ -66,6 +67,38 @@ public abstract class BasicEditor : UnityEditor.Editor
         serializedObject.ApplyModifiedProperties();
     }
 
+    public override VisualElement? CreateInspectorGUI()
+    {
+        try
+        {
+            return CreateInspectorGUIDraw();
+        }
+        // If an exception happens, create a new error UI. return null should not have an exception, so ignore it.
+        catch (Exception e)
+        {
+            if (ConsoleLog)
+                Debug.LogException(e);
+            OnError(e);
+
+            var root = new VisualElement();
+            var errorUxml =
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
+                    AssetDatabase.GUIDToAssetPath("041e01f1ddee3c640989a147c46c76a9"));
+
+            if (errorUxml == null)
+            {
+                root.Add(new Label("Failed to load uxml assets, please reimport the package to fix this issue."));
+                return root;
+            }
+
+            var visualTree = errorUxml!.CloneTree();
+            var errorBox = visualTree.Q<HelpBox>("errorBox");
+            errorBox.text = $"Editor Error: {e.Message}\n{e.StackTrace}";
+            root.Add(visualTree);
+            return root;
+        }
+    }
+
     /// <summary>
     ///     Called when changes are detected in the custom editor's inspector.
     ///     This method can be overridden in derived classes to handle any logic
@@ -93,4 +126,6 @@ public abstract class BasicEditor : UnityEditor.Editor
     protected virtual void OnInspectorGUIDraw()
     {
     }
+
+    protected virtual VisualElement? CreateInspectorGUIDraw() => null;
 }
