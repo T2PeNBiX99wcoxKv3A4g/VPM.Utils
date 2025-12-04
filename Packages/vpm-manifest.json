@@ -1,26 +1,19 @@
 {
   "dependencies": {
-    "com.vrchat.base": {
-      "version": "3.9.0"
-    },
     "jp.lilxyzw.editortoolbox": {
       "version": "1.11.0"
     },
-    "net.nekobako.editor-patcher": {
-      "version": "1.0.0"
+    "nadena.dev.ndmf": {
+      "version": "1.10.0"
     }
   },
   "locked": {
-    "com.vrchat.base": {
-      "version": "3.10.0",
-      "dependencies": {}
-    },
     "jp.lilxyzw.editortoolbox": {
       "version": "1.11.0",
       "dependencies": {}
     },
-    "net.nekobako.editor-patcher": {
-      "version": "1.0.0",
+    "nadena.dev.ndmf": {
+      "version": "1.10.0",
       "dependencies": {}
     }
   }

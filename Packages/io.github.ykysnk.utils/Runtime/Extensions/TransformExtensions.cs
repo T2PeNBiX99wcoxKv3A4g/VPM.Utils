@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using UnityEngine;
+#if UTILS_VRC_SDK3_BASE
 using VRC.SDKBase;
+#endif
 
 namespace io.github.ykysnk.utils.Extensions
 {
@@ -11,7 +13,7 @@ namespace io.github.ykysnk.utils.Extensions
         {
             var tmpName = transform.name;
 
-            while (Utilities.IsValid(transform.parent))
+            while (transform.parent != null)
             {
                 transform = transform.parent;
                 tmpName = transform.name + "/" + tmpName;
@@ -55,6 +57,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static bool IsCloseRange2D(this Transform transform, [NotNull] Transform other, float distance) =>
             transform.Distance2D(other) < distance;
 
+#if UTILS_VRC_SDK3_BASE
         public static bool IsPlayerCloseRange(this Transform transform, float distance)
         {
             var player = Networking.LocalPlayer;
@@ -68,5 +71,6 @@ namespace io.github.ykysnk.utils.Extensions
             if (!Utilities.IsValid(player)) return false;
             return player.GetPosition().Distance2D(transform) < distance;
         }
+#endif
     }
 }

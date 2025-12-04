@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace io.github.ykysnk.utils.Extensions
 {
@@ -8,6 +7,6 @@ namespace io.github.ykysnk.utils.Extensions
     public static class ComponentExtensions
     {
         [CanBeNull]
-        public static string FullName(this Component obj) => !Utilities.IsValid(obj) ? null : obj.transform.FullName();
+        public static string FullName(this Component obj) => obj.transform.FullName();
     }
 }

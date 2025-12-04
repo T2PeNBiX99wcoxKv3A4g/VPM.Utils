@@ -2,7 +2,8 @@
   "name": "io.github.ykysnk.utils",
   "rootNamespace": "io.github.ykysnk.utils",
   "references": [
-    "VRC.SDKBase"
+    "VRC.SDKBase",
+    "nadena.dev.ndmf.runtime"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
@@ -11,6 +12,17 @@
   "precompiledReferences": [],
   "autoReferenced": true,
   "defineConstraints": [],
-  "versionDefines": [],
+  "versionDefines": [
+    {
+      "name": "com.vrchat.base",
+      "expression": "",
+      "define": "UTILS_VRC_SDK3_BASE"
+    },
+    {
+      "name": "nadena.dev.ndmf",
+      "expression": "",
+      "define": "UTILS_NDMF"
+    }
+  ],
   "noEngineReferences": false
 }
