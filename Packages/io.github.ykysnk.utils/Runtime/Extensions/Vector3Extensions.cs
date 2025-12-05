@@ -18,5 +18,7 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         public static float Distance2D(this Vector3 a, [NotNull] Transform b) => a.Distance2D(b.position);
+
+        public static Vector3 Divide(this Vector3 a, Vector3 b) => new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
     }
 }
