@@ -22,23 +22,19 @@ namespace io.github.ykysnk.utils.Extensions
             return tmpName;
         }
 
-        // Refs: https://discussions.unity.com/t/world-scale/374693, https://stackoverflow.com/questions/47669172/unity-scale-a-gameobject-in-world-space
         public static Vector3 GetWorldScale(this Transform transform)
         {
-            var worldScale = transform.localScale;
-            var parent = transform.parent;
-
-            while (parent)
-            {
-                worldScale = Vector3.Scale(worldScale, parent.localScale);
-                parent = parent.parent;
-            }
-
+            var worldScale = Vector3.one;
+            if (transform.parent != null) worldScale = transform.parent.TransformVector(Vector3.one);
             return worldScale;
         }
 
-        public static Vector3 GetLocalScaleFromWorldScale(this Transform transform) =>
-            transform.parent.InverseTransformVector(Vector3.one);
+        public static Vector3 GetLocalScaleFromWorldScale(this Transform transform)
+        {
+            var localScale = Vector3.one;
+            if (transform.parent != null) localScale = transform.parent.InverseTransformVector(Vector3.one);
+            return localScale;
+        }
 
         public static float Distance(this Transform transform, [NotNull] Transform other) =>
             transform.position.Distance(other.position);
