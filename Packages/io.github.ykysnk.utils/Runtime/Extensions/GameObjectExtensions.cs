@@ -15,6 +15,31 @@ namespace io.github.ykysnk.utils.Extensions
         public static bool IsCloseRange2D(this GameObject obj, [NotNull] GameObject other, float distance) =>
             obj.transform.IsCloseRange2D(other.transform, distance);
 
+        /// <summary>
+        ///     Calculates and returns the world scale of the specified transform.
+        ///     Same as <see cref="Transform.lossyScale" />
+        /// </summary>
+        /// <param name="obj">The transform for which the world scale is to be calculated.</param>
+        /// <returns>The scale in world space</returns>
+        public static Vector3 GetWorldScale(this GameObject obj) => obj.transform.GetWorldScale();
+
+        /// <summary>
+        ///     Calculates and returns the local scale same as a world scale.
+        /// </summary>
+        /// <param name="obj">The transform for which the local scale is to be calculated.</param>
+        /// <returns>The scale in local space equals world space</returns>
+        public static Vector3 GetLocalScaleFollowWorldScale(this GameObject obj) =>
+            obj.transform.GetLocalScaleFollowWorldScale();
+
+        /// <summary>
+        ///     Calculates and returns the local scale of the target transform relative to another transform.
+        /// </summary>
+        /// <param name="obj">The transform for which the local scale is to be calculated.</param>
+        /// <param name="other">The transform relative to which the local scale is determined.</param>
+        /// <returns>The local scale of the target transform in relation to the other transform.</returns>
+        public static Vector3 GetTargetLocalScale(this GameObject obj, GameObject other) =>
+            obj.transform.GetTargetLocalScale(other.transform);
+
 #if UTILS_VRC_SDK3_BASE
         public static bool IsPlayerCloseRange(this GameObject obj, float distance) =>
             obj.transform.IsPlayerCloseRange(distance);
