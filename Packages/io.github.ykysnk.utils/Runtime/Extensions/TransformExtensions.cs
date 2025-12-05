@@ -70,6 +70,19 @@ namespace io.github.ykysnk.utils.Extensions
         public static Vector3 GetTargetLocalScale(this Transform transform, GameObject other) =>
             GetTargetLocalScale(transform, other.transform);
 
+        // Refs: https://discussions.unity.com/t/version-of-transform-transformpoint-which-is-unaffected-by-scale/172259
+        public static Vector3 TransformPointUnscaled(this Transform transform, Vector3 position)
+        {
+            var localToWorldMatrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one);
+            return localToWorldMatrix.MultiplyPoint3x4(position);
+        }
+
+        public static Vector3 InverseTransformPointUnscaled(this Transform transform, Vector3 position)
+        {
+            var worldToLocalMatrix = Matrix4x4.TRS(transform.position, transform.rotation, Vector3.one).inverse;
+            return worldToLocalMatrix.MultiplyPoint3x4(position);
+        }
+
         public static float Distance(this Transform transform, [NotNull] Transform other) =>
             transform.position.Distance(other.position);
 
