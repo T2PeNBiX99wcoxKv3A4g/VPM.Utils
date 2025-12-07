@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace io.github.ykysnk.utils.Extensions
         /// </summary>
         /// <param name="obj">The transform for which the world scale is to be calculated.</param>
         /// <returns>The scale in world space</returns>
+        [Obsolete("Use Transform.lossyScale instead.")]
         public static Vector3 GetWorldScale(this GameObject obj) => obj.transform.GetWorldScale();
 
         /// <summary>
