@@ -13,7 +13,7 @@ namespace Test
         private void TestMethod()
         {
             Utils.Log(nameof(Test),
-                $"Test: {transform.GetWorldScale()} {transform.GetLocalScaleFollowWorldScale()} {transform.GetTargetLocalScale(target)}");
+                $"Test: {transform.lossyScale} {transform.GetLocalScaleFollowWorldScale()} {transform.GetTargetLocalScale(target)}");
         }
     }
 }
