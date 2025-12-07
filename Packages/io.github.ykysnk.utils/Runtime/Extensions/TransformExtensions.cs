@@ -63,8 +63,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static Vector3 GetLocalScaleFromLossyScale(this Transform transform, Vector3 lossyScale)
         {
             if (transform.parent == null) return transform.localScale = lossyScale;
-            var parentScale = transform.parent.lossyScale;
-            return parentScale != Vector3.zero ? lossyScale.Divide(parentScale) : lossyScale;
+            return lossyScale.Divide(transform.parent.lossyScale);
         }
 
         /// <summary>
