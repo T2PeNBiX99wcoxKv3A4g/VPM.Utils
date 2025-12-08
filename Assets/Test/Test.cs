@@ -14,6 +14,9 @@ namespace Test
         {
             Utils.Log(nameof(Test),
                 $"Test: {transform.lossyScale} {transform.GetLocalScaleFollowWorldScale()} {transform.GetTargetLocalScale(target)}");
+
+            var test = new Vector3(1, 2, 3);
+            // Vector3.D
         }
     }
 }
