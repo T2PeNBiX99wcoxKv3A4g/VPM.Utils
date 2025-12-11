@@ -55,7 +55,7 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         // Refs: https://github.com/weasel-club/OneClickInventory/blob/main/Editor/Util/IconUtil.cs#L146
-        public static void MakeTexture2DClear(Texture2D tex2D, int width, int height)
+        public static void MakeTexture2DClear(this Texture2D tex2D, int width, int height)
         {
             var clearColors = new Color[width * height];
 
@@ -76,7 +76,7 @@ namespace io.github.ykysnk.utils.Extensions
             tex2D.SetPixels(clearColors);
         }
 
-        public static Texture2D TrimTransparentCPU(Texture2D source, float alphaThreshold = 0.01f)
+        public static Texture2D TrimTransparentCPU(this Texture2D source, float alphaThreshold = 0.01f)
         {
             int minX = source.width, minY = source.height;
             int maxX = 0, maxY = 0;
@@ -109,7 +109,7 @@ namespace io.github.ykysnk.utils.Extensions
             return trimmed;
         }
 
-        public static Texture2D TrimTransparentGPU(Texture2D source, float alphaThreshold = 0.01f,
+        public static Texture2D TrimTransparentGPU(this Texture2D source, float alphaThreshold = 0.01f,
             bool gammaCorrect = true)
         {
             var kernelFind = TrimShader.FindKernel("cs_find_bounds");
