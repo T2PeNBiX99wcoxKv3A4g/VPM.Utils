@@ -24,11 +24,11 @@ namespace io.github.ykysnk.utils.Extensions
 
         public static Texture2D ScaleGPU(this Texture2D source, int targetWidth, int targetHeight)
         {
-            var rt = new RenderTexture(targetWidth, targetHeight, 24);
+            var rt = new RenderTexture(targetWidth, targetHeight, 24, source.graphicsFormat);
             Graphics.Blit(source, rt);
 
             RenderTexture.active = rt;
-            var result = new Texture2D(targetWidth, targetHeight, TextureFormat.RGBA32, false);
+            var result = new Texture2D(targetWidth, targetHeight, source.format, source.mipmapCount > 1);
             result.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
             result.Apply();
             RenderTexture.active = null;
@@ -39,7 +39,7 @@ namespace io.github.ykysnk.utils.Extensions
 
         public static Texture2D ScaleCPU(this Texture2D source, int targetWidth, int targetHeight)
         {
-            var result = new Texture2D(targetWidth, targetHeight, source.format, false);
+            var result = new Texture2D(targetWidth, targetHeight, source.format, source.mipmapCount > 1);
 
             for (var y = 0; y < targetHeight; y++)
             for (var x = 0; x < targetWidth; x++)
