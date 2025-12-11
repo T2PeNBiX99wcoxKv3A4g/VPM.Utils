@@ -1,0 +1,58 @@
+#pragma kernel cs_find_bounds
+#pragma kernel cs_copy_to_square
+
+Texture2D source;
+RWTexture2D<float4> _Out;
+RWStructuredBuffer<int> bounds;
+float alpha_threshold;
+uint width, height;
+uint gamma_correct;
+
+[numthreads(8,8,1)]
+void cs_find_bounds(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height) return;
+
+    float4 c = source.Load(uint3(id.x, id.y, 0));
+    if (c.a > alpha_threshold)
+    {
+        InterlockedMin(bounds[0], (int)id.x);
+        InterlockedMin(bounds[1], (int)id.y);
+        InterlockedMax(bounds[2], (int)id.x);
+        InterlockedMax(bounds[3], (int)id.y);
+    }
+}
+
+[numthreads(8,8,1)]
+void cs_copy_to_square(uint3 id : SV_DispatchThreadID)
+{
+    uint size_x, size_y;
+    _Out.GetDimensions(size_x, size_y);
+    uint size = size_x;
+
+    if (id.x >= size || id.y >= size) return;
+
+    uint min_x = bounds[0];
+    uint min_y = bounds[1];
+    uint max_x = bounds[2];
+    uint max_y = bounds[3];
+
+    uint trimmed_w = max_x - min_x + 1;
+    uint trimmed_h = max_y - min_y + 1;
+
+    uint offset_x = (size - trimmed_w) / 2;
+    uint offset_y = (size - trimmed_h) / 2;
+
+    if (id.x >= offset_x && id.x < offset_x + trimmed_w && id.y >= offset_y && id.y < offset_y + trimmed_h)
+    {
+        int2 src_pos = int2(min_x + (id.x - offset_x), min_y + (id.y - offset_y));
+        float4 c = source.Load(int3(src_pos, 0));
+
+        if (gamma_correct == 1)
+            c.rgb = pow(saturate(c.rgb), 1.0 / 2.2);
+
+        _Out[int2(id.x, id.y)] = c;
+    }
+    else
+        _Out[int2(id.x, id.y)] = float4(0, 0, 0, 0);
+}
