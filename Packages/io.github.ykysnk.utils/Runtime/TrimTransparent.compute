@@ -28,9 +28,8 @@ void cs_copy_to_square(uint3 id : SV_DispatchThreadID)
 {
     uint size_x, size_y;
     _Out.GetDimensions(size_x, size_y);
-    uint size = size_x;
 
-    if (id.x >= size || id.y >= size) return;
+    if (id.x >= size_x || id.y >= size_y) return;
 
     uint min_x = bounds[0];
     uint min_y = bounds[1];
@@ -40,8 +39,8 @@ void cs_copy_to_square(uint3 id : SV_DispatchThreadID)
     uint trimmed_w = max_x - min_x + 1;
     uint trimmed_h = max_y - min_y + 1;
 
-    uint offset_x = (size - trimmed_w) / 2;
-    uint offset_y = (size - trimmed_h) / 2;
+    uint offset_x = (size_x - trimmed_w) / 2;
+    uint offset_y = (size_y - trimmed_h) / 2;
 
     if (id.x >= offset_x && id.x < offset_x + trimmed_w && id.y >= offset_y && id.y < offset_y + trimmed_h)
     {
