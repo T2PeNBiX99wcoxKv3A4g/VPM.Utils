@@ -1,27 +1,15 @@
 using System;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace io.github.ykysnk.utils.Extensions
 {
     [PublicAPI]
     public static class Texture2DExtensions
     {
-        private const string TrimShaderGuid = "adc17c90949f49fb9d5413d8487e5d32";
-        private static ComputeShader _trimShader;
-        private static readonly int Source = Shader.PropertyToID("source");
-        private static readonly int Bounds = Shader.PropertyToID("bounds");
-        private static readonly int AlphaThreshold = Shader.PropertyToID("alpha_threshold");
-        private static readonly int Width = Shader.PropertyToID("width");
-        private static readonly int Height = Shader.PropertyToID("height");
-        private static readonly int Out = Shader.PropertyToID("_Out");
-        private static readonly int GammaCorrect = Shader.PropertyToID("gamma_correct");
-
-        private static ComputeShader TrimShader => _trimShader = _trimShader ??
-                                                                 AssetDatabase.LoadAssetAtPath<ComputeShader>(
-                                                                     AssetDatabase.GUIDToAssetPath(TrimShaderGuid));
-
         public static Texture2D ScaleGPU(this Texture2D source, int targetWidth, int targetHeight)
         {
             var rt = new RenderTexture(targetWidth, targetHeight, 24, source.graphicsFormat);
@@ -110,10 +98,21 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         public static Texture2D TrimTransparentGPU(this Texture2D source, float alphaThreshold = 0.01f,
-            bool gammaCorrect = true)
+            bool gammaCorrect = true, ComputeShader trimShader = null)
         {
-            var kernelFind = TrimShader.FindKernel("cs_find_bounds");
-            var kernelCopy = TrimShader.FindKernel("cs_copy_to_square");
+            if (trimShader == null)
+#if UNITY_EDITOR
+                trimShader = TrimShader;
+#else
+            {
+                var empty = new Texture2D(1, 1, source.format, source.mipmapCount > 1);
+                empty.SetPixel(0, 0, Color.clear);
+                empty.Apply();
+                return empty;
+            }
+#endif
+            var kernelFind = trimShader.FindKernel("cs_find_bounds");
+            var kernelCopy = trimShader.FindKernel("cs_copy_to_square");
 
             var boundsBuffer = new ComputeBuffer(4, sizeof(int));
             int[] initBounds =
@@ -122,15 +121,15 @@ namespace io.github.ykysnk.utils.Extensions
             };
             boundsBuffer.SetData(initBounds);
 
-            TrimShader.SetTexture(kernelFind, Source, source);
-            TrimShader.SetBuffer(kernelFind, Bounds, boundsBuffer);
-            TrimShader.SetFloat(AlphaThreshold, alphaThreshold);
-            TrimShader.SetInt(Width, source.width);
-            TrimShader.SetInt(Height, source.height);
+            trimShader.SetTexture(kernelFind, Source, source);
+            trimShader.SetBuffer(kernelFind, Bounds, boundsBuffer);
+            trimShader.SetFloat(AlphaThreshold, alphaThreshold);
+            trimShader.SetInt(Width, source.width);
+            trimShader.SetInt(Height, source.height);
 
             var gx = Mathf.CeilToInt(source.width / 8f);
             var gy = Mathf.CeilToInt(source.height / 8f);
-            TrimShader.Dispatch(kernelFind, gx, gy, 1);
+            trimShader.Dispatch(kernelFind, gx, gy, 1);
 
             var bounds = new int[4];
             boundsBuffer.GetData(bounds);
@@ -155,14 +154,14 @@ namespace io.github.ykysnk.utils.Extensions
             };
             rt.Create();
 
-            TrimShader.SetTexture(kernelCopy, Source, source);
-            TrimShader.SetTexture(kernelCopy, Out, rt);
-            TrimShader.SetBuffer(kernelCopy, Bounds, boundsBuffer);
-            TrimShader.SetInt(GammaCorrect, gammaCorrect ? 1 : 0);
+            trimShader.SetTexture(kernelCopy, Source, source);
+            trimShader.SetTexture(kernelCopy, Out, rt);
+            trimShader.SetBuffer(kernelCopy, Bounds, boundsBuffer);
+            trimShader.SetInt(GammaCorrect, gammaCorrect ? 1 : 0);
 
             var cgx = Mathf.CeilToInt(size / 8f);
             var cgy = Mathf.CeilToInt(size / 8f);
-            TrimShader.Dispatch(kernelCopy, cgx, cgy, 1);
+            trimShader.Dispatch(kernelCopy, cgx, cgy, 1);
 
             var result = new Texture2D(size, size, source.format, source.mipmapCount > 1);
             RenderTexture.active = rt;
@@ -174,5 +173,20 @@ namespace io.github.ykysnk.utils.Extensions
 
             return result;
         }
+#if UNITY_EDITOR
+        private const string TrimShaderGuid = "adc17c90949f49fb9d5413d8487e5d32";
+        private static ComputeShader _trimShader;
+        private static readonly int Source = Shader.PropertyToID("source");
+        private static readonly int Bounds = Shader.PropertyToID("bounds");
+        private static readonly int AlphaThreshold = Shader.PropertyToID("alpha_threshold");
+        private static readonly int Width = Shader.PropertyToID("width");
+        private static readonly int Height = Shader.PropertyToID("height");
+        private static readonly int Out = Shader.PropertyToID("_Out");
+        private static readonly int GammaCorrect = Shader.PropertyToID("gamma_correct");
+
+        private static ComputeShader TrimShader => _trimShader = _trimShader ??
+                                                                 AssetDatabase.LoadAssetAtPath<ComputeShader>(
+                                                                     AssetDatabase.GUIDToAssetPath(TrimShaderGuid));
+#endif
     }
 }
