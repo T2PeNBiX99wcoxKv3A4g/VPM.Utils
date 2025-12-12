@@ -181,7 +181,6 @@ namespace io.github.ykysnk.utils.Extensions
 
             return result;
         }
-
 #if UNITY_EDITOR
         private const string TrimShaderGuid = "adc17c90949f49fb9d5413d8487e5d32";
         private static ComputeShader _trimShader;
