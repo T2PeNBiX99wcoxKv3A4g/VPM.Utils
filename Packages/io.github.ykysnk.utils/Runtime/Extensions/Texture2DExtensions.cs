@@ -10,6 +10,14 @@ namespace io.github.ykysnk.utils.Extensions
     [PublicAPI]
     public static class Texture2DExtensions
     {
+        private static readonly int Source = Shader.PropertyToID("source");
+        private static readonly int Bounds = Shader.PropertyToID("bounds");
+        private static readonly int AlphaThreshold = Shader.PropertyToID("alpha_threshold");
+        private static readonly int Width = Shader.PropertyToID("width");
+        private static readonly int Height = Shader.PropertyToID("height");
+        private static readonly int Out = Shader.PropertyToID("_Out");
+        private static readonly int GammaCorrect = Shader.PropertyToID("gamma_correct");
+
         public static Texture2D ScaleGPU(this Texture2D source, int targetWidth, int targetHeight)
         {
             var rt = new RenderTexture(targetWidth, targetHeight, 24, source.graphicsFormat);
@@ -173,16 +181,10 @@ namespace io.github.ykysnk.utils.Extensions
 
             return result;
         }
+
 #if UNITY_EDITOR
         private const string TrimShaderGuid = "adc17c90949f49fb9d5413d8487e5d32";
         private static ComputeShader _trimShader;
-        private static readonly int Source = Shader.PropertyToID("source");
-        private static readonly int Bounds = Shader.PropertyToID("bounds");
-        private static readonly int AlphaThreshold = Shader.PropertyToID("alpha_threshold");
-        private static readonly int Width = Shader.PropertyToID("width");
-        private static readonly int Height = Shader.PropertyToID("height");
-        private static readonly int Out = Shader.PropertyToID("_Out");
-        private static readonly int GammaCorrect = Shader.PropertyToID("gamma_correct");
 
         private static ComputeShader TrimShader => _trimShader = _trimShader ??
                                                                  AssetDatabase.LoadAssetAtPath<ComputeShader>(
