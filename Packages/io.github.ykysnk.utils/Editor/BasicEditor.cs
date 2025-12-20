@@ -127,7 +127,8 @@ public abstract class BasicEditor : UnityEditor.Editor
     ///     error messages, or execute additional recovery logic after an exception is thrown.
     /// </summary>
     /// <param name="e">The exception object that contains details about the error.</param>
-    protected virtual void OnError(Exception e)
+    /// <param name="type">The type of ui type</param>
+    protected virtual void OnError(Exception e, Type type)
     {
     }
 
