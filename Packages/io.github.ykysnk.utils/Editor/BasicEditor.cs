@@ -104,7 +104,7 @@ public abstract class BasicEditor : UnityEditor.Editor
                 return root;
             }
 
-            var visualTree = errorUxml!.CloneTree();
+            var visualTree = errorUxml.CloneTree();
             var errorBox = visualTree.Q<HelpBox>("errorBox");
             errorBox.text = $"Editor Error: {e.Message}\n{e.StackTrace}";
             root.Add(visualTree);
