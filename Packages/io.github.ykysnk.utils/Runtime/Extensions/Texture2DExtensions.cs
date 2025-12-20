@@ -98,7 +98,7 @@ namespace io.github.ykysnk.utils.Extensions
             var trimmedSizeY = maxY - minY;
             var trimmedPixels = source.GetPixels(minX, minY, trimmedSizeX, trimmedSizeY);
             var trimmed = new Texture2D(size, size, source.format, source.mipmapCount > 1);
-            MakeTexture2DClear(trimmed, size, size);
+            trimmed.MakeTexture2DClear(size, size);
             trimmed.SetPixels(size / 2 - trimmedSizeX / 2, size / 2 - trimmedSizeY / 2, trimmedSizeX, trimmedSizeY,
                 trimmedPixels);
             trimmed.Apply();

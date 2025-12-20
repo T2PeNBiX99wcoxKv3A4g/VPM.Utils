@@ -82,7 +82,7 @@ namespace io.github.ykysnk.utils.Extensions
         /// <param name="other">The transform relative to which the local scale is determined.</param>
         /// <returns>The local scale of the target transform in relation to the other transform.</returns>
         public static Vector3 GetTargetLocalScale(this Transform transform, GameObject other) =>
-            GetTargetLocalScale(transform, other.transform);
+            transform.GetTargetLocalScale(other.transform);
 
         // Refs: https://discussions.unity.com/t/version-of-transform-transformpoint-which-is-unaffected-by-scale/172259
         /// <summary>
