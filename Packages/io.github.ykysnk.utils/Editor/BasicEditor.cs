@@ -9,6 +9,8 @@ namespace io.github.ykysnk.utils.Editor;
 [PublicAPI]
 public abstract class BasicEditor : UnityEditor.Editor
 {
+    public delegate void ErrorEvent(Exception e);
+
     /// <summary>
     ///     Gets or sets a value indicating whether the inspector GUI should use the old rendering style.
     /// </summary>
@@ -35,6 +37,15 @@ public abstract class BasicEditor : UnityEditor.Editor
     protected virtual void OnEnable()
     {
     }
+
+    /// <summary>
+    ///     Represents an event triggered when an error occurs during the execution of a custom editor process.
+    /// </summary>
+    /// <remarks>
+    ///     This event allows subscribers to handle exceptions raised during the runtime of the custom editor.
+    ///     It can be used for logging, displaying error messages, or executing custom recovery logic.
+    /// </remarks>
+    public static event ErrorEvent? OnErrorEvent;
 
     /// <summary>
     ///     Called to render and handle the custom inspector GUI for the associated object.
@@ -79,6 +90,7 @@ public abstract class BasicEditor : UnityEditor.Editor
             if (ConsoleLog)
                 Debug.LogException(e);
             OnError(e);
+            OnErrorEvent?.Invoke(e);
 
             var root = new VisualElement();
             var errorUxml =
@@ -87,7 +99,8 @@ public abstract class BasicEditor : UnityEditor.Editor
 
             if (errorUxml == null)
             {
-                root.Add(new Label("Failed to load uxml assets, please reimport the package to fix this issue."));
+                root.Add(new HelpBox("Failed to load uxml assets, please reimport the package to fix this issue.",
+                    HelpBoxMessageType.Error));
                 return root;
             }
 
