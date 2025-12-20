@@ -11,6 +11,12 @@ public abstract class BasicEditor : UnityEditor.Editor
 {
     public delegate void ErrorEvent(Exception e, Type type);
 
+    public enum Type
+    {
+        UGUI,
+        UIToolkit
+    }
+
     /// <summary>
     ///     Gets or sets a value indicating whether the inspector GUI should use the old rendering style.
     /// </summary>
@@ -68,7 +74,8 @@ public abstract class BasicEditor : UnityEditor.Editor
         {
             if (ConsoleLog)
                 Debug.LogException(e);
-            OnError(e);
+            OnError(e, Type.UGUI);
+            OnErrorEvent?.Invoke(e, Type.UGUI);
             EditorGUILayout.HelpBox($"Editor Error: {e.Message}\n{e.StackTrace}", MessageType.Error, true);
         }
 
@@ -89,8 +96,8 @@ public abstract class BasicEditor : UnityEditor.Editor
         {
             if (ConsoleLog)
                 Debug.LogException(e);
-            OnError(e);
-            OnErrorEvent?.Invoke(e);
+            OnError(e, Type.UIToolkit);
+            OnErrorEvent?.Invoke(e, Type.UIToolkit);
 
             var root = new VisualElement();
             var errorUxml =
