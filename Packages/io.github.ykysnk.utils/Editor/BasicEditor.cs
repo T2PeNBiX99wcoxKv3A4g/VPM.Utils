@@ -9,7 +9,7 @@ namespace io.github.ykysnk.utils.Editor;
 [PublicAPI]
 public abstract class BasicEditor : UnityEditor.Editor
 {
-    public delegate void ErrorEvent(Exception e);
+    public delegate void ErrorEvent(Exception e, Type type);
 
     /// <summary>
     ///     Gets or sets a value indicating whether the inspector GUI should use the old rendering style.
