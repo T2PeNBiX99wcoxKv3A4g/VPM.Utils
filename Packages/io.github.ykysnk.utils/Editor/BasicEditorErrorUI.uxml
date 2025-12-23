@@ -1,3 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
-    <ui:HelpBox text="Error" message-type="Error" name="errorBox"/>
+    <ui:VisualElement style="align-items: stretch;">
+        <ui:HelpBox text="Error" message-type="Error" name="errorBox"/>
+        <ui:TextField picking-mode="Ignore" value="filler text" readonly="true" name="errorDetails" multiline="true"
+                      style="justify-content: space-between; white-space: normal;"/>
+        <ui:Button text="Copy" parse-escape-sequences="true" display-tooltip-when-elided="true" name="copy"/>
+    </ui:VisualElement>
 </ui:UXML>
