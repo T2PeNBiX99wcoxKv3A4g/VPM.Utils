@@ -116,11 +116,11 @@ public abstract class BasicEditor : UnityEditor.Editor
         }
     }
 
-    public static VisualElement CreateUxmlImportErrorUI()
+    public static VisualElement CreateUxmlImportErrorUI(
+        string errorMessage = "Failed to load uxml assets, please reimport the package to fix this issue.")
     {
         var tree = new VisualElement();
-        tree.Add(new HelpBox("Failed to load uxml assets, please reimport the package to fix this issue.",
-            HelpBoxMessageType.Error));
+        tree.Add(new HelpBox(errorMessage, HelpBoxMessageType.Error));
         return tree;
     }
 
