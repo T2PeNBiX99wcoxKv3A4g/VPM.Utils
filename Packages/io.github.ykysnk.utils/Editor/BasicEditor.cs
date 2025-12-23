@@ -119,10 +119,18 @@ public abstract class BasicEditor : UnityEditor.Editor
     public static VisualElement CreateUxmlImportErrorUI() =>
         CreateErrorUI("Failed to load uxml assets, please reimport the package to fix this issue.");
 
-    public static VisualElement CreateErrorUI(string errorMessage)
+    public static VisualElement CreateInfoUI(string errorMessage) => CreateHelpUI(errorMessage);
+
+    public static VisualElement CreateErrorUI(string errorMessage) =>
+        CreateHelpUI(errorMessage, HelpBoxMessageType.Error);
+
+    public static VisualElement CreateWarningUI(string errorMessage) =>
+        CreateHelpUI(errorMessage, HelpBoxMessageType.Warning);
+
+    public static VisualElement CreateHelpUI(string message, HelpBoxMessageType type = HelpBoxMessageType.Info)
     {
         var tree = new VisualElement();
-        tree.Add(new HelpBox(errorMessage, HelpBoxMessageType.Error));
+        tree.Add(new HelpBox(message, type));
         return tree;
     }
 
