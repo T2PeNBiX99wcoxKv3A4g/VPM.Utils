@@ -107,7 +107,11 @@ public abstract class BasicEditor : UnityEditor.Editor
 
             var tree = errorUxml.CloneTree();
             var errorBox = tree.Q<HelpBox>("errorBox");
-            errorBox.text = $"Editor Error: {e.Message}\n{e.StackTrace}";
+            errorBox.text = $"Editor Error: {e.Message}";
+            var errorDetails = tree.Q<TextField>("errorDetails");
+            errorDetails.value = $"{e.Message}\n{e.StackTrace}";
+            var copy = tree.Q<Button>("copy");
+            copy.clicked += () => EditorGUIUtility.systemCopyBuffer = errorDetails.value;
             return tree;
         }
     }
