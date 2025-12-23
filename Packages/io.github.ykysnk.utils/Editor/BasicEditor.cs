@@ -99,24 +99,25 @@ public abstract class BasicEditor : UnityEditor.Editor
             OnError(e, Type.UIToolkit);
             OnErrorEvent?.Invoke(e, Type.UIToolkit);
 
-            var root = new VisualElement();
             var errorUxml =
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                     AssetDatabase.GUIDToAssetPath("041e01f1ddee3c640989a147c46c76a9"));
 
-            if (errorUxml == null)
-            {
-                root.Add(new HelpBox("Failed to load uxml assets, please reimport the package to fix this issue.",
-                    HelpBoxMessageType.Error));
-                return root;
-            }
+            if (errorUxml == null) return CreateUxmlImportErrorUI();
 
-            var visualTree = errorUxml.CloneTree();
-            var errorBox = visualTree.Q<HelpBox>("errorBox");
+            var tree = errorUxml.CloneTree();
+            var errorBox = tree.Q<HelpBox>("errorBox");
             errorBox.text = $"Editor Error: {e.Message}\n{e.StackTrace}";
-            root.Add(visualTree);
-            return root;
+            return tree;
         }
+    }
+
+    public static VisualElement CreateUxmlImportErrorUI()
+    {
+        var tree = new VisualElement();
+        tree.Add(new HelpBox("Failed to load uxml assets, please reimport the package to fix this issue.",
+            HelpBoxMessageType.Error));
+        return tree;
     }
 
     /// <summary>
