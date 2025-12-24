@@ -44,6 +44,8 @@ namespace io.github.ykysnk.utils.Extensions
 
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         public static bool IsSceneObject(this GameObject obj) => obj.scene.IsValid() && !Utils.IsInPrefab;
+#else
+        public static bool IsSceneObject(this GameObject obj) => false;
 #endif
 
 #if UTILS_VRC_SDK3_BASE
