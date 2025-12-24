@@ -42,6 +42,10 @@ namespace io.github.ykysnk.utils.Extensions
         public static Vector3 GetTargetLocalScale(this GameObject obj, GameObject other) =>
             obj.transform.GetTargetLocalScale(other.transform);
 
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+        public static bool IsSceneObject(this GameObject obj) => obj.scene.IsValid() && !Utils.IsInPrefab;
+#endif
+
 #if UTILS_VRC_SDK3_BASE
         public static bool IsPlayerCloseRange(this GameObject obj, float distance) =>
             obj.transform.IsPlayerCloseRange(distance);

@@ -12,11 +12,11 @@ namespace io.github.ykysnk.utils
     public static class Utils
     {
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
-        public static bool IsInPrefab() => PrefabStageUtility.GetCurrentPrefabStage();
-        public static bool IsPlaying() => EditorApplication.isPlayingOrWillChangePlaymode;
+        public static bool IsInPrefab => PrefabStageUtility.GetCurrentPrefabStage();
+        public static bool IsPlaying => EditorApplication.isPlayingOrWillChangePlaymode;
 #else
-        public static bool IsInPrefab() => false;
-        public static bool IsPlaying() => true;
+        public static bool IsInPrefab => false;
+        public static bool IsPlaying => true;
 #endif
 
         public static int ToLayer(LayerMask mask)
