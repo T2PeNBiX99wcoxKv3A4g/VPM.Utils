@@ -42,7 +42,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static Vector3 GetTargetLocalScale(this GameObject obj, GameObject other) =>
             obj.transform.GetTargetLocalScale(other.transform);
 
-#if !COMPILER_UDONSHARP && UNITY_EDITOR
+#if !COMPILER_UDONSHARP
         public static bool IsSceneObject(this GameObject obj) => obj.scene.IsValid() && !Utils.IsInPrefab;
 #else
         public static bool IsSceneObject(this GameObject obj) => false;
