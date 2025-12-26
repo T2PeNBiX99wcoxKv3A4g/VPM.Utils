@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
@@ -54,6 +54,8 @@ public static class HashUtils
         return sb.ToString();
     }
 
-    public static string ComputeHash<T>(IEnumerable<T> input, HashType type) =>
+    public static string ComputeHash(IEnumerable input, HashType type) =>
         ComputeHash(string.Join("|", input), type);
+
+    public static string ListString(this IEnumerable enumerable) => string.Join("|", enumerable);
 }
