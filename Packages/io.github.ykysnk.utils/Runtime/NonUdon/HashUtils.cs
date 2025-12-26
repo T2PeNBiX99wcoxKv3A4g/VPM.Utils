@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
@@ -52,4 +53,7 @@ public static class HashUtils
             sb.Append(b.ToString("x2"));
         return sb.ToString();
     }
+
+    public static string ComputeHash<T>(IEnumerable<T> input, HashType type) =>
+        ComputeHash(string.Join("|", input), type);
 }
