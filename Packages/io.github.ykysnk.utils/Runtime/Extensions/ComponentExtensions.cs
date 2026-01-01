@@ -19,11 +19,13 @@ namespace io.github.ykysnk.utils.Extensions
         public static Component[] GetComponents([NotNull] this Component component) =>
             component.gameObject.GetComponents();
 
+#if !COMPILER_UDONSHARP
         public static void ComponentsForeach([NotNull] this Component component,
             GameObjectExtensions.ComponentAction componentAction) =>
             component.gameObject.ComponentsForeach(componentAction);
 
         public static T[] ComponentsSelect<T>([NotNull] this Component component, GameObjectExtensions.ComponentSelect<T> selector) =>
             component.gameObject.ComponentsSelect(selector);
+#endif
     }
 }

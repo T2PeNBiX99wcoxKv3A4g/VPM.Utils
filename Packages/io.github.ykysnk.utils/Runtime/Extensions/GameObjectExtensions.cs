@@ -70,6 +70,7 @@ namespace io.github.ykysnk.utils.Extensions
             return ret;
         }
 
+#if !COMPILER_UDONSHARP
         public delegate void ComponentAction(int index, Component component);
 
         public delegate T ComponentSelect<out T>(int index, Component component);
@@ -92,6 +93,7 @@ namespace io.github.ykysnk.utils.Extensions
 
             return ret;
         }
+#endif
 
 #if !COMPILER_UDONSHARP
         public static bool IsSceneObject([NotNull] this GameObject obj) => obj.scene.IsValid() && !Utils.IsInPrefab;
