@@ -72,12 +72,25 @@ namespace io.github.ykysnk.utils.Extensions
 
         public delegate void ComponentAction(int index, Component component);
 
+        public delegate T ComponentSelect<out T>(int index, Component component);
+
         public static void ComponentsForeach([NotNull] this GameObject obj, ComponentAction componentAction)
         {
             var count = obj.GetComponentCount();
 
             for (var i = 0; i < count; i++)
                 componentAction(i, obj.GetComponentAtIndex(i));
+        }
+
+        public static T[] ComponentsSelect<T>([NotNull] this GameObject obj, ComponentSelect<T> selector)
+        {
+            var count = obj.GetComponentCount();
+            var ret = new T[count];
+
+            for (var i = 0; i < count; i++)
+                ret[i] = selector(i, obj.GetComponentAtIndex(i));
+
+            return ret;
         }
 
 #if !COMPILER_UDONSHARP
