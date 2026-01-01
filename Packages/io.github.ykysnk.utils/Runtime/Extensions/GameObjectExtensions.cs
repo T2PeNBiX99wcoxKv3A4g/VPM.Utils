@@ -39,10 +39,11 @@ namespace io.github.ykysnk.utils.Extensions
         /// <param name="obj">The transform for which the local scale is to be calculated.</param>
         /// <param name="other">The transform relative to which the local scale is determined.</param>
         /// <returns>The local scale of the target transform in relation to the other transform.</returns>
-        public static Vector3 GetTargetLocalScale([NotNull] this GameObject obj, GameObject other) =>
+        public static Vector3 GetTargetLocalScale([NotNull] this GameObject obj, [NotNull] GameObject other) =>
             obj.transform.GetTargetLocalScale(other.transform);
 
-        public static bool TryGetComponentAtIndex([NotNull] this GameObject obj, int index, out Component component)
+        public static bool TryGetComponentAtIndex([NotNull] this GameObject obj, int index,
+            [CanBeNull] out Component component)
         {
             if (index < 0 || index >= obj.GetComponentCount())
             {
@@ -55,7 +56,7 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         [CanBeNull]
-        public static Component GetComponentAtIndexOrDefault(this GameObject obj, int index) =>
+        public static Component GetComponentAtIndexOrDefault([NotNull] this GameObject obj, int index) =>
             obj.TryGetComponentAtIndex(index, out var component) ? component : null;
 
         public static Component[] GetComponents([NotNull] this GameObject obj)
