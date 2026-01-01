@@ -13,7 +13,18 @@ namespace io.github.ykysnk.utils.Extensions
             TryGetComponentAtIndex([NotNull] this Component component, int index, out Component component2) =>
             component.gameObject.TryGetComponentAtIndex(index, out component2);
 
-        public static Component GetComponentAtIndexOrDefault(this GameObject component, int index) =>
+        public static Component GetComponentAtIndexOrDefault(this Component component, int index) =>
             component.TryGetComponentAtIndex(index, out var component2) ? component2 : null;
+
+        public static Component[] GetComponents([NotNull] this Component component)
+        {
+            var count = component.gameObject.GetComponentCount();
+            var ret = new Component[count];
+
+            for (var i = 0; i < count; i++)
+                ret[i] = component.gameObject.GetComponentAtIndex(i);
+
+            return ret;
+        }
     }
 }

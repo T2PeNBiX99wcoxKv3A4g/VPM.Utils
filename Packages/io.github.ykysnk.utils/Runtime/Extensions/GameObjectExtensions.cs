@@ -60,9 +60,10 @@ namespace io.github.ykysnk.utils.Extensions
 
         public static Component[] GetComponents([NotNull] this GameObject obj)
         {
-            var ret = new Component[obj.GetComponentCount()];
+            var count = obj.GetComponentCount();
+            var ret = new Component[count];
 
-            for (var i = 0; i < obj.GetComponentCount(); i++)
+            for (var i = 0; i < count; i++)
                 ret[i] = obj.GetComponentAtIndex(i);
 
             return ret;
