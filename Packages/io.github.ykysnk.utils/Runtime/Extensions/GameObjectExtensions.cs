@@ -69,6 +69,16 @@ namespace io.github.ykysnk.utils.Extensions
             return ret;
         }
 
+        public delegate void ComponentAction(int index, Component component);
+
+        public static void ComponentsForeach([NotNull] this GameObject obj, ComponentAction componentAction)
+        {
+            var count = obj.GetComponentCount();
+
+            for (var i = 0; i < count; i++)
+                componentAction(i, obj.GetComponentAtIndex(i));
+        }
+
 #if !COMPILER_UDONSHARP
         public static bool IsSceneObject([NotNull] this GameObject obj) => obj.scene.IsValid() && !Utils.IsInPrefab;
 #else

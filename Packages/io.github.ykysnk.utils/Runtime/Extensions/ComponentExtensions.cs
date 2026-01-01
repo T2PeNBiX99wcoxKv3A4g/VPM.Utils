@@ -16,15 +16,11 @@ namespace io.github.ykysnk.utils.Extensions
         public static Component GetComponentAtIndexOrDefault(this Component component, int index) =>
             component.TryGetComponentAtIndex(index, out var component2) ? component2 : null;
 
-        public static Component[] GetComponents([NotNull] this Component component)
-        {
-            var count = component.gameObject.GetComponentCount();
-            var ret = new Component[count];
+        public static Component[] GetComponents([NotNull] this Component component) =>
+            component.gameObject.GetComponents();
 
-            for (var i = 0; i < count; i++)
-                ret[i] = component.gameObject.GetComponentAtIndex(i);
-
-            return ret;
-        }
+        public static void ComponentsForeach([NotNull] this Component component,
+            GameObjectExtensions.ComponentAction componentAction) =>
+            component.gameObject.ComponentsForeach(componentAction);
     }
 }
