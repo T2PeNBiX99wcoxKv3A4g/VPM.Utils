@@ -19,7 +19,7 @@ namespace io.github.ykysnk.utils.Editor
             return await tcs.Task;
         }
 
-        public static void DisplayDialog(string title, string message, string ok = "OK", string cancel = "Cancel",
+        public static void DisplayDialog(string title, string message, string ok = "OK", string cancel = "",
             Action? onOk = null, Action? onCancel = null)
         {
             CustomDialogWindow.Show(title, message, ok, cancel,
