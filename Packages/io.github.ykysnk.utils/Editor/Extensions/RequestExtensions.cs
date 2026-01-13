@@ -4,47 +4,48 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.PackageManager.Requests;
 
-namespace io.github.ykysnk.utils.Editor.Extensions;
-
-[PublicAPI]
-public static class RequestExtensions
+namespace io.github.ykysnk.utils.Editor.Extensions
 {
-    public static Task<T> AsTask<T>(this T request) where T : Request
+    [PublicAPI]
+    public static class RequestExtensions
     {
-        var tcs = new TaskCompletionSource<T>();
-
-        EditorApplication.update += Check;
-
-        return tcs.Task;
-
-        void Check()
+        public static Task<T> AsTask<T>(this T request) where T : Request
         {
-            if (!request.IsCompleted) return;
-            EditorApplication.update -= Check;
-            tcs.SetResult(request);
-        }
-    }
+            var tcs = new TaskCompletionSource<T>();
 
-    public static Task<T> AsTask<T>(this T request, CancellationToken token) where T : Request
-    {
-        var tcs = new TaskCompletionSource<T>();
+            EditorApplication.update += Check;
 
-        EditorApplication.update += Check;
+            return tcs.Task;
 
-        return tcs.Task;
-
-        void Check()
-        {
-            if (token.IsCancellationRequested)
+            void Check()
             {
+                if (!request.IsCompleted) return;
                 EditorApplication.update -= Check;
-                tcs.TrySetCanceled();
-                return;
+                tcs.SetResult(request);
             }
+        }
 
-            if (!request.IsCompleted) return;
-            EditorApplication.update -= Check;
-            tcs.TrySetResult(request);
+        public static Task<T> AsTask<T>(this T request, CancellationToken token) where T : Request
+        {
+            var tcs = new TaskCompletionSource<T>();
+
+            EditorApplication.update += Check;
+
+            return tcs.Task;
+
+            void Check()
+            {
+                if (token.IsCancellationRequested)
+                {
+                    EditorApplication.update -= Check;
+                    tcs.TrySetCanceled();
+                    return;
+                }
+
+                if (!request.IsCompleted) return;
+                EditorApplication.update -= Check;
+                tcs.TrySetResult(request);
+            }
         }
     }
 }

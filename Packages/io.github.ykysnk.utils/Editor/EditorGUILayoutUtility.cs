@@ -2,62 +2,63 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 
-namespace io.github.ykysnk.utils.Editor;
-
-[PublicAPI]
-public static class EditorGUILayoutUtility
+namespace io.github.ykysnk.utils.Editor
 {
-    private static readonly GUIContent LabelContent = new();
-
-    private static GUIStyle? _boldLabel;
-
-    private static GUIStyle? _boldLabel2;
-
-    public static GUIStyle BoldLabel
+    [PublicAPI]
+    public static class EditorGUILayoutUtility
     {
-        get
+        private static readonly GUIContent LabelContent = new();
+
+        private static GUIStyle? _boldLabel;
+
+        private static GUIStyle? _boldLabel2;
+
+        public static GUIStyle BoldLabel
         {
-            _boldLabel ??= new(EditorStyles.label)
+            get
             {
-                fontStyle = FontStyle.Bold,
-                fontSize = 15
-            };
-            return _boldLabel;
+                _boldLabel ??= new(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 15
+                };
+                return _boldLabel;
+            }
         }
-    }
 
-    public static GUIStyle BoldLabel2
-    {
-        get
+        public static GUIStyle BoldLabel2
         {
-            _boldLabel2 ??= new(EditorStyles.label)
+            get
             {
-                fontStyle = FontStyle.Bold,
-                fontSize = 12
-            };
-            return _boldLabel2;
+                _boldLabel2 ??= new(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 12
+                };
+                return _boldLabel2;
+            }
         }
+
+        public static GUIContent Label(string text, string? textTip = null)
+        {
+            var label = LabelContent;
+            label.text = text;
+            label.tooltip = textTip;
+
+            return label;
+        }
+
+        public static void Line(Color color, float space = 20f, float lineHeight = 1f)
+        {
+            EditorGUILayout.BeginVertical();
+
+            GUILayout.Space(space / 2);
+            EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, lineHeight), color);
+            GUILayout.Space(space / 2);
+
+            EditorGUILayout.EndVertical();
+        }
+
+        public static void Line(float space = 20f, float lineHeight = 1f) => Line(Color.gray, space, lineHeight);
     }
-
-    public static GUIContent Label(string text, string? textTip = null)
-    {
-        var label = LabelContent;
-        label.text = text;
-        label.tooltip = textTip;
-
-        return label;
-    }
-
-    public static void Line(Color color, float space = 20f, float lineHeight = 1f)
-    {
-        EditorGUILayout.BeginVertical();
-
-        GUILayout.Space(space / 2);
-        EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, lineHeight), color);
-        GUILayout.Space(space / 2);
-
-        EditorGUILayout.EndVertical();
-    }
-
-    public static void Line(float space = 20f, float lineHeight = 1f) => Line(Color.gray, space, lineHeight);
 }

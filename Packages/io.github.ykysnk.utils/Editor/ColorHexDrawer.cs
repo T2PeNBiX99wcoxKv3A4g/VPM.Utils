@@ -2,32 +2,33 @@ using io.github.ykysnk.utils.NonUdon;
 using UnityEditor;
 using UnityEngine;
 
-namespace io.github.ykysnk.utils.Editor;
-
-[CustomPropertyDrawer(typeof(ColorHex))]
-public class ColorHexDrawer : PropertyDrawer
+namespace io.github.ykysnk.utils.Editor
 {
-    private Color _color;
-
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(ColorHex))]
+    public class ColorHexDrawer : PropertyDrawer
     {
-        EditorGUI.BeginProperty(position, label, property);
+        private Color _color;
 
-        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-        var colorProperty = property.FindPropertyRelative("color");
-        var colorHexProperty = property.FindPropertyRelative("hex");
-
-        EditorGUI.BeginChangeCheck();
-
-        _color = EditorGUI.ColorField(position, colorProperty.colorValue);
-
-        if (EditorGUI.EndChangeCheck())
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            colorProperty.colorValue = _color;
-            colorHexProperty.stringValue = $"#{ColorUtility.ToHtmlStringRGBA(_color)}";
-        }
+            EditorGUI.BeginProperty(position, label, property);
 
-        EditorGUI.EndProperty();
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+
+            var colorProperty = property.FindPropertyRelative("color");
+            var colorHexProperty = property.FindPropertyRelative("hex");
+
+            EditorGUI.BeginChangeCheck();
+
+            _color = EditorGUI.ColorField(position, colorProperty.colorValue);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                colorProperty.colorValue = _color;
+                colorHexProperty.stringValue = $"#{ColorUtility.ToHtmlStringRGBA(_color)}";
+            }
+
+            EditorGUI.EndProperty();
+        }
     }
 }

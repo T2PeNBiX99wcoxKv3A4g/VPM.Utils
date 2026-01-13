@@ -2,28 +2,29 @@ using io.github.ykysnk.utils.NonUdon;
 using UnityEditor;
 using UnityEngine;
 
-namespace io.github.ykysnk.utils.Editor;
-
-[CustomPropertyDrawer(typeof(BooleanVector3))]
-public class BooleanVector3Drawer : PropertyDrawer
+namespace io.github.ykysnk.utils.Editor
 {
-    private static readonly GUIContent[] SubLabels =
+    [CustomPropertyDrawer(typeof(BooleanVector3))]
+    public class BooleanVector3Drawer : PropertyDrawer
     {
-        new("X"), new("Y"), new("Z")
-    };
+        private static readonly GUIContent[] SubLabels =
+        {
+            new("X"), new("Y"), new("Z")
+        };
 
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        EditorGUI.BeginProperty(position, label, property);
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.BeginProperty(position, label, property);
 
-        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+            position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-        var propertyHeight = EditorGUI.GetPropertyHeight(SerializedPropertyType.Boolean, label);
-        if (Screen.width < 332)
-            position = EditorGUILayout.GetControlRect(true, propertyHeight);
+            var propertyHeight = EditorGUI.GetPropertyHeight(SerializedPropertyType.Boolean, label);
+            if (Screen.width < 332)
+                position = EditorGUILayout.GetControlRect(true, propertyHeight);
 
-        EditorGUI.MultiPropertyField(position, SubLabels,
-            property.FindPropertyRelative("x"), GUIContent.none, EditorGUI.PropertyVisibility.OnlyVisible);
-        EditorGUI.EndProperty();
+            EditorGUI.MultiPropertyField(position, SubLabels,
+                property.FindPropertyRelative("x"), GUIContent.none, EditorGUI.PropertyVisibility.OnlyVisible);
+            EditorGUI.EndProperty();
+        }
     }
 }
