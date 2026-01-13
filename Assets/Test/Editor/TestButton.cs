@@ -1,8 +1,6 @@
-using System.Threading;
 using System.Threading.Tasks;
 using io.github.ykysnk.utils;
 using io.github.ykysnk.utils.Editor;
-using io.github.ykysnk.utils.Editor.Extensions;
 using UnityEditor;
 
 namespace Test.Editor
@@ -12,70 +10,37 @@ namespace Test.Editor
         [MenuItem("Test/TestButton")]
         public static void Test()
         {
-            UpmInstaller.UpdateAsync(CancellationToken.None).WaitEditor(packages =>
-            {
-                Utils.Log(nameof(TestButton), $"Need Update: {string.Join(",", packages)}");
-            });
+            _ = TestAsync();
+        }
+
+        private static async Task TestAsync()
+        {
+            if (await EditorUtils.DisplayDialogAsync(nameof(TestAsync), "testMessage", "okTest", "cancelTest"))
+                Utils.Log(nameof(TestAsync), "ok");
+            else
+                Utils.Log(nameof(TestAsync), "cancel");
         }
 
         [MenuItem("Test/TestButton2")]
         public static void Test2()
         {
-            UpmInstaller.Install(new[]
-            {
-                "com.unity.memoryprofiler"
-            });
+            _ = Test2Async();
+        }
+
+        private static async Task Test2Async()
+        {
+            if (await EditorUtils.DisplayDialogAsync(nameof(Test2Async),
+                    "testMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2",
+                    "okTest", "cancelTest"))
+                Utils.Log(nameof(Test2Async), "ok");
+            else
+                Utils.Log(nameof(Test2Async), "cancel");
         }
 
         [MenuItem("Test/TestButton3")]
         public static void Test3()
         {
-            UpmInstaller.Remove(new[]
-            {
-                "com.unity.memoryprofiler"
-            });
-        }
-
-        [MenuItem("Test/TestButton4")]
-        public static void Test4()
-        {
-            UpmInstaller.Upgrade();
-        }
-
-        [MenuItem("Test/TestButton5")]
-        public static void Test5()
-        {
-            _ = Test5Async();
-        }
-
-        private static async Task Test5Async()
-        {
-            if (await EditorUtils.DisplayDialogAsync("testTitle", "testMessage", "okTest", "cancelTest"))
-                Utils.Log(nameof(TestButton), "ok");
-            else
-                Utils.Log(nameof(TestButton), "cancel");
-        }
-
-        [MenuItem("Test/TestButton6")]
-        public static void Test6()
-        {
-            _ = Test6Async();
-        }
-
-        private static async Task Test6Async()
-        {
-            if (await EditorUtils.DisplayDialogAsync("testTitle2",
-                    "testMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2\ntestMessage2",
-                    "okTest", "cancelTest"))
-                Utils.Log(nameof(TestButton), "ok");
-            else
-                Utils.Log(nameof(TestButton), "cancel");
-        }
-
-        [MenuItem("Test/TestButton7")]
-        public static void Test7()
-        {
-            EditorUtils.DisplayDialog("test7", "test", onOk: () => Utils.Log(nameof(Test7), "ok"));
+            EditorUtils.DisplayDialog(nameof(Test3), "test", onOk: () => Utils.Log(nameof(Test3), "ok"));
         }
     }
 }
