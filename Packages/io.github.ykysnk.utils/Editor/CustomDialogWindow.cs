@@ -12,12 +12,13 @@ namespace io.github.ykysnk.utils.Editor
     {
         private const int Width = 500;
         private const int Height = 250;
+
+        private static CustomDialogWindow? _instance;
         [SerializeField] private VisualTreeAsset? uxml;
         [SerializeField] private new string title = "UnTitled";
         [SerializeField] private string message = "UnMessage";
         [SerializeField] private string ok = "Ok";
         [SerializeField] private string cancel = "";
-
         private bool _isClosed;
         private Action? _onCancel;
         private Action? _onOk;
@@ -60,23 +61,26 @@ namespace io.github.ykysnk.utils.Editor
 
         internal static void Show(string title, string message, string ok, string cancel, Action onOk, Action onCancel)
         {
-            var window = CreateInstance<CustomDialogWindow>();
-            window.titleContent = EditorGUIUtils.IconContent(title, "unityeditor.inspectorwindow");
-            window.title = title;
-            window.message = message;
-            window.ok = ok;
-            window.cancel = cancel;
-            window._onOk = onOk;
-            window._onCancel = onCancel;
-            window.minSize = new(Width, Height);
-            window.maxSize = new(Width, Height);
-            window.ShowUtility();
+            if (_instance != null)
+                _instance.Close();
+
+            _instance = CreateInstance<CustomDialogWindow>();
+            _instance.titleContent = EditorGUIUtils.IconContent(title, "unityeditor.inspectorwindow");
+            _instance.title = title;
+            _instance.message = message;
+            _instance.ok = ok;
+            _instance.cancel = cancel;
+            _instance._onOk = onOk;
+            _instance._onCancel = onCancel;
+            _instance.minSize = new(Width, Height);
+            _instance.maxSize = new(Width, Height);
+            _instance.ShowUtility();
 
             var main = EditorGUIUtility.GetMainWindowPosition();
             var x = main.x + (main.width - Width) * 0.5f;
             var y = main.y + (main.height - Height) * 0.5f;
 
-            window.position = new(x, y, Width, Height);
+            _instance.position = new(x, y, Width, Height);
         }
     }
 }
