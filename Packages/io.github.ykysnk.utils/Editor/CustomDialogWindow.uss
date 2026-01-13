@@ -1,0 +1,32 @@
+.dialog-root {
+    padding: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-self: stretch;
+    height: 100%;
+    min-height: 100%;
+}
+
+.dialog-message {
+    -unity-font-style: bold;
+    margin-bottom: 10px;
+}
+
+.dialog-scroll {
+    flex-grow: 1;
+    margin-bottom: 10px;
+    max-height: 180px;
+    min-height: 180px;
+}
+
+.dialog-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 10px;
+    align-self: flex-end;
+}
+
+.dialog-button {
+    min-width: 80px;
+    height: 30px;
+}
