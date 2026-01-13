@@ -1,12 +1,14 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="True">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements"
+         editor-extension-mode="True">
     <Style src="project://database/Packages/io.github.ykysnk.utils/Editor/CustomDialogWindow.uss?fileID=7433441132597879392&amp;guid=bd5424873a997464a9921cedec83f4ed&amp;type=3#CustomDialogWindow"/>
     <ui:VisualElement class="dialog-root">
         <ui:ScrollView name="messageScroll" class="dialog-scroll">
-            <ui:Label binding-path="message" name="message" class="dialog-message"/>
+            <ui:Label binding-path="message" name="message" parse-escape-sequences="true" class="dialog-message"
+                      style="flex-wrap: wrap;"/>
         </ui:ScrollView>
         <ui:VisualElement style="justify-content: space-between; align-self: stretch; flex-direction: column-reverse;">
             <ui:VisualElement class="dialog-buttons">
-                <ui:Button name="copy" text="Copy" class="dialog-button"/>
+                <ui:Button name="copy" text="Copy" class="dialog-button" style="display: none;"/>
                 <ui:Button name="ok" text="OK" binding-path="ok" class="dialog-button"/>
                 <ui:Button name="cancel" text="Cancel" binding-path="cancel" class="dialog-button"/>
             </ui:VisualElement>

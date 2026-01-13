@@ -10,6 +10,8 @@
 .dialog-message {
     -unity-font-style: bold;
     margin-bottom: 10px;
+    white-space: normal;
+    flex-wrap: wrap;
 }
 
 .dialog-scroll {

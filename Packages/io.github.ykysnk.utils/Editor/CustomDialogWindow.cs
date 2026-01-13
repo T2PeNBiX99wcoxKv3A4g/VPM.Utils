@@ -34,6 +34,8 @@ namespace io.github.ykysnk.utils.Editor
             var tree = uxml?.CloneTree();
             tree.Bind(serializedObject);
             rootVisualElement.Add(tree);
+            rootVisualElement.AddManipulator(new ContextualMenuManipulator(contextMenuEvent =>
+                contextMenuEvent.menu.AppendAction("Copy", _ => EditorGUIUtility.systemCopyBuffer = message)));
 
             var copyButton = tree.Q<Button>("copy");
             copyButton.clicked += () => EditorGUIUtility.systemCopyBuffer = message;
