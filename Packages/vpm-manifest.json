@@ -8,6 +8,9 @@
     },
     "com.vrchat.base": {
       "version": "3.10.1"
+    },
+    "yueby.tools.mirror-tool": {
+      "version": "1.0.2"
     }
   },
   "locked": {
@@ -21,6 +24,16 @@
     },
     "com.vrchat.base": {
       "version": "3.10.1",
+      "dependencies": {}
+    },
+    "yueby.tools.mirror-tool": {
+      "version": "1.0.2",
+      "dependencies": {
+        "yueby.tools.editor-core": ">=1.0.0"
+      }
+    },
+    "yueby.tools.editor-core": {
+      "version": "1.0.6",
       "dependencies": {}
     }
   }
