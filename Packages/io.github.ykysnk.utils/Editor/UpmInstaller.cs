@@ -60,6 +60,9 @@ public static class UpmInstaller
                 var pkgName = parts[0];
                 var pkgVersion = parts.GetValueOrDefault(1);
 
+                if (cts.IsCancellationRequested)
+                    throw new OperationCanceledException(cts.Token);
+
                 if (installed.TryGetValue(pkgName, out var currentVersion) && currentVersion == pkgVersion)
                 {
                     Utils.Log(nameof(UpmInstaller), $"Skip (already installed): {pkg}");
@@ -83,17 +86,16 @@ public static class UpmInstaller
         catch (OperationCanceledException)
         {
             Progress.Finish(progressId, Progress.Status.Canceled);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
         }
         catch (Exception ex)
         {
             Progress.Finish(progressId, Progress.Status.Failed);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
         }
         finally
         {
+            Progress.UnregisterCancelCallback(progressId);
             Interlocked.Exchange(ref _isWorking, 0);
         }
     }
@@ -139,16 +141,9 @@ public static class UpmInstaller
             {
                 index++;
                 var progress = (float)index / total;
-                var parts = pkg.Split('@');
-                var pkgName = parts[0];
-                var pkgVersion = parts.GetValueOrDefault(1);
 
-                if (installed.TryGetValue(pkgName, out var currentVersion) && currentVersion != pkgVersion)
-                {
-                    Utils.Log(nameof(UpmInstaller), $"Skip (not installed): {pkg}");
-                    Progress.Report(progressId, progress, $"Skip (not installed): {pkg}");
-                    continue;
-                }
+                if (cts.IsCancellationRequested)
+                    throw new OperationCanceledException(cts.Token);
 
                 Utils.Log(nameof(UpmInstaller), $"Removing: {pkg}");
                 Progress.Report(progressId, progress, $"Removing: {pkg}");
@@ -166,17 +161,16 @@ public static class UpmInstaller
         catch (OperationCanceledException)
         {
             Progress.Finish(progressId, Progress.Status.Canceled);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
         }
         catch (Exception ex)
         {
             Progress.Finish(progressId, Progress.Status.Failed);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
         }
         finally
         {
+            Progress.UnregisterCancelCallback(progressId);
             Interlocked.Exchange(ref _isWorking, 0);
         }
     }
@@ -218,6 +212,9 @@ public static class UpmInstaller
                 index++;
                 var progress = (float)index / total;
 
+                if (cts.IsCancellationRequested)
+                    throw new OperationCanceledException(cts.Token);
+
                 Utils.Log(nameof(UpmInstaller), $"Checking update for: {packageInfo.name}");
                 Progress.Report(progressId, progress, $"Checking update for: {packageInfo.name}");
 
@@ -241,14 +238,16 @@ public static class UpmInstaller
         catch (OperationCanceledException)
         {
             Progress.Finish(progressId, Progress.Status.Canceled);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
         }
         catch (Exception ex)
         {
             Progress.Finish(progressId, Progress.Status.Failed);
-            Progress.UnregisterCancelCallback(progressId);
             Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+        }
+        finally
+        {
+            Progress.UnregisterCancelCallback(progressId);
         }
 
         return packages.ToArray();
