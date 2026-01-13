@@ -16,7 +16,7 @@ namespace io.github.ykysnk.utils.Editor
         [SerializeField] private new string title = "UnTitled";
         [SerializeField] private string message = "UnMessage";
         [SerializeField] private string ok = "Ok";
-        [SerializeField] private string cancel = "Cancel";
+        [SerializeField] private string cancel = "";
 
         private bool _isClosed;
         private Action? _onCancel;
