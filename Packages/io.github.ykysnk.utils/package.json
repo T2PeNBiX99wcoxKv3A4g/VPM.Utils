@@ -1,7 +1,7 @@
 {
   "name": "io.github.ykysnk.utils",
   "displayName": "Utils for VPM and Unity",
-  "version": "0.30.2",
+  "version": "0.31.0",
   "description": "Utils for VPM and Unity",
   "gitDependencies": {},
   "vpmDependencies": {},
