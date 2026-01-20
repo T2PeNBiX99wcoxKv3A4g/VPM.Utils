@@ -4,7 +4,8 @@
   "references": [
     "VRC.SDKBase",
     "io.github.ykysnk.utils",
-    "io.github.ykysnk.utils.non-udon"
+    "io.github.ykysnk.utils.non-udon",
+    "jp.lilxyzw.editortoolbox"
   ],
   "includePlatforms": [
     "Editor"
@@ -25,6 +26,11 @@
       "name": "nadena.dev.ndmf",
       "expression": "",
       "define": "UTILS_NDMF"
+    },
+    {
+      "name": "jp.lilxyzw.editortoolbox",
+      "expression": "",
+      "define": "UTILS_LILTOOLBOX"
     }
   ],
   "noEngineReferences": false
