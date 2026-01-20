@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "jp.lilxyzw.editortoolbox": {
-      "version": "1.11.0"
-    },
     "nadena.dev.ndmf": {
       "version": "1.10.0"
     },
@@ -11,13 +8,12 @@
     },
     "yueby.tools.mirror-tool": {
       "version": "1.0.2"
+    },
+    "jp.lilxyzw.editortoolbox": {
+      "version": "1.11.0"
     }
   },
   "locked": {
-    "jp.lilxyzw.editortoolbox": {
-      "version": "1.11.0",
-      "dependencies": {}
-    },
     "nadena.dev.ndmf": {
       "version": "1.10.1",
       "dependencies": {}
@@ -34,6 +30,10 @@
     },
     "yueby.tools.editor-core": {
       "version": "1.0.6",
+      "dependencies": {}
+    },
+    "jp.lilxyzw.editortoolbox": {
+      "version": "1.11.0",
       "dependencies": {}
     }
   }
