@@ -177,8 +177,6 @@ public static class ReflectionWrapper
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (fieldName == null)
-            throw new ArgumentNullException(nameof(fieldName));
         if (string.IsNullOrEmpty(fieldName))
             throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
         return FieldCache.GetOrAdd((type, fieldName), key =>
@@ -205,8 +203,6 @@ public static class ReflectionWrapper
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (propertyName == null)
-            throw new ArgumentNullException(nameof(propertyName));
         if (string.IsNullOrEmpty(propertyName))
             throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
         return PropertyCache.GetOrAdd((type, propertyName), key =>
@@ -227,8 +223,6 @@ public static class ReflectionWrapper
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (methodName == null)
-            throw new ArgumentNullException(nameof(methodName));
         if (string.IsNullOrEmpty(methodName))
             throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
         return MethodCache.GetOrAdd((type, methodName, parameterTypes), key =>
@@ -252,8 +246,6 @@ public static class ReflectionWrapper
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (methodName == null)
-            throw new ArgumentNullException(nameof(methodName));
         if (string.IsNullOrEmpty(methodName))
             throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
         var key = $"{type.FullName}.method.{methodName}.{string.Join(",", parameterTypes.Select(t => t.FullName))}";
@@ -285,6 +277,45 @@ public static class ReflectionWrapper
     }
 
     /// <summary>
+    ///     Creates a delegate for retrieving the value of a field from a specified type.
+    /// </summary>
+    /// <param name="type">The type that contains the field whose value will be retrieved.</param>
+    /// <param name="fieldName">The name of the field for which the getter delegate is created.</param>
+    /// <returns>A delegate for retrieving the field value, either static or instance-based, depending on the field.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the specified type is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the field name is null or an empty string.</exception>
+    public static Delegate GetFieldGetter(Type type, string fieldName)
+    {
+        if (type == null)
+            throw new ArgumentNullException(nameof(type));
+        if (string.IsNullOrEmpty(fieldName))
+            throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
+        var key = $"{type.FullName}.field.get.{fieldName}";
+        return DelegateCache.GetOrAdd(key, _ =>
+        {
+            var field = GetField(type, fieldName);
+
+            // static getter → FieldGetter<TField>
+            if (field.IsStatic)
+            {
+                var body = Expression.Field(null, field);
+                var delegateType = typeof(FieldGetter<>).MakeGenericType(field.FieldType);
+                var lambda = Expression.Lambda(delegateType, body);
+                return lambda.Compile();
+            }
+
+            // instance getter → FieldGetter<TInstance, TField>
+            {
+                var instanceParam = Expression.Parameter(type, "instance");
+                var body = Expression.Field(instanceParam, field);
+                var delegateType = typeof(FieldGetter<,>).MakeGenericType(type, field.FieldType);
+                var lambda = Expression.Lambda(delegateType, body, instanceParam);
+                return lambda.Compile();
+            }
+        });
+    }
+
+    /// <summary>
     ///     Creates a delegate that retrieves the value of a static field of a specified type.
     /// </summary>
     /// <typeparam name="TField">The type of the field to retrieve.</typeparam>
@@ -293,54 +324,55 @@ public static class ReflectionWrapper
     /// <returns>A delegate that retrieves the value of the specified static field.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> or <paramref name="fieldName" /> is null.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is empty or the field does not exist.</exception>
-    public static FieldGetter<TField> GetFieldGetter<TField>(Type type, string fieldName)
-    {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
-        if (fieldName == null)
-            throw new ArgumentNullException(nameof(fieldName));
-        if (string.IsNullOrEmpty(fieldName))
-            throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
-        var key = $"{type.FullName}.field.set.{fieldName}";
-        return (FieldGetter<TField>)DelegateCache.GetOrAdd(key, _ =>
-        {
-            var field = GetField(type, fieldName);
-            var fieldAccess = Expression.Field(null, field);
-            var lambda = Expression.Lambda<FieldGetter<TField>>(fieldAccess);
-            return lambda.Compile();
-        });
-    }
+    public static FieldGetter<TField> GetFieldGetter<TField>(Type type, string fieldName) =>
+        (FieldGetter<TField>)GetFieldGetter(type, fieldName);
 
     /// <summary>
     ///     Retrieves a delegate that provides a getter function for a specified field in a given type.
     /// </summary>
-    /// <param name="type">The type containing the field to be accessed.</param>
     /// <param name="fieldName">The name of the field for which the getter will be created.</param>
     /// <typeparam name="TInstance">The type of the object instance from which the field value will be retrieved.</typeparam>
     /// <typeparam name="TField">The type of the field whose value will be retrieved.</typeparam>
     /// <returns>A delegate capable of accessing the field value from a given instance of the specified type.</returns>
     /// <exception cref="ArgumentNullException">
-    ///     Thrown when the <paramref name="type" /> or <paramref name="fieldName" /> is null.
+    ///     Thrown when the <paramref name="fieldName" /> is null.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///     Thrown when the <paramref name="fieldName" /> is an empty string.
     /// </exception>
-    public static FieldGetter<TInstance, TField> GetFieldGetter<TInstance, TField>(Type type, string fieldName)
+    public static FieldGetter<TInstance, TField> GetFieldGetter<TInstance, TField>(string fieldName) =>
+        (FieldGetter<TInstance, TField>)GetFieldGetter(typeof(TInstance), fieldName);
+
+    public static Delegate GetFieldSetter(Type type, string fieldName)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (fieldName == null)
-            throw new ArgumentNullException(nameof(fieldName));
         if (string.IsNullOrEmpty(fieldName))
             throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
-        var key = $"{type.FullName}.field.get.{fieldName}";
-        return (FieldGetter<TInstance, TField>)DelegateCache.GetOrAdd(key, _ =>
+        var key = $"{type.FullName}.field.set.{fieldName}";
+        return DelegateCache.GetOrAdd(key, _ =>
         {
             var field = GetField(type, fieldName);
-            var instance = Expression.Parameter(typeof(TInstance), "instance");
-            var fieldAccess = Expression.Field(instance, field);
-            var lambda = Expression.Lambda<FieldGetter<TInstance, TField>>(fieldAccess, instance);
-            return lambda.Compile();
+
+            // static setter → FieldSetter<TField>
+            if (field.IsStatic)
+            {
+                var valueParam = Expression.Parameter(field.FieldType, "value");
+                var body = Expression.Assign(Expression.Field(null, field), valueParam);
+                var delegateType = typeof(FieldSetter<>).MakeGenericType(field.FieldType);
+                var lambda = Expression.Lambda(delegateType, body, valueParam);
+                return lambda.Compile();
+            }
+
+            // instance setter → FieldSetter<TInstance, TField>
+            {
+                var instanceParam = Expression.Parameter(type, "instance");
+                var valueParam = Expression.Parameter(field.FieldType, "value");
+                var body = Expression.Assign(Expression.Field(instanceParam, field), valueParam);
+                var delegateType = typeof(FieldSetter<,>).MakeGenericType(type, field.FieldType);
+                var lambda = Expression.Lambda(delegateType, body, instanceParam, valueParam);
+                return lambda.Compile();
+            }
         });
     }
 
@@ -356,52 +388,61 @@ public static class ReflectionWrapper
     ///     null.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when the <paramref name="fieldName" /> is empty or invalid.</exception>
-    public static FieldSetter<TField> GetFieldSetter<TField>(Type type, string fieldName)
-    {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
-        if (fieldName == null)
-            throw new ArgumentNullException(nameof(fieldName));
-        if (string.IsNullOrEmpty(fieldName))
-            throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
-        var key = $"{type.FullName}.field.set.{fieldName}";
-        return (FieldSetter<TField>)DelegateCache.GetOrAdd(key, _ =>
-        {
-            var field = GetField(type, fieldName);
-            var value = Expression.Parameter(typeof(TField), "value");
-            var assign = Expression.Assign(Expression.Field(null, field), value);
-            var lambda = Expression.Lambda<FieldSetter<TField>>(assign, value);
-            return lambda.Compile();
-        });
-    }
+    public static FieldSetter<TField> GetFieldSetter<TField>(Type type, string fieldName) =>
+        (FieldSetter<TField>)GetFieldSetter(type, fieldName);
 
     /// <summary>
     ///     Creates a delegate that sets the value of a specified field on an instance of a given type.
     /// </summary>
-    /// <param name="type">The Type containing the field to be set.</param>
     /// <param name="fieldName">The name of the field to be set.</param>
     /// <typeparam name="TInstance">The type of the instance containing the field.</typeparam>
     /// <typeparam name="TField">The type of the field to be set.</typeparam>
     /// <returns>A compiled delegate that sets the value of the specified field on the given instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the provided type or field name is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the provided field name is empty.</exception>
-    public static FieldSetter<TInstance, TField> GetFieldSetter<TInstance, TField>(Type type, string fieldName)
+    public static FieldSetter<TInstance, TField> GetFieldSetter<TInstance, TField>(string fieldName) =>
+        (FieldSetter<TInstance, TField>)GetFieldSetter(typeof(TInstance), fieldName);
+
+    /// <summary>
+    ///     Creates a delegate to retrieve the value of a specified property from a given type.
+    /// </summary>
+    /// <param name="type">The type that contains the property.</param>
+    /// <param name="propertyName">The name of the property to retrieve.</param>
+    /// <returns>A delegate that, when executed, retrieves the value of the specified property.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the provided type is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the provided property name is null or empty.</exception>
+    public static Delegate GetPropertyGetter(Type type, string propertyName)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (fieldName == null)
-            throw new ArgumentNullException(nameof(fieldName));
-        if (string.IsNullOrEmpty(fieldName))
-            throw new ArgumentException("Field name cannot be empty.", nameof(fieldName));
-        var key = $"{type.FullName}.field.set.{fieldName}";
-        return (FieldSetter<TInstance, TField>)DelegateCache.GetOrAdd(key, _ =>
+        if (string.IsNullOrEmpty(propertyName))
+            throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
+        var key = $"{type.FullName}.property.get.{propertyName}";
+        return DelegateCache.GetOrAdd(key, _ =>
         {
-            var field = GetField(type, fieldName);
-            var instance = Expression.Parameter(typeof(TInstance), "instance");
-            var value = Expression.Parameter(typeof(TField), "value");
-            var assign = Expression.Assign(Expression.Field(instance, field), value);
-            var lambda = Expression.Lambda<FieldSetter<TInstance, TField>>(assign, instance, value);
-            return lambda.Compile();
+            var property = GetProperty(type, propertyName);
+            var getter = property.GetGetMethod(true);
+
+            if (getter == null)
+                throw new InvalidOperationException($"Property '{propertyName}' has no getter.");
+
+            // static getter → PropertyGetter<TProperty>
+            if (getter.IsStatic)
+            {
+                var body = Expression.Property(null, property);
+                var delegateType = typeof(PropertyGetter<>).MakeGenericType(property.PropertyType);
+                var lambda = Expression.Lambda(delegateType, body);
+                return lambda.Compile();
+            }
+
+            // instance getter → PropertyGetter<TInstance, TProperty>
+            {
+                var instanceParam = Expression.Parameter(type, "instance");
+                var body = Expression.Property(instanceParam, property);
+                var delegateType = typeof(PropertyGetter<,>).MakeGenericType(type, property.PropertyType);
+                var lambda = Expression.Lambda(delegateType, body, instanceParam);
+                return lambda.Compile();
+            }
         });
     }
 
@@ -414,54 +455,66 @@ public static class ReflectionWrapper
     /// <returns>A delegate that retrieves the value of the specified static property.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="type" /> or <paramref name="propertyName" /> is null.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="propertyName" /> is an empty string.</exception>
-    public static PropertyGetter<TProperty> GetPropertyGetter<TProperty>(Type type, string propertyName)
-    {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
-        if (propertyName == null)
-            throw new ArgumentNullException(nameof(propertyName));
-        if (string.IsNullOrEmpty(propertyName))
-            throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
-        var key = $"{type.FullName}.property.get.{propertyName}";
-        return (PropertyGetter<TProperty>)DelegateCache.GetOrAdd(key, _ =>
-        {
-            var property = GetProperty(type, propertyName);
-            var propertyAccess = Expression.Property(null, property);
-            var lambda = Expression.Lambda<PropertyGetter<TProperty>>(propertyAccess);
-            return lambda.Compile();
-        });
-    }
+    public static PropertyGetter<TProperty> GetPropertyGetter<TProperty>(Type type, string propertyName) =>
+        (PropertyGetter<TProperty>)GetPropertyGetter(type, propertyName);
 
     /// <summary>
     ///     Retrieves a delegate for accessing a property getter on the specified type and caches the result.
     /// </summary>
-    /// <param name="type">The Type containing the property to retrieve the getter for.</param>
     /// <param name="propertyName">The name of the property to retrieve the getter for.</param>
     /// <typeparam name="TInstance">The type of the instance that contains the property.</typeparam>
     /// <typeparam name="TProperty">The type of the property to be accessed.</typeparam>
     /// <returns>A delegate that represents the property getter for the specified property.</returns>
     /// <exception cref="ArgumentNullException">
-    ///     Thrown when the provided <paramref name="type" /> or
-    ///     <paramref name="propertyName" /> is null.
+    ///     Thrown when the provided <paramref name="propertyName" /> is null.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is an empty string.</exception>
-    public static PropertyGetter<TInstance, TProperty> GetPropertyGetter<TInstance, TProperty>(Type type,
-        string propertyName)
+    public static PropertyGetter<TInstance, TProperty> GetPropertyGetter<TInstance, TProperty>(string propertyName) =>
+        (PropertyGetter<TInstance, TProperty>)GetPropertyGetter(typeof(TInstance), propertyName);
+
+    /// <summary>
+    ///     Retrieves a delegate for the setter of a specified property on a given type.
+    /// </summary>
+    /// <param name="type">The type to which the property belongs.</param>
+    /// <param name="propertyName">The name of the property whose setter is being retrieved.</param>
+    /// <returns>A delegate representing the setter for the specified property.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the provided type is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the property name is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if the specified property does not have a setter.</exception>
+    public static Delegate GetPropertySetter(Type type, string propertyName)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
-        if (propertyName == null)
-            throw new ArgumentNullException(nameof(propertyName));
         if (string.IsNullOrEmpty(propertyName))
             throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
-        var key = $"{type.FullName}.property.get.{propertyName}";
-        return (PropertyGetter<TInstance, TProperty>)DelegateCache.GetOrAdd(key, _ =>
+        var key = $"{type.FullName}.property.set.{propertyName}";
+        return DelegateCache.GetOrAdd(key, _ =>
         {
             var property = GetProperty(type, propertyName);
-            var instance = Expression.Parameter(typeof(TInstance), "instance");
-            var propertyAccess = Expression.Property(instance, property);
-            var lambda = Expression.Lambda<PropertyGetter<TInstance, TProperty>>(propertyAccess, instance);
-            return lambda.Compile();
+            var setter = property.GetSetMethod(true);
+
+            if (setter == null)
+                throw new InvalidOperationException($"Property '{propertyName}' has no setter.");
+
+            // static setter → PropertySetter<TProperty>
+            if (setter.IsStatic)
+            {
+                var valueParam = Expression.Parameter(property.PropertyType, "value");
+                var body = Expression.Assign(Expression.Property(null, property), valueParam);
+                var delegateType = typeof(PropertySetter<>).MakeGenericType(property.PropertyType);
+                var lambda = Expression.Lambda(delegateType, body, valueParam);
+                return lambda.Compile();
+            }
+
+            // instance setter → PropertySetter<TInstance, TProperty>
+            {
+                var instanceParam = Expression.Parameter(type, "instance");
+                var valueParam = Expression.Parameter(property.PropertyType, "value");
+                var body = Expression.Assign(Expression.Property(instanceParam, property), valueParam);
+                var delegateType = typeof(PropertySetter<,>).MakeGenericType(type, property.PropertyType);
+                var lambda = Expression.Lambda(delegateType, body, instanceParam, valueParam);
+                return lambda.Compile();
+            }
         });
     }
 
@@ -477,55 +530,20 @@ public static class ReflectionWrapper
     ///     null.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is an empty string.</exception>
-    public static PropertySetter<TProperty> GetPropertySetter<TProperty>(Type type, string propertyName)
-    {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
-        if (propertyName == null)
-            throw new ArgumentNullException(nameof(propertyName));
-        if (string.IsNullOrEmpty(propertyName))
-            throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
-        var key = $"{type.FullName}.property.set.{propertyName}";
-        return (PropertySetter<TProperty>)DelegateCache.GetOrAdd(key, _ =>
-        {
-            var property = GetProperty(type, propertyName);
-            var value = Expression.Parameter(typeof(TProperty), "value");
-            var assign = Expression.Assign(Expression.Property(null, property), value);
-            var lambda = Expression.Lambda<PropertySetter<TProperty>>(assign, value);
-            return lambda.Compile();
-        });
-    }
+    public static PropertySetter<TProperty> GetPropertySetter<TProperty>(Type type, string propertyName) =>
+        (PropertySetter<TProperty>)GetPropertySetter(type, propertyName);
 
     /// <summary>
     ///     Retrieves a delegate that sets a property value on an instance of the specified type.
     /// </summary>
-    /// <param name="type">The type that declares the property.</param>
     /// <param name="propertyName">The name of the property to set.</param>
     /// <typeparam name="TInstance">The type of the instance on which the property will be set.</typeparam>
     /// <typeparam name="TProperty">The type of the property to be set.</typeparam>
     /// <returns>A delegate that sets the value of the specified property on the given instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="type" /> or <paramref name="propertyName" /> is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="propertyName" /> is null.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="propertyName" /> is an empty string.</exception>
-    public static PropertySetter<TInstance, TProperty> GetPropertySetter<TInstance, TProperty>(Type type,
-        string propertyName)
-    {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
-        if (propertyName == null)
-            throw new ArgumentNullException(nameof(propertyName));
-        if (string.IsNullOrEmpty(propertyName))
-            throw new ArgumentException("Property name cannot be empty.", nameof(propertyName));
-        var key = $"{type.FullName}.property.set.{propertyName}";
-        return (PropertySetter<TInstance, TProperty>)DelegateCache.GetOrAdd(key, _ =>
-        {
-            var property = GetProperty(type, propertyName);
-            var instance = Expression.Parameter(typeof(TInstance), "instance");
-            var value = Expression.Parameter(typeof(TProperty), "value");
-            var assign = Expression.Assign(Expression.Property(instance, property), value);
-            var lambda = Expression.Lambda<PropertySetter<TInstance, TProperty>>(assign, instance, value);
-            return lambda.Compile();
-        });
-    }
+    public static PropertySetter<TInstance, TProperty> GetPropertySetter<TInstance, TProperty>(string propertyName) =>
+        (PropertySetter<TInstance, TProperty>)GetPropertySetter(typeof(TInstance), propertyName);
 
     public static WrapAction GetAction(Type type, string methodName)
         => GetDelegate<WrapAction>(type, methodName);
