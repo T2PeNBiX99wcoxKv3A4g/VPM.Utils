@@ -1,5 +1,6 @@
 using System;
 using io.github.ykysnk.utils.NonUdon;
+using io.github.ykysnk.utils.NonUdon.ReflectionDelegate;
 using JetBrains.Annotations;
 using UnityEditor;
 
@@ -11,7 +12,7 @@ namespace io.github.ykysnk.utils.Editor
         private static readonly Type Type = typeof(EditorUtility);
 
         // ReSharper disable once InconsistentNaming
-        public static readonly ReflectionWrapper.WrapAction Internal_UpdateAllMenus =
+        public static readonly WrapAction Internal_UpdateAllMenus =
             ReflectionWrapper.GetAction(Type, nameof(Internal_UpdateAllMenus));
     }
 }
