@@ -54,6 +54,9 @@ namespace io.github.ykysnk.utils.Extensions
             Mathf.Clamp(vector.x, min.x, max.x), Mathf.Clamp(vector.y, min.y, max.y),
             Mathf.Clamp(vector.z, min.z, max.z));
 
+        public static Vector3 Clamp01(this Vector3 vector) =>
+            new Vector3(Mathf.Clamp01(vector.x), Mathf.Clamp01(vector.y), Mathf.Clamp01(vector.z));
+
         public static Vector3 DirectionTo(this Vector3 from, Vector3 to) => (to - from).normalized;
 
         public static Vector3 InverseDirectionTo(this Vector3 from, Vector3 to) => (from - to).normalized;
