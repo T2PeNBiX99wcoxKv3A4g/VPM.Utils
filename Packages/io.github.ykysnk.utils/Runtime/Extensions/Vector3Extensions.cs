@@ -78,5 +78,15 @@ namespace io.github.ykysnk.utils.Extensions
 
         public static Vector3 Reflect(this Vector3 inDirection, Vector3 inNormal) =>
             Vector3.Reflect(inDirection, inNormal);
+
+        public static Vector3 Clean(this Vector3 vector, float threshold = 0.0001f) =>
+            new Vector3(vector.x.Clean(threshold), vector.y.Clean(threshold), vector.z.Clean(threshold));
+
+        public static bool IsNearly(this Vector3 vector, Vector3 target, float threshold = 0.0001f) =>
+            vector.x.IsNearly(target.x, threshold) && vector.y.IsNearly(target.y, threshold) &&
+            vector.z.IsNearly(target.z, threshold);
+
+        public static bool IsNearlyZero(this Vector3 vector, float threshold = 0.0001f) =>
+            vector.x.IsNearlyZero(threshold) && vector.y.IsNearlyZero(threshold) && vector.z.IsNearlyZero(threshold);
     }
 }

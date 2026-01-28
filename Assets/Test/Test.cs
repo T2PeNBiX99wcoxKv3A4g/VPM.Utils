@@ -18,6 +18,7 @@ namespace Test
 
             var test = ReflectionWrapper.GetPropertyGetter<Transform, Vector3>("lossyScale");
             var test2 = test(transform);
+            var x = 6.830189e-06f.Clean();
 
             var test3 = typeof(ReflectionWrapper);
         }
