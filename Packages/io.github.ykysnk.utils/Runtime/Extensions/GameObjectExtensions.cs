@@ -4,6 +4,11 @@ using UnityEngine;
 
 namespace io.github.ykysnk.utils.Extensions
 {
+#if !COMPILER_UDONSHARP
+    public delegate void ComponentAction(int index, Component component);
+
+    public delegate T ComponentSelect<out T>(int index, Component component);
+#endif
     [PublicAPI]
     public static class GameObjectExtensions
     {
@@ -71,10 +76,6 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
 #if !COMPILER_UDONSHARP
-        public delegate void ComponentAction(int index, Component component);
-
-        public delegate T ComponentSelect<out T>(int index, Component component);
-
         public static void ComponentsForeach([NotNull] this GameObject obj, ComponentAction componentAction)
         {
             var count = obj.GetComponentCount();
