@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -20,10 +21,11 @@ namespace io.github.ykysnk.utils.Extensions
             component.gameObject.GetComponents();
 
 #if !COMPILER_UDONSHARP
-        public static void ComponentsForeach([NotNull] this Component component, ComponentAction componentAction) =>
+        public static void ComponentsForeach([NotNull] this Component component,
+            Action<int, Component> componentAction) =>
             component.gameObject.ComponentsForeach(componentAction);
 
-        public static T[] ComponentsSelect<T>([NotNull] this Component component, ComponentSelect<T> selector) =>
+        public static T[] ComponentsSelect<T>([NotNull] this Component component, Func<int, Component, T> selector) =>
             component.gameObject.ComponentsSelect(selector);
 #endif
     }
