@@ -64,7 +64,7 @@ namespace io.github.ykysnk.utils.Extensions
         {
             if (transform.parent == null) return transform.localScale = lossyScale;
             var parentScale = transform.parent.lossyScale;
-            return parentScale != Vector3.zero ? lossyScale.Divide(parentScale) : lossyScale;
+            return lossyScale.Divide(parentScale);
         }
 
         /// <summary>
