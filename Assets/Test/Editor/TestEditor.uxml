@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 1;">
+        <uie:ObjectField label="Object Field" binding-path="target"/>
+        <io.github.ykysnk.utils.Editor.UIElements.BooleanVector3Field label="t" x="false"
+                                                                      binding-path="testBoolVector3"/>
+        <ui:Vector3Field label="1"/>
+    </ui:VisualElement>
+</ui:UXML>

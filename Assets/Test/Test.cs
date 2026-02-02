@@ -9,6 +9,7 @@ namespace Test
     public class Test : MonoBehaviour
     {
         [SerializeField] private GameObject target;
+        [SerializeField] private BooleanVector3 testBoolVector3;
 
         [ContextMenu("Test")]
         private void TestMethod()
