@@ -23,5 +23,11 @@ namespace Test
 
             var test3 = typeof(ReflectionWrapper);
         }
+
+        [ContextMenu("CheckBoolVector3")]
+        private void CheckBoolVector3()
+        {
+            Utils.Log(nameof(Test), testBoolVector3.ToString());
+        }
     }
 }
