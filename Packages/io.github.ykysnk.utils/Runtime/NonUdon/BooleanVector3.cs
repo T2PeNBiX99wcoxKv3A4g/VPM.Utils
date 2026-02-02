@@ -6,7 +6,7 @@ namespace io.github.ykysnk.utils.NonUdon;
 
 [Serializable]
 [PublicAPI]
-public struct BooleanVector3
+public struct BooleanVector3 : IEquatable<BooleanVector3>
 {
     public bool x;
     public bool y;
@@ -94,4 +94,8 @@ public struct BooleanVector3
         None = 0,
         All = X | Y | Z
     }
+
+    public bool Equals(BooleanVector3 other) => x == other.x && y == other.y && z == other.z;
+    public override bool Equals(object? obj) => obj is BooleanVector3 other && Equals(other);
+    public override int GetHashCode() => HashCode.Combine(x, y, z);
 }
