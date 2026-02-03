@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using io.github.ykysnk.utils;
 using io.github.ykysnk.utils.Editor;
 using io.github.ykysnk.utils.Editor.Extensions;
@@ -30,8 +29,6 @@ namespace Test
         [ContextMenu("CheckBoolVector3")]
         private void CheckBoolVector3()
         {
-            var test2 = Wrapper.Create(new List<bool>());
-            var test3 = Wrapper.Create(new Dictionary<string, bool>());
             Utils.Log(nameof(CheckBoolVector3), testBoolVector3.ToString());
         }
 
