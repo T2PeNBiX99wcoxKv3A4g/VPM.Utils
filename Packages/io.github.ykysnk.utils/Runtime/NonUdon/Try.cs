@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -8,6 +10,8 @@ namespace io.github.ykysnk.utils.NonUdon;
 [PublicAPI]
 public static class Try
 {
+    [DebuggerHidden]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static Result<T> Run<T>(Func<T> func)
     {
         try
@@ -20,6 +24,8 @@ public static class Try
         }
     }
 
+    [DebuggerHidden]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static Result<Unit> Run(Action action)
     {
         try
@@ -33,6 +39,8 @@ public static class Try
         }
     }
 
+    [DebuggerHidden]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static async Task<Result<T>> RunAsync<T>(Func<Task<T>> func)
     {
         try
@@ -45,6 +53,8 @@ public static class Try
         }
     }
 
+    [DebuggerHidden]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static async Task<Result<Unit>> RunAsync<T>(Func<Task> func)
     {
         try
