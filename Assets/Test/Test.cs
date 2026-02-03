@@ -1,4 +1,6 @@
 using io.github.ykysnk.utils;
+using io.github.ykysnk.utils.Editor;
+using io.github.ykysnk.utils.Editor.Extensions;
 using io.github.ykysnk.utils.Extensions;
 using io.github.ykysnk.utils.NonUdon;
 using UnityEngine;
@@ -14,7 +16,7 @@ namespace Test
         [ContextMenu("Test")]
         private void TestMethod()
         {
-            Utils.Log(nameof(Test),
+            Utils.Log(nameof(TestMethod),
                 $"Test: {transform.lossyScale} {transform.GetLocalScaleFollowWorldScale()} {transform.GetTargetLocalScale(target)}");
 
             var test = ReflectionWrapper.GetPropertyGetter<Transform, Vector3>("lossyScale");
@@ -27,7 +29,13 @@ namespace Test
         [ContextMenu("CheckBoolVector3")]
         private void CheckBoolVector3()
         {
-            Utils.Log(nameof(Test), testBoolVector3.ToString());
+            Utils.Log(nameof(CheckBoolVector3), testBoolVector3.ToString());
+        }
+
+        [ContextMenu("TestUpmInstall")]
+        private void TestUpmInstall()
+        {
+            UpmInstaller.UpdateAsync().WaitEditor(() => Utils.Log(nameof(TestUpmInstall), "Done"));
         }
     }
 }
