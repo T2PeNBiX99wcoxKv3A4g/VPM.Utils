@@ -1,4 +1,6 @@
 using System;
+using io.github.ykysnk.utils.NonUdon;
+using io.github.ykysnk.utils.NonUdon.Extensions;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
@@ -66,18 +68,14 @@ namespace io.github.ykysnk.utils.Editor
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
-            try
-            {
-                OnErrorHandleInspectorGUI();
-            }
-            catch (Exception e)
+            Try.Run(OnErrorHandleInspectorGUI).OnFailure(e =>
             {
                 if (ConsoleLog)
                     Debug.LogException(e);
                 OnError(e, Type.UGUI);
                 OnErrorEvent?.Invoke(e, Type.UGUI);
                 EditorGUILayout.HelpBox($"Editor Error: {e.Message}\n{e.StackTrace}", MessageType.Error, true);
-            }
+            });
 
             if (!EditorGUI.EndChangeCheck())
                 return;
@@ -87,12 +85,7 @@ namespace io.github.ykysnk.utils.Editor
 
         public override VisualElement? CreateInspectorGUI()
         {
-            try
-            {
-                return CreateErrorHandleInspectorGUI();
-            }
-            // If an exception happens, create a new error UI. return null should not have an exception, so ignore it.
-            catch (Exception e)
+            return Try.Run(CreateErrorHandleInspectorGUI).GetOrElse(e =>
             {
                 if (ConsoleLog)
                     Debug.LogException(e);
@@ -113,7 +106,7 @@ namespace io.github.ykysnk.utils.Editor
                 var copy = tree.Q<Button>("copy");
                 copy.clicked += () => EditorGUIUtility.systemCopyBuffer = errorDetails.value;
                 return tree;
-            }
+            });
         }
 
         public static VisualElement CreateUxmlImportErrorUI() =>
