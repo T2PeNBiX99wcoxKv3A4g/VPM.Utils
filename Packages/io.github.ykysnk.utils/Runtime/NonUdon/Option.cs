@@ -14,14 +14,14 @@ public readonly struct Option<T>
         HasValue = true;
     }
 
-    private Option(bool _)
+    private Option(Unit _)
     {
         Value = default;
         HasValue = false;
     }
 
     public static Option<T> Some(T value) => new(value);
-    public static Option<T> None() => new(false);
+    public static Option<T> None() => new(Unit.Value);
 
     public void Deconstruct(out bool hasValue, out T? value)
     {
