@@ -7,7 +7,7 @@ namespace io.github.ykysnk.utils.NonUdon;
 
 [Serializable]
 [PublicAPI]
-public class ListWrapper<T> : IEnumerable<T>
+public sealed class ListWrapper<T> : IEnumerable<T>
 {
     public List<T> items;
 

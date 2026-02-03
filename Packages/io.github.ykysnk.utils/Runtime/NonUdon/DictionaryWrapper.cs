@@ -8,7 +8,7 @@ namespace io.github.ykysnk.utils.NonUdon;
 
 [Serializable]
 [PublicAPI]
-public class DictionaryWrapper<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
+public sealed class DictionaryWrapper<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
 {
     public List<TK> keys;
     public List<TV> values;
