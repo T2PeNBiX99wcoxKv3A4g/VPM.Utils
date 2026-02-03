@@ -56,56 +56,6 @@ public static class Try
             return Result<Unit>.Failure(e);
         }
     }
-
-    public static Result<T, Exception> Run2<T>(Func<T> func)
-    {
-        try
-        {
-            return Result<T, Exception>.Ok(func());
-        }
-        catch (Exception e)
-        {
-            return Result<T, Exception>.Err(e);
-        }
-    }
-
-    public static Result<Unit, Exception> Run2(Action action)
-    {
-        try
-        {
-            action();
-            return Result<Unit, Exception>.Ok(Unit.Value);
-        }
-        catch (Exception e)
-        {
-            return Result<Unit, Exception>.Err(e);
-        }
-    }
-
-    public static async Task<Result<T, Exception>> RunAsync2<T>(Func<Task<T>> func)
-    {
-        try
-        {
-            return Result<T, Exception>.Ok(await func().ConfigureAwait(false));
-        }
-        catch (Exception e)
-        {
-            return Result<T, Exception>.Err(e);
-        }
-    }
-
-    public static async Task<Result<Unit, Exception>> RunAsync2(Func<Task> func)
-    {
-        try
-        {
-            await func().ConfigureAwait(false);
-            return Result<Unit, Exception>.Ok(Unit.Value);
-        }
-        catch (Exception e)
-        {
-            return Result<Unit, Exception>.Err(e);
-        }
-    }
 }
 
 public readonly struct Unit : IEquatable<Unit>
