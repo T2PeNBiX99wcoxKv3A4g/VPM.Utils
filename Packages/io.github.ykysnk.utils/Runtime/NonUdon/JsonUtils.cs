@@ -12,16 +12,16 @@ public static class JsonUtils
         result = default;
         exception = null;
 
-        try
+        var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson<T>(json));
+
+        if (isSuccess)
         {
-            result = JsonUtility.FromJson<T>(json);
+            result = value;
             return true;
         }
-        catch (Exception e)
-        {
-            exception = e;
-            return false;
-        }
+
+        exception = exception2;
+        return false;
     }
 
     public static bool TryFromJson(string json, Type type, out object? result, out Exception? exception)
@@ -29,32 +29,32 @@ public static class JsonUtils
         result = null;
         exception = null;
 
-        try
+        var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson(json, type));
+
+        if (isSuccess)
         {
-            result = JsonUtility.FromJson(json, type);
+            result = value;
             return true;
         }
-        catch (Exception e)
-        {
-            exception = e;
-            return false;
-        }
+
+        exception = exception2;
+        return false;
     }
 
     public static bool TryFromJsonOverwrite(string json, object objectToOverwrite, out Exception? exception)
     {
         exception = null;
 
-        try
+        var (isSuccess, _, exception2) = Try.Run(() => JsonUtility.FromJsonOverwrite(json, objectToOverwrite));
+
+        if (isSuccess)
         {
             JsonUtility.FromJsonOverwrite(json, objectToOverwrite);
             return true;
         }
-        catch (Exception e)
-        {
-            exception = e;
-            return false;
-        }
+
+        exception = exception2;
+        return false;
     }
 
     public static bool TryToJson(object obj, bool prettyPrint, out string? json, out Exception? exception)
@@ -62,18 +62,30 @@ public static class JsonUtils
         exception = null;
         json = null;
 
-        try
+        var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.ToJson(obj, prettyPrint));
+
+        if (isSuccess)
         {
-            json = JsonUtility.ToJson(obj, prettyPrint);
+            json = value;
             return true;
         }
-        catch (Exception e)
-        {
-            exception = e;
-            return false;
-        }
+
+        exception = exception2;
+        return false;
     }
 
     public static bool TryToJson(object obj, out string? json, out Exception? exception) =>
         TryToJson(obj, false, out json, out exception);
+
+    public static T FromJsonOrDefault<T>(string json, T defaultValue) =>
+        TryFromJson<T>(json, out var result, out _) ? result! : defaultValue;
+
+    public static object FromJsonOrDefault(string json, Type type, object defaultValue) =>
+        TryFromJson(json, type, out var result, out _) ? result! : defaultValue;
+
+    public static string ToJsonOrDefault(object obj, bool prettyPrint, string defaultValue) =>
+        TryToJson(obj, prettyPrint, out var json, out _) ? json! : defaultValue;
+
+    public static string ToJsonOrDefault(object obj, string defaultValue) =>
+        TryToJson(obj, out var json, out _) ? json! : defaultValue;
 }
