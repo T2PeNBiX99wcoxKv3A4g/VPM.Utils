@@ -41,7 +41,7 @@ public static class Try
 
     [DebuggerHidden]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static async Task<Result<T>> RunAsync<T>(Func<Task<T>> func)
+    public static async Task<Result<T>> Run<T>(Func<Task<T>> func)
     {
         try
         {
@@ -55,7 +55,7 @@ public static class Try
 
     [DebuggerHidden]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static async Task<Result<Unit>> RunAsync(Func<Task> func)
+    public static async Task<Result<Unit>> Run(Func<Task> func)
     {
         try
         {
