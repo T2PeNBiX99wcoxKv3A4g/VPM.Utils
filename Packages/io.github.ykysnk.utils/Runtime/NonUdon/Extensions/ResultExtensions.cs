@@ -21,7 +21,7 @@ public static class ResultExtensions
         return result;
     }
 
-    public static async Task<Result<T>> OnSuccessAsync<T>(
+    public static async Task<Result<T>> OnSuccess<T>(
         this Task<Result<T>> task,
         Func<T, Task> action)
     {
@@ -33,7 +33,7 @@ public static class ResultExtensions
         return result;
     }
 
-    public static async Task<Result<T>> OnFailureAsync<T>(
+    public static async Task<Result<T>> OnFailure<T>(
         this Task<Result<T>> task,
         Func<Exception, Task> action)
     {
@@ -43,6 +43,39 @@ public static class ResultExtensions
             await action(result.Exception!).ConfigureAwait(false);
 
         return result;
+    }
+
+    public static TResult Match<T, TResult>(this Result<T> result, Func<T, TResult> onSuccess,
+        Func<Exception, TResult> onFailure) => result.IsSuccess ? onSuccess(result.Value!) : onFailure(result.Exception!);
+
+    public static async Task<TResult> Match<T, TResult>(
+        this Task<Result<T>> task,
+        Func<T, Task<TResult>> onSuccess,
+        Func<Exception, Task<TResult>> onFailure)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        return result.IsSuccess
+            ? await onSuccess(result.Value!).ConfigureAwait(false)
+            : await onFailure(result.Exception!).ConfigureAwait(false);
+    }
+
+    public static T? GetOrNull<T>(this Result<T> result) => result.IsSuccess ? result.Value : default;
+
+    public static async Task<T?> GetOrNull<T>(this Task<Result<T>> task)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess ? result.Value : default;
+    }
+
+    public static T GetOrElse<T>(this Result<T> result, T fallback) => result.IsSuccess ? result.Value! : fallback;
+
+    public static async Task<T> GetOrElse<T>(
+        this Task<Result<T>> task,
+        T fallback)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess ? result.Value! : fallback;
     }
 
     public static Result<TU> Select<T, TU>(this Result<T> result, Func<T, TU> selector) => result.IsSuccess

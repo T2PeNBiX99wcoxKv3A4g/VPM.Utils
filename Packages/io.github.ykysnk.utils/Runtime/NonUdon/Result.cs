@@ -28,14 +28,6 @@ public readonly struct Result<T>
     public static Result<T> Ok(T value) => new(value);
     public static Result<T> Err(Exception exception) => new(exception);
 
-    public T? GetOrNull() => IsSuccess ? Value : default;
-
-    public T GetOrElse(T fallback) => IsSuccess ? Value! : fallback;
-
-    public TResult Match<TResult>(
-        Func<T, TResult> onSuccess,
-        Func<Exception, TResult> onFailure) => IsSuccess ? onSuccess(Value!) : onFailure(Exception!);
-
     public void Deconstruct(out bool isSuccess, out T? value, out Exception? exception)
     {
         isSuccess = IsSuccess;
