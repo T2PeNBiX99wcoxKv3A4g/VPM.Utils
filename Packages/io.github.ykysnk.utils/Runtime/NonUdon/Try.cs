@@ -55,7 +55,7 @@ public static class Try
 
     [DebuggerHidden]
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static async Task<Result<Unit>> RunAsync<T>(Func<Task> func)
+    public static async Task<Result<Unit>> RunAsync(Func<Task> func)
     {
         try
         {
