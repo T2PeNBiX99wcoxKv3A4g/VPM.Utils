@@ -1,4 +1,3 @@
-using System;
 using JetBrains.Annotations;
 
 namespace io.github.ykysnk.utils.NonUdon;
@@ -23,11 +22,6 @@ public readonly struct Option<T>
 
     public static Option<T> Some(T value) => new(value);
     public static Option<T> None() => new(false);
-
-    public TResult Match<TResult>(
-        Func<T, TResult> onSome,
-        Func<TResult> onNone) =>
-        HasValue ? onSome(Value!) : onNone();
 
     public void Deconstruct(out bool hasValue, out T? value)
     {

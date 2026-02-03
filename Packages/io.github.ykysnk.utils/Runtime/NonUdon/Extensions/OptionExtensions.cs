@@ -7,6 +7,16 @@ namespace io.github.ykysnk.utils.NonUdon.Extensions;
 [PublicAPI]
 public static class OptionExtensions
 {
+    public static TResult Match<T, TResult>(this Option<T> option, Func<T, TResult> onSome, Func<TResult> onNone) =>
+        option.HasValue ? onSome(option.Value!) : onNone();
+
+    public static async Task<TResult> Match<T, TResult>(this Task<Option<T>> task, Func<T, Task<TResult>> onSome,
+        Func<Task<TResult>> onNone)
+    {
+        var option = await task.ConfigureAwait(false);
+        return option.HasValue ? await onSome(option.Value!).ConfigureAwait(false) : await onNone().ConfigureAwait(false);
+    }
+
     public static Option<TU> Select<T, TU>(this Option<T> option, Func<T, TU> selector) =>
         option.HasValue ? Option<TU>.Some(selector(option.Value!)) : Option<TU>.None();
 
