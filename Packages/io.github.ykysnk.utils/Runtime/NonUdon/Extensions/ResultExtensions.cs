@@ -1,0 +1,191 @@
+using System;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
+
+namespace io.github.ykysnk.utils.NonUdon.Extensions;
+
+[PublicAPI]
+public static class ResultExtensions
+{
+    public static async Task<Result<T>> OnSuccessAsync<T>(
+        this Task<Result<T>> task,
+        Func<T, Task> action)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        if (result.IsSuccess)
+            await action(result.Value!).ConfigureAwait(false);
+
+        return result;
+    }
+
+    public static async Task<Result<T>> OnFailureAsync<T>(
+        this Task<Result<T>> task,
+        Func<Exception, Task> action)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        if (!result.IsSuccess)
+            await action(result.Exception!).ConfigureAwait(false);
+
+        return result;
+    }
+
+    public static async Task<Result<TU>> MapAsync<T, TU>(
+        this Task<Result<T>> task,
+        Func<T, Task<TU>> mapper)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        return result.IsSuccess
+            ? Result<TU>.Success(await mapper(result.Value!).ConfigureAwait(false))
+            : Result<TU>.Failure(result.Exception!);
+    }
+
+    public static Result<TU, TE> Map<T, TU, TE>(
+        this Result<T, TE> result,
+        Func<T, TU> mapper) =>
+        result.IsSuccess ? Result<TU, TE>.Ok(mapper(result.Value!)) : Result<TU, TE>.Err(result.Error!);
+
+    public static Result<T, TF> MapErr<T, TE, TF>(
+        this Result<T, TE> result,
+        Func<TE, TF> mapper) =>
+        result.IsSuccess ? Result<T, TF>.Ok(result.Value!) : Result<T, TF>.Err(mapper(result.Error!));
+
+    public static Result<TU, TE> AndThen<T, TU, TE>(
+        this Result<T, TE> result,
+        Func<T, Result<TU, TE>> next) => result.IsSuccess ? next(result.Value!) : Result<TU, TE>.Err(result.Error!);
+
+    public static T Unwrap<T, TE>(this Result<T, TE> result) => result.IsSuccess
+        ? result.Value!
+        : throw new InvalidOperationException($"Unwrap failed: {result.Error}");
+
+    public static T UnwrapOr<T, TE>(this Result<T, TE> result, T fallback) => result.IsSuccess ? result.Value! : fallback;
+
+    public static async Task<Result<TU, TE>> AndThenAsync<T, TU, TE>(
+        this Task<Result<T, TE>> task,
+        Func<T, Task<Result<TU, TE>>> next)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess ? await next(result.Value!).ConfigureAwait(false) : Result<TU, TE>.Err(result.Error!);
+    }
+
+    public static async Task<Result<TU, TE>> MapAsync<T, TU, TE>(
+        this Task<Result<T, TE>> task,
+        Func<T, Task<TU>> mapper)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<TU, TE>.Ok(await mapper(result.Value!).ConfigureAwait(false))
+            : Result<TU, TE>.Err(result.Error!);
+    }
+
+    public static async Task<Result<T, TF>> MapErrAsync<T, TE, TF>(
+        this Task<Result<T, TE>> task,
+        Func<TE, Task<TF>> mapper)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<T, TF>.Ok(result.Value!)
+            : Result<T, TF>.Err(await mapper(result.Error!).ConfigureAwait(false));
+    }
+
+    public static Result<TU> Select<T, TU>(this Result<T> result, Func<T, TU> selector) => result.IsSuccess
+        ? Result<TU>.Success(selector(result.Value!))
+        : Result<TU>.Failure(result.Exception!);
+
+    public static Result<TU> SelectMany<T, TU>(this Result<T> result, Func<T, Result<TU>> binder) =>
+        result.IsSuccess ? binder(result.Value!) : Result<TU>.Failure(result.Exception!);
+
+    public static Result<TV>
+        SelectMany<T, TU, TV>(this Result<T> result, Func<T, Result<TU>> binder, Func<T, TU, TV> projector) =>
+        result.IsSuccess
+            ? binder(result.Value!).Select(u => projector(result.Value!, u))
+            : Result<TV>.Failure(result.Exception!);
+
+    public static Result<TU, TE> Select<T, TU, TE>(this Result<T, TE> result, Func<T, TU> selector) => result.IsSuccess
+        ? Result<TU, TE>.Ok(selector(result.Value!))
+        : Result<TU, TE>.Err(result.Error!);
+
+    public static Result<TU, TE> SelectMany<T, TU, TE>(this Result<T, TE> result, Func<T, Result<TU, TE>> binder) =>
+        result.IsSuccess ? binder(result.Value!) : Result<TU, TE>.Err(result.Error!);
+
+    public static Result<TV, TE> SelectMany<T, TU, TV, TE>(this Result<T, TE> result, Func<T, Result<TU, TE>> binder,
+        Func<T, TU, TV> projector) => result.IsSuccess
+        ? binder(result.Value!).Select(u => projector(result.Value!, u))
+        : Result<TV, TE>.Err(result.Error!);
+
+    public static async Task<Result<TU>> Select<T, TU>(
+        this Task<Result<T>> task,
+        Func<T, TU> selector)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<TU>.Success(selector(result.Value!))
+            : Result<TU>.Failure(result.Exception!);
+    }
+
+    public static async Task<Result<TU>> SelectMany<T, TU>(
+        this Task<Result<T>> task,
+        Func<T, Task<Result<TU>>> binder)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? await binder(result.Value!).ConfigureAwait(false)
+            : Result<TU>.Failure(result.Exception!);
+    }
+
+    public static async Task<Result<TV>> SelectMany<T, TU, TV>(
+        this Task<Result<T>> task,
+        Func<T, Task<Result<TU>>> binder,
+        Func<T, TU, TV> projector)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        if (!result.IsSuccess)
+            return Result<TV>.Failure(result.Exception!);
+
+        var inner = await binder(result.Value!).ConfigureAwait(false);
+
+        return inner.IsSuccess
+            ? Result<TV>.Success(projector(result.Value!, inner.Value!))
+            : Result<TV>.Failure(inner.Exception!);
+    }
+
+    public static async Task<Result<TU, TE>> Select<T, TU, TE>(
+        this Task<Result<T, TE>> task,
+        Func<T, TU> selector)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? Result<TU, TE>.Ok(selector(result.Value!))
+            : Result<TU, TE>.Err(result.Error!);
+    }
+
+    public static async Task<Result<TU, TE>> SelectMany<T, TU, TE>(
+        this Task<Result<T, TE>> task,
+        Func<T, Task<Result<TU, TE>>> binder)
+    {
+        var result = await task.ConfigureAwait(false);
+        return result.IsSuccess
+            ? await binder(result.Value!).ConfigureAwait(false)
+            : Result<TU, TE>.Err(result.Error!);
+    }
+
+    public static async Task<Result<TV, TE>> SelectMany<T, TU, TV, TE>(
+        this Task<Result<T, TE>> task,
+        Func<T, Task<Result<TU, TE>>> binder,
+        Func<T, TU, TV> projector)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        if (!result.IsSuccess)
+            return Result<TV, TE>.Err(result.Error!);
+
+        var inner = await binder(result.Value!).ConfigureAwait(false);
+
+        return inner.IsSuccess
+            ? Result<TV, TE>.Ok(projector(result.Value!, inner.Value!))
+            : Result<TV, TE>.Err(inner.Error!);
+    }
+}
