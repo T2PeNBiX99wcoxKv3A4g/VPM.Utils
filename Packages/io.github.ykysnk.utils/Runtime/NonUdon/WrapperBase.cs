@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace io.github.ykysnk.utils.Editor
+namespace io.github.ykysnk.utils.NonUdon
 {
     [Serializable]
     [PublicAPI]
