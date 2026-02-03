@@ -8,13 +8,7 @@ namespace io.github.ykysnk.utils.Editor.Extensions
     [PublicAPI]
     public static class TaskExtensions
     {
-        public delegate void TaskWait();
-
-        public delegate void TaskWait<in T>(T result);
-
-        public delegate void TaskWaitError(Exception? e);
-
-        public static void WaitEditor(this Task task, TaskWait onCompleted, TaskWaitError? onError = null)
+        public static void WaitEditor(this Task task, Action onCompleted, Action<Exception>? onError = null)
         {
             EditorApplication.update += Waiting;
             return;
@@ -31,7 +25,7 @@ namespace io.github.ykysnk.utils.Editor.Extensions
             }
         }
 
-        public static void WaitEditor<T>(this Task<T> task, TaskWait<T> onCompleted, TaskWaitError? onError = null)
+        public static void WaitEditor<T>(this Task<T> task, Action<T> onCompleted, Action<Exception>? onError = null)
         {
             EditorApplication.update += Waiting;
             return;
