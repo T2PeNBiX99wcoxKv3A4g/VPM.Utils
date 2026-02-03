@@ -25,9 +25,6 @@ public readonly struct Result<T>
     public static Result<T> Success(T value) => new(value);
     public static Result<T> Failure(Exception exception) => new(exception);
 
-    public static Result<T> Ok(T value) => new(value);
-    public static Result<T> Err(Exception exception) => new(exception);
-
     public void Deconstruct(out bool isSuccess, out T? value, out Exception? exception)
     {
         isSuccess = IsSuccess;
@@ -38,5 +35,5 @@ public readonly struct Result<T>
     public static bool operator true(Result<T> r) => r.IsSuccess;
     public static bool operator false(Result<T> r) => !r.IsSuccess;
 
-    public override string ToString() => IsSuccess ? $"Ok({Value})" : $"Err({Exception})";
+    public override string ToString() => IsSuccess ? $"Success({Value})" : $"Failure({Exception})";
 }
