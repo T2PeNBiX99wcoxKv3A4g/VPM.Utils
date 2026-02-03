@@ -49,15 +49,6 @@ public static class ResultExtensions
         ? Result<TU>.Success(selector(result.Value!))
         : Result<TU>.Failure(result.Exception!);
 
-    public static Result<TU> SelectMany<T, TU>(this Result<T> result, Func<T, Result<TU>> binder) =>
-        result.IsSuccess ? binder(result.Value!) : Result<TU>.Failure(result.Exception!);
-
-    public static Result<TV>
-        SelectMany<T, TU, TV>(this Result<T> result, Func<T, Result<TU>> binder, Func<T, TU, TV> projector) =>
-        result.IsSuccess
-            ? binder(result.Value!).Select(u => projector(result.Value!, u))
-            : Result<TV>.Failure(result.Exception!);
-
     public static async Task<Result<TU>> Select<T, TU>(
         this Task<Result<T>> task,
         Func<T, TU> selector)
@@ -67,6 +58,15 @@ public static class ResultExtensions
             ? Result<TU>.Success(selector(result.Value!))
             : Result<TU>.Failure(result.Exception!);
     }
+
+    public static Result<TU> SelectMany<T, TU>(this Result<T> result, Func<T, Result<TU>> binder) =>
+        result.IsSuccess ? binder(result.Value!) : Result<TU>.Failure(result.Exception!);
+
+    public static Result<TV>
+        SelectMany<T, TU, TV>(this Result<T> result, Func<T, Result<TU>> binder, Func<T, TU, TV> projector) =>
+        result.IsSuccess
+            ? binder(result.Value!).Select(u => projector(result.Value!, u))
+            : Result<TV>.Failure(result.Exception!);
 
     public static async Task<Result<TU>> SelectMany<T, TU>(
         this Task<Result<T>> task,

@@ -10,15 +10,6 @@ public static class OptionExtensions
     public static Option<TU> Select<T, TU>(this Option<T> option, Func<T, TU> selector) =>
         option.HasValue ? Option<TU>.Some(selector(option.Value!)) : Option<TU>.None();
 
-    public static Option<TU> SelectMany<T, TU>(this Option<T> option, Func<T, Option<TU>> binder) =>
-        option.HasValue ? binder(option.Value!) : Option<TU>.None();
-
-    public static Option<TV>
-        SelectMany<T, TU, TV>(this Option<T> option, Func<T, Option<TU>> binder, Func<T, TU, TV> projector) =>
-        option.HasValue
-            ? binder(option.Value!).Select(u => projector(option.Value!, u))
-            : Option<TV>.None();
-
     public static async Task<Option<TU>> Select<T, TU>(
         this Task<Option<T>> task,
         Func<T, TU> selector)
@@ -28,6 +19,15 @@ public static class OptionExtensions
             ? Option<TU>.Some(selector(option.Value!))
             : Option<TU>.None();
     }
+
+    public static Option<TU> SelectMany<T, TU>(this Option<T> option, Func<T, Option<TU>> binder) =>
+        option.HasValue ? binder(option.Value!) : Option<TU>.None();
+
+    public static Option<TV>
+        SelectMany<T, TU, TV>(this Option<T> option, Func<T, Option<TU>> binder, Func<T, TU, TV> projector) =>
+        option.HasValue
+            ? binder(option.Value!).Select(u => projector(option.Value!, u))
+            : Option<TV>.None();
 
     public static async Task<Option<TU>> SelectMany<T, TU>(
         this Task<Option<T>> task,
