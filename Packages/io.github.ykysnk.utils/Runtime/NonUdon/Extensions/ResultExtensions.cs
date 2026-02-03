@@ -45,35 +45,6 @@ public static class ResultExtensions
         return result;
     }
 
-    public static Result<TU> Map<T, TU>(this Result<T> result, Func<T, TU> mapper) => result.IsSuccess
-        ? Result<TU>.Success(mapper(result.Value!))
-        : Result<TU>.Failure(result.Exception!);
-
-    public static async Task<Result<TU>> MapAsync<T, TU>(
-        this Task<Result<T>> task,
-        Func<T, Task<TU>> mapper)
-    {
-        var result = await task.ConfigureAwait(false);
-
-        return result.IsSuccess
-            ? Result<TU>.Success(await mapper(result.Value!).ConfigureAwait(false))
-            : Result<TU>.Failure(result.Exception!);
-    }
-
-    public static Result<TU> AndThen<T, TU>(this Result<T> result, Func<T, Result<TU>> binder) =>
-        result.IsSuccess ? binder(result.Value!) : Result<TU>.Failure(result.Exception!);
-
-    public static async Task<Result<TU>> AndThenAsync<T, TU>(
-        this Task<Result<T>> task,
-        Func<T, Task<Result<TU>>> binder)
-    {
-        var result = await task.ConfigureAwait(false);
-
-        return result.IsSuccess
-            ? await binder(result.Value!).ConfigureAwait(false)
-            : Result<TU>.Failure(result.Exception!);
-    }
-
     public static Result<TU> Select<T, TU>(this Result<T> result, Func<T, TU> selector) => result.IsSuccess
         ? Result<TU>.Success(selector(result.Value!))
         : Result<TU>.Failure(result.Exception!);

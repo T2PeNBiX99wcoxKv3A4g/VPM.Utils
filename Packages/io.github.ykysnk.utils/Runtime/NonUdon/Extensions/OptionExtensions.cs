@@ -55,4 +55,10 @@ public static class OptionExtensions
             ? Option<TV>.Some(projector(option.Value!, inner.Value!))
             : Option<TV>.None();
     }
+
+    public static Result<T> ToResult<T>(this Option<T> option, Exception errorMessage) =>
+        option.HasValue ? Result<T>.Success(option.Value!) : Result<T>.Failure(errorMessage);
+
+    public static Result<T> ToResult<T>(this Option<T> option, string errorMessage) =>
+        option.HasValue ? Result<T>.Success(option.Value!) : Result<T>.Failure(new(errorMessage));
 }
