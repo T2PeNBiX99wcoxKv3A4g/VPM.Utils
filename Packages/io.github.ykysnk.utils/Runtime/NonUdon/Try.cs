@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -15,7 +16,7 @@ public static class Try
         }
         catch (Exception e)
         {
-            return Result<T>.Failure(e);
+            return Result<T>.Failure(ExceptionDispatchInfo.Capture(e).SourceException);
         }
     }
 
@@ -28,7 +29,7 @@ public static class Try
         }
         catch (Exception e)
         {
-            return Result<Unit>.Failure(e);
+            return Result<Unit>.Failure(ExceptionDispatchInfo.Capture(e).SourceException);
         }
     }
 
@@ -40,7 +41,7 @@ public static class Try
         }
         catch (Exception e)
         {
-            return Result<T>.Failure(e);
+            return Result<T>.Failure(ExceptionDispatchInfo.Capture(e).SourceException);
         }
     }
 
@@ -53,7 +54,7 @@ public static class Try
         }
         catch (Exception e)
         {
-            return Result<Unit>.Failure(e);
+            return Result<Unit>.Failure(ExceptionDispatchInfo.Capture(e).SourceException);
         }
     }
 }
