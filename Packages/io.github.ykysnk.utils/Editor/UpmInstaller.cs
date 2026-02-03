@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using io.github.ykysnk.utils.Editor.Extensions;
 using io.github.ykysnk.utils.Extensions;
+using io.github.ykysnk.utils.NonUdon;
+using io.github.ykysnk.utils.NonUdon.Extensions;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -42,7 +44,7 @@ namespace io.github.ykysnk.utils.Editor
                 return true;
             });
 
-            try
+            var result = await Try.Run(async () =>
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
@@ -81,23 +83,25 @@ namespace io.github.ykysnk.utils.Editor
                 }
 
                 Progress.Finish(progressId);
-                Utils.Log(nameof(UpmInstaller), "All packages processed.");
-            }
-            catch (OperationCanceledException)
+                Utils.Log(nameof(UpmInstaller), "All packages are processed.");
+            });
+
+            result.OnFailure(ex =>
             {
-                Progress.Finish(progressId, Progress.Status.Canceled);
-                Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                Progress.Finish(progressId, Progress.Status.Failed);
-                Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
-            }
-            finally
-            {
-                Progress.UnregisterCancelCallback(progressId);
-                Interlocked.Exchange(ref _isWorking, 0);
-            }
+                if (ex is OperationCanceledException)
+                {
+                    Progress.Finish(progressId, Progress.Status.Canceled);
+                    Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
+                }
+                else
+                {
+                    Progress.Finish(progressId, Progress.Status.Failed);
+                    Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+                }
+            });
+
+            Progress.UnregisterCancelCallback(progressId);
+            Interlocked.Exchange(ref _isWorking, 0);
         }
 
         [PublicAPI]
@@ -127,7 +131,7 @@ namespace io.github.ykysnk.utils.Editor
                 return true;
             });
 
-            try
+            var result = await Try.Run(async () =>
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
@@ -157,22 +161,24 @@ namespace io.github.ykysnk.utils.Editor
 
                 Progress.Finish(progressId);
                 Utils.Log(nameof(UpmInstaller), "All packages processed.");
-            }
-            catch (OperationCanceledException)
+            });
+
+            result.OnFailure(ex =>
             {
-                Progress.Finish(progressId, Progress.Status.Canceled);
-                Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                Progress.Finish(progressId, Progress.Status.Failed);
-                Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
-            }
-            finally
-            {
-                Progress.UnregisterCancelCallback(progressId);
-                Interlocked.Exchange(ref _isWorking, 0);
-            }
+                if (ex is OperationCanceledException)
+                {
+                    Progress.Finish(progressId, Progress.Status.Canceled);
+                    Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
+                }
+                else
+                {
+                    Progress.Finish(progressId, Progress.Status.Failed);
+                    Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+                }
+            });
+
+            Progress.UnregisterCancelCallback(progressId);
+            Interlocked.Exchange(ref _isWorking, 0);
         }
 
         [PublicAPI]
@@ -199,7 +205,7 @@ namespace io.github.ykysnk.utils.Editor
 
             var packages = new List<string>();
 
-            try
+            var result = await Try.Run(async () =>
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
@@ -234,21 +240,23 @@ namespace io.github.ykysnk.utils.Editor
 
                 Progress.Finish(progressId);
                 Utils.Log(nameof(UpmInstaller), "All packages processed.");
-            }
-            catch (OperationCanceledException)
+            });
+
+            result.OnFailure(ex =>
             {
-                Progress.Finish(progressId, Progress.Status.Canceled);
-                Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
-            }
-            catch (Exception ex)
-            {
-                Progress.Finish(progressId, Progress.Status.Failed);
-                Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
-            }
-            finally
-            {
-                Progress.UnregisterCancelCallback(progressId);
-            }
+                if (ex is OperationCanceledException)
+                {
+                    Progress.Finish(progressId, Progress.Status.Canceled);
+                    Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
+                }
+                else
+                {
+                    Progress.Finish(progressId, Progress.Status.Failed);
+                    Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+                }
+            });
+
+            Progress.UnregisterCancelCallback(progressId);
 
             return packages.ToArray();
         }
