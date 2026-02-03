@@ -68,14 +68,15 @@ public static class ResultExtensions
         return result.IsSuccess ? result.Value : default;
     }
 
-    public static T GetOrElse<T>(this Result<T> result, T fallback) => result.IsSuccess ? result.Value! : fallback;
+    public static T GetOrElse<T>(this Result<T> result, Func<Exception, T> onFailure) =>
+        result.IsSuccess ? result.Value! : onFailure(result.Exception!);
 
     public static async Task<T> GetOrElse<T>(
         this Task<Result<T>> task,
-        T fallback)
+        Func<Exception, Task<T>> onFailure)
     {
         var result = await task.ConfigureAwait(false);
-        return result.IsSuccess ? result.Value! : fallback;
+        return result.IsSuccess ? result.Value! : await onFailure(result.Exception!).ConfigureAwait(false);
     }
 
     public static Result<TU> Select<T, TU>(this Result<T> result, Func<T, TU> selector) => result.IsSuccess
