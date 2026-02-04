@@ -14,10 +14,10 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson<T>(json));
 
-        if (value == null)
+        if (isSuccess && value == null)
         {
             isSuccess = false;
-            exception2 = new NullReferenceException("Deserialized JSON value is null");
+            exception2 ??= new NullReferenceException("Deserialized JSON value is null");
         }
 
         if (isSuccess)
@@ -37,10 +37,10 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson(json, type));
 
-        if (value == null)
+        if (isSuccess && value == null)
         {
             isSuccess = false;
-            exception2 = new NullReferenceException("Deserialized JSON value is null");
+            exception2 ??= new NullReferenceException("Deserialized JSON value is null");
         }
 
         if (isSuccess)
@@ -76,10 +76,10 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.ToJson(obj, prettyPrint));
 
-        if (value == null)
+        if (isSuccess && value == null)
         {
             isSuccess = false;
-            exception2 = new NullReferenceException("Serialized JSON value is null");
+            exception2 ??= new NullReferenceException("Deserialized JSON value is null");
         }
 
         if (isSuccess)
