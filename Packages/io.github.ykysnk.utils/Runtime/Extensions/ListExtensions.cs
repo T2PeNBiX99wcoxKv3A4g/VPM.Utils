@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -59,6 +60,20 @@ namespace io.github.ykysnk.utils.Extensions
             collection.Clear();
             foreach (var item in newList)
                 collection.Add(item);
+        }
+
+        public static void Rebuild<T>(this ICollection<T> collection, Func<T, bool> match)
+        {
+            collection.RemoveAll(match);
+            collection.Rebuild();
+        }
+
+        public static void RemoveAll<T>(this ICollection<T> collection, Func<T, bool> match)
+        {
+            var toRemove = collection.Where(match).ToList();
+
+            foreach (var item in toRemove)
+                collection.Remove(item);
         }
     }
 }
