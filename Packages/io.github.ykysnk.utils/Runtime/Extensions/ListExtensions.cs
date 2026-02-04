@@ -62,9 +62,9 @@ namespace io.github.ykysnk.utils.Extensions
                 collection.Add(item);
         }
 
-        public static void Rebuild<T>(this ICollection<T> collection, Func<T, bool> match)
+        public static void Rebuild<T>(this ICollection<T> collection, Func<T, bool> removeAll)
         {
-            collection.RemoveAll(match);
+            collection.RemoveAll(removeAll);
             collection.Rebuild();
         }
 
