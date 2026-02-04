@@ -14,13 +14,19 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson<T>(json));
 
+        if (value == null)
+        {
+            isSuccess = false;
+            exception2 = new NullReferenceException("Deserialized JSON value is null");
+        }
+
         if (isSuccess)
         {
             result = value;
             return true;
         }
 
-        exception = exception2;
+        exception = exception2 ?? new Exception("Failed to parse JSON");
         return false;
     }
 
@@ -31,13 +37,19 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.FromJson(json, type));
 
+        if (value == null)
+        {
+            isSuccess = false;
+            exception2 = new NullReferenceException("Deserialized JSON value is null");
+        }
+
         if (isSuccess)
         {
             result = value;
             return true;
         }
 
-        exception = exception2;
+        exception = exception2 ?? new Exception("Failed to parse JSON");
         return false;
     }
 
@@ -53,7 +65,7 @@ public static class JsonUtils
             return true;
         }
 
-        exception = exception2;
+        exception = exception2 ?? new Exception("Failed to parse JSON");
         return false;
     }
 
@@ -64,13 +76,19 @@ public static class JsonUtils
 
         var (isSuccess, value, exception2) = Try.Run(() => JsonUtility.ToJson(obj, prettyPrint));
 
+        if (value == null)
+        {
+            isSuccess = false;
+            exception2 = new NullReferenceException("Serialized JSON value is null");
+        }
+
         if (isSuccess)
         {
             json = value;
             return true;
         }
 
-        exception = exception2;
+        exception = exception2 ?? new Exception("Failed to serialize JSON");
         return false;
     }
 
