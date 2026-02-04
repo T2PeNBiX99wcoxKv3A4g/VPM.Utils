@@ -8,12 +8,12 @@ namespace io.github.ykysnk.utils.NonUdon;
 
 [Serializable]
 [PublicAPI]
-public sealed class DictionaryWrapper<TK, TV> : IEnumerable<KeyValuePair<TK, TV>>
+public sealed class DictionaryWrapper<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
 {
-    public List<TK> keys;
-    public List<TV> values;
+    public List<TKey> keys;
+    public List<TValue> values;
 
-    internal DictionaryWrapper(IDictionary<TK, TV> dict)
+    internal DictionaryWrapper(IDictionary<TKey, TValue> dict)
     {
         keys = new(dict.Keys);
         values = new(dict.Values);
@@ -21,25 +21,44 @@ public sealed class DictionaryWrapper<TK, TV> : IEnumerable<KeyValuePair<TK, TV>
 
     public int Count => keys.Count;
 
-    public TV this[TK key] => values[keys.IndexOf(key)];
+    public bool TryGetValue(TKey key, out TValue value)
+    {
+        var index = keys.IndexOf(key);
 
-    public IEnumerator<KeyValuePair<TK, TV>> GetEnumerator() =>
-        keys.Select((t, i) => new KeyValuePair<TK, TV>(t, values[i])).GetEnumerator();
+        if (index < 0)
+        {
+            value = default!;
+            return false;
+        }
+
+        value = values[index];
+        return true;
+    }
+
+    public TValue this[TKey key] => values[keys.IndexOf(key)];
+    public IEnumerable<TKey> Keys => keys;
+    public IEnumerable<TValue> Values => values;
+
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() =>
+        keys.Select((t, i) => new KeyValuePair<TKey, TValue>(t, values[i])).GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public Dictionary<TK, TV> ToDictionary()
+    public bool ContainsKey(TKey key) => keys.Contains(key);
+
+    public bool ContainsValue(TValue value) => values.Contains(value);
+
+    public Dictionary<TKey, TValue> ToDictionary()
     {
-        var dict = new Dictionary<TK, TV>(keys.Count);
+        var dict = new Dictionary<TKey, TValue>(keys.Count);
         for (var i = 0; i < keys.Count; i++)
             dict[keys[i]] = values[i];
         return dict;
     }
 
-    public bool ContainsKey(TK key) => keys.Contains(key);
+    public static implicit operator Dictionary<TKey, TValue>(DictionaryWrapper<TKey, TValue> wrapper) =>
+        wrapper.ToDictionary();
 
-    public bool ContainsValue(TV value) => values.Contains(value);
-
-    public static implicit operator Dictionary<TK, TV>(DictionaryWrapper<TK, TV> wrapper) => wrapper.ToDictionary();
-    public static implicit operator DictionaryWrapper<TK, TV>(Dictionary<TK, TV> dictionary) => new(dictionary);
+    public static implicit operator DictionaryWrapper<TKey, TValue>(Dictionary<TKey, TValue> dictionary) =>
+        new(dictionary);
 }
