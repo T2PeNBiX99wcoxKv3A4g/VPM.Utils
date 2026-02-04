@@ -58,14 +58,18 @@ namespace io.github.ykysnk.utils.Extensions
         {
             var newList = collection.Distinct().ToList();
             collection.Clear();
-            foreach (var item in newList)
-                collection.Add(item);
+            collection.AddRange(newList);
         }
 
         public static void Rebuild<T>(this ICollection<T> collection, Func<T, bool> removeAll)
         {
             collection.RemoveAll(removeAll);
             collection.Rebuild();
+        }
+
+        public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            foreach (var item in items) collection.Add(item);
         }
 
         public static void RemoveAll<T>(this ICollection<T> collection, Func<T, bool> match)
