@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace io.github.ykysnk.utils.Extensions
@@ -50,6 +51,14 @@ namespace io.github.ykysnk.utils.Extensions
             if (index < 0 || index >= array.Length) return false;
             array[index] = value;
             return true;
+        }
+
+        public static void Rebuild<T>(this ICollection<T> collection)
+        {
+            var newList = collection.Distinct().ToList();
+            collection.Clear();
+            foreach (var item in newList)
+                collection.Add(item);
         }
     }
 }
