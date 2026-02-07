@@ -12,6 +12,7 @@
     margin-bottom: 10px;
     white-space: normal;
     flex-wrap: wrap;
+    font-size: 16px;
 }
 
 .dialog-scroll {
@@ -31,4 +32,43 @@
 .dialog-button {
     min-width: 80px;
     height: 30px;
+    border-radius: 5px;
+    -unity-font-style: bold;
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.dialog-button-ok {
+    background-color: rgb(59, 130, 246);
+}
+
+.dialog-button-ok:hover {
+    background-color: rgb(37, 99, 235);
+}
+
+.dialog-button-ok:active {
+    background-color: rgb(29, 78, 216);
+}
+
+.dialog-button-ok.dialog-button-wait {
+    background-color: rgb(239, 68, 68);
+}
+
+.dialog-button-ok.dialog-button-wait:hover {
+    background-color: rgb(220, 38, 38);
+}
+
+.dialog-button-ok.dialog-button-wait:active {
+    background-color: rgb(185, 28, 28);
+}
+
+.dialog-button-cancel {
+    background-color: rgb(156, 163, 175);
+}
+
+.dialog-button-cancel:hover {
+    background-color: rgb(107, 114, 128);
+}
+
+.dialog-button-cancel:active {
+    background-color: rgb(75, 85, 99);
 }

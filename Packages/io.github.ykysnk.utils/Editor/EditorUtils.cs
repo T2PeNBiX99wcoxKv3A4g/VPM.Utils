@@ -8,11 +8,11 @@ namespace io.github.ykysnk.utils.Editor
     public static class EditorUtils
     {
         public static async Task<bool> DisplayDialogAsync(string title, string message,
-            string ok = "OK", string cancel = "")
+            string ok = "OK", string cancel = "", int waitTime = 0)
         {
             var tcs = new TaskCompletionSource<bool>();
 
-            CustomDialogWindow.Show(title, message, ok, cancel,
+            CustomDialogWindow.Show(title, message, ok, cancel, waitTime,
                 () => tcs.TrySetResult(true),
                 () => tcs.TrySetResult(false));
 
@@ -20,9 +20,9 @@ namespace io.github.ykysnk.utils.Editor
         }
 
         public static void DisplayDialog(string title, string message, string ok = "OK", string cancel = "",
-            Action? onOk = null, Action? onCancel = null)
+            Action? onOk = null, Action? onCancel = null, int waitTime = 0)
         {
-            CustomDialogWindow.Show(title, message, ok, cancel,
+            CustomDialogWindow.Show(title, message, ok, cancel, waitTime,
                 () => onOk?.Invoke(),
                 () => onCancel?.Invoke());
         }

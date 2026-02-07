@@ -17,8 +17,10 @@ namespace io.github.ykysnk.utils.Editor
         [SerializeField] private VisualTreeAsset? uxml;
         [SerializeField] private new string title = "UnTitled";
         [SerializeField] private string message = "UnMessage";
+        [SerializeField] private string firstOk = "";
         [SerializeField] private string ok = "Ok";
         [SerializeField] private string cancel = "";
+        [SerializeField] private int waitTime;
         private bool _isClosed;
         private Action? _onCancel;
         private Action? _onOk;
@@ -38,11 +40,26 @@ namespace io.github.ykysnk.utils.Editor
             rootVisualElement.AddManipulator(new ContextualMenuManipulator(contextMenuEvent =>
                 contextMenuEvent.menu.AppendAction("Copy", _ => EditorGUIUtility.systemCopyBuffer = message)));
 
-            var copyButton = tree.Q<Button>("copy");
-            copyButton.clicked += () => EditorGUIUtility.systemCopyBuffer = message;
             var okButton = tree.Q<Button>("ok");
+
+            if (waitTime > 0)
+            {
+                okButton.AddToClassList("dialog-button-wait");
+                okButton.schedule.Execute(() =>
+                {
+                    if (waitTime > 0)
+                    {
+                        okButton.text = $"{firstOk} ({waitTime})";
+                        waitTime--;
+                    }
+                    else if (okButton.text != firstOk)
+                        okButton.text = firstOk;
+                }).Every(1000);
+            }
+
             okButton.clicked += () =>
             {
+                if (waitTime > 0) return;
                 _onOk?.Invoke();
                 _isClosed = true;
                 Close();
@@ -59,7 +76,8 @@ namespace io.github.ykysnk.utils.Editor
                 cancelButton.style.display = DisplayStyle.None;
         }
 
-        internal static void Show(string title, string message, string ok, string cancel, Action onOk, Action onCancel)
+        internal static void Show(string title, string message, string ok, string cancel, int waitTime, Action onOk,
+            Action onCancel)
         {
             if (_instance != null)
                 _instance.Close();
@@ -68,8 +86,10 @@ namespace io.github.ykysnk.utils.Editor
             _instance.titleContent = EditorGUIUtils.IconContent(title, "unityeditor.inspectorwindow");
             _instance.title = title;
             _instance.message = message;
+            _instance.firstOk = ok;
             _instance.ok = ok;
             _instance.cancel = cancel;
+            _instance.waitTime = waitTime;
             _instance._onOk = onOk;
             _instance._onCancel = onCancel;
             _instance.minSize = new(Width, Height);
