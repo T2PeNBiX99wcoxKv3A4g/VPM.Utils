@@ -50,5 +50,27 @@ namespace Test.Editor
                 "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttestt",
                 onOk: () => Utils.Log(nameof(Test4), "ok"));
         }
+
+        [MenuItem("Test/TestButton5")]
+        public static void Test5()
+        {
+            _ = Test5Async();
+        }
+
+        private static async Task Test5Async()
+        {
+            if (await EditorUtils.DisplayDialogAsync(nameof(Test5Async), "testMessage", "okTest", "cancelTest", 10))
+                Utils.Log(nameof(Test2Async), "ok");
+            else
+                Utils.Log(nameof(Test2Async), "cancel");
+        }
+
+        [MenuItem("Test/TestButton6")]
+        public static void Test6()
+        {
+            EditorUtils.DisplayDialog(nameof(Test6), "testMessage", "okTest", "cancelTest",
+                () => Utils.Log(nameof(Test6), "ok"),
+                () => Utils.Log(nameof(Test6), "cancel"), 10);
+        }
     }
 }
