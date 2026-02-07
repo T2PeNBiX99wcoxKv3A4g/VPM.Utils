@@ -87,7 +87,7 @@ namespace io.github.ykysnk.utils.Editor
             _instance.title = title;
             _instance.message = message;
             _instance.firstOk = ok;
-            _instance.ok = ok;
+            _instance.ok = waitTime > 0 ? $"{ok} ({waitTime})" : ok;
             _instance.cancel = cancel;
             _instance.waitTime = waitTime;
             _instance._onOk = onOk;
