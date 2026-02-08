@@ -76,6 +76,18 @@ namespace io.github.ykysnk.utils.Extensions
             transform.localScale = transform.GetLocalScaleFromLossyScale(lossyScale);
 
         /// <summary>
+        ///     Sets the transform's lossy scale to the specified value without modifying its parent transform.
+        ///     Updates the local scale of the transform to achieve the desired lossy scale in world space.
+        /// </summary>
+        /// <param name="transform">The transform whose lossy scale needs to be set.</param>
+        /// <param name="lossyScale">The target lossy scale to be applied in world space.</param>
+        public static void SetLossyScaleInPlace([NotNull] this Transform transform, Vector3 lossyScale)
+        {
+            var setScale = transform.GetLocalScaleFromLossyScale(lossyScale);
+            transform.localScale.Set(setScale.x, setScale.y, setScale.z);
+        }
+
+        /// <summary>
         ///     Calculates and returns the local scale of the target transform relative to another transform.
         /// </summary>
         /// <param name="transform">The transform for which the local scale is to be calculated.</param>
