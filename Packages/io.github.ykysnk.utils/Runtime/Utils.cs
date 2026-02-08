@@ -1,3 +1,5 @@
+using System;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -35,28 +37,57 @@ namespace io.github.ykysnk.utils
 
         private const string LOGNameColor = "#D771C0";
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Log([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.Log($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Log([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.Log($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void LogWarning([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogWarning($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void LogWarning([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.LogWarning($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void LogError([NotNull] string prefix, [CanBeNull] object message) =>
             Debug.LogError($"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void LogError([NotNull] string prefix, [CanBeNull] object message, [NotNull] Object context) =>
             Debug.LogError($"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        [Obsolete("Use Assert(bool condition, string prefix, object message) instead")]
         public static void LogAssert(bool condition, [NotNull] string prefix, [CanBeNull] object message) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}");
 
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        [Obsolete("Use Assert(bool condition, string prefix, object message, Object context) instead")]
         public static void LogAssert(bool condition, [NotNull] string prefix, [CanBeNull] object message,
+            [NotNull] Object context) =>
+            Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
+
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Assert(bool condition, [NotNull] string prefix, [CanBeNull] object message) =>
+            Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}");
+
+        [HideInCallstack]
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void Assert(bool condition, [NotNull] string prefix, [CanBeNull] object message,
             [NotNull] Object context) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
