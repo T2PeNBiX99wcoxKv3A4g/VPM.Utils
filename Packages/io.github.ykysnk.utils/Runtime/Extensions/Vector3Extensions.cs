@@ -88,5 +88,17 @@ namespace io.github.ykysnk.utils.Extensions
 
         public static bool IsNearlyZero(this Vector3 vector, float threshold = 0.0001f) =>
             vector.x.IsNearlyZero(threshold) && vector.y.IsNearlyZero(threshold) && vector.z.IsNearlyZero(threshold);
+
+        public static void CopyFrom(this ref Vector3 self, Vector3 other)
+        {
+            self.x = other.x;
+            self.y = other.y;
+            self.z = other.z;
+        }
+
+        public static void CleanInPlace(this ref Vector3 self, float threshold = 0.0001f) =>
+            self.CopyFrom(self.Clean(threshold));
+
+        public static string ToFullString(this Vector3 v) => $"({v.x:R}, {v.y:R}, {v.z:R})";
     }
 }
