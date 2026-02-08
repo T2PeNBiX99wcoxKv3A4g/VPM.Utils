@@ -37,5 +37,17 @@ namespace Test
         {
             UpmInstaller.UpdateAsync().WaitEditor(() => Utils.Log(nameof(TestUpmInstall), "Done"));
         }
+
+        [ContextMenu("TestVector3")]
+        private void TestVector3()
+        {
+            var test = new Vector3(1.999999999999999999999f, 2.123456789f, 3);
+            var test2 = new Vector3(0.00001f, -0.00003f, 0.000099f);
+            Utils.Log(nameof(TestVector3), $"1 {test.ToFullString()} {test2.ToFullString()}");
+            test.CopyFrom(test2);
+            Utils.Log(nameof(TestVector3), $"2 {test.ToFullString()} {test2.ToFullString()}");
+            test2.CleanInPlace();
+            Utils.Log(nameof(TestVector3), $"3 {test.ToFullString()} {test2.ToFullString()}");
+        }
     }
 }
