@@ -49,5 +49,23 @@ namespace Test
             test2.CleanInPlace();
             Utils.Log(nameof(TestVector3), $"3 {test.ToFullString()} {test2.ToFullString()}");
         }
+
+        [ContextMenu("TestTransform")]
+        private void TestTransform()
+        {
+            transform.localPosition.Set(1, 2, 3);
+        }
+
+        [ContextMenu("TestTransform2")]
+        private void TestTransform2()
+        {
+            transform.localPosition = new(1, 2, 3);
+        }
+
+        [ContextMenu("TestTransform3")]
+        private void TestTransform3()
+        {
+            transform.SetLocalPositionAndRotation(new(1, 2, 3), transform.localRotation);
+        }
     }
 }
