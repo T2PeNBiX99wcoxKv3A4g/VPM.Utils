@@ -329,5 +329,15 @@ namespace io.github.ykysnk.utils.Extensions
         /// <param name="v">The Vector3 instance to convert to a string.</param>
         /// <returns>A string representing the Vector3 in the format "(x, y, z)" with high precision on each component.</returns>
         public static string ToFullString(this Vector3 v) => $"({v.x:R}, {v.y:R}, {v.z:R})";
+
+        /// <summary>
+        ///     Determines whether two Vector3 instances are approximately equal within a small threshold of precision.
+        /// </summary>
+        /// <param name="self">The first Vector3 to compare.</param>
+        /// <param name="other">The second Vector3 to compare.</param>
+        /// <returns>True if the two Vector3 instances are approximately equal, otherwise false.</returns>
+        public static bool Approximately(this Vector3 self, Vector3 other) => self.x.Approximately(other.x) &&
+                                                                              self.y.Approximately(other.y) &&
+                                                                              self.z.Approximately(other.z);
     }
 }
