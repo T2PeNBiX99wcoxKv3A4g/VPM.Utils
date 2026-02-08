@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace io.github.ykysnk.utils.NonUdon;
 [PublicAPI]
 public static class Try
 {
-    [DebuggerHidden]
     [HideInCallstack]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static Result<T> Run<T>(Func<T> func)
@@ -26,7 +24,6 @@ public static class Try
         }
     }
 
-    [DebuggerHidden]
     [HideInCallstack]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static Result<Unit> Run(Action action)
@@ -42,7 +39,6 @@ public static class Try
         }
     }
 
-    [DebuggerHidden]
     [HideInCallstack]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static async Task<Result<T>> Run<T>(Func<Task<T>> func)
@@ -57,7 +53,6 @@ public static class Try
         }
     }
 
-    [DebuggerHidden]
     [HideInCallstack]
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static async Task<Result<Unit>> Run(Func<Task> func)
