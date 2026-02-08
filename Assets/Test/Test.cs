@@ -67,5 +67,11 @@ namespace Test
         {
             transform.SetLocalPositionAndRotation(new(1, 2, 3), transform.localRotation);
         }
+
+        [ContextMenu("TestError")]
+        private void TestError()
+        {
+            Utils.LogError(nameof(TestError), "This is a test error");
+        }
     }
 }
