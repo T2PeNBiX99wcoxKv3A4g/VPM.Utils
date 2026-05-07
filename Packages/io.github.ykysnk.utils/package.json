@@ -1,7 +1,8 @@
 {
   "name": "io.github.ykysnk.utils",
   "displayName": "Utils for VPM and Unity",
-  "version": "0.44.2",
+  "version": "0.44.3",
+  "unity": "2022.3",
   "description": "Utils for VPM and Unity",
   "gitDependencies": {},
   "vpmDependencies": {},
@@ -12,5 +13,6 @@
   },
   "legacyFolders": {},
   "legacyFiles": {},
-  "localPath": "L:\\VRChatProjects\\VPM.Utils\\Packages\\io.github.ykysnk.utils"
+  "changelogUrl": "https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/blob/main/CHANGELOG.md",
+  "license": "MIT"
 }
