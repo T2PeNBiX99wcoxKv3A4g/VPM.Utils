@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.44.4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.3..0.44.4) - 2026-06-14
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 0.44.4 - ([2ff0004](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2ff0004b7a852cf7e2cf9c74aaa0e1c779ed2016))
+- Remove `ProjectSettings/ProjectSettings.asset` file from the repository - ([5ed5508](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/5ed55083ab8343b93fac937010b7b642eba28b94))
+- Add `io.github.ykysnk.utils` asset and meta files to the repository - ([25eba8d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/25eba8db67f7e129466b0c5fbb68165e09dbd4f2))
+- Add compiler directive to conditionally include Test.cs - ([24ed6fa](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/24ed6fabebc5e1b55a1c8f153630a8bc07ed2d41))
+- Update .gitignore - ([fe4ce3b](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fe4ce3b0819382d0f789033482659d41478e992f))
+- Bump `com.unity.timeline` to v1.8.12 in manifest and lock files - ([feb87e4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/feb87e4aa6d398a486eab40c7a883443ed9e5d96))
+- Add new dependencies and update package versions in manifest and lock files - ([68c1011](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/68c1011660bbec04482a83a27ff833124b537af0))
+- Add README.md file for VPM Utils - ([b947aa6](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/b947aa6eda0dd6399e56492a9d7ff7cad264dd4e))
+- Remove README.md file - ([ea60f19](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ea60f199cd1aac27f124682a3b8ba632af6ec730))
+- Bump package versions for `nadena.dev.ndmf` and `com.vrchat.base` - ([00ba6cc](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/00ba6cc5afa31207be57f65426a826402ff628d7))
+
+### Action
+
+- Update `CHANGELOG.md` - ([fec941c](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fec941ce6cff5d6b696ea7f62c2d1dbcf712eeef))
+
+## New Contributors ❤️
+
+* @github-actions[bot] made their first contribution
+
 ## [0.44.3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.2..0.44.3) - 2026-05-07
 
 ### ⚙️ Miscellaneous Tasks
