@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.44.5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.4..0.44.5) - 2026-06-14
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 0.44.5 - ([bc508f0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/bc508f03ee31887bdb8126f21500ae8f28351565))
+- Add `UTILS_UDONSHARP` directive for conditional compilation - ([f4b1688](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f4b16886dbb4d01eb14ea0a958d776fd5b331240))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a3bea01](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a3bea01808eca77517f31af90444284eb8d5a30f))
+
+
 ## [0.44.4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.3..0.44.4) - 2026-06-14
 
 ### ⚙️ Miscellaneous Tasks
