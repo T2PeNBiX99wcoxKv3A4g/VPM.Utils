@@ -1,3 +1,4 @@
+#if !COMPILER_UDONSHARP
 using io.github.ykysnk.utils;
 using io.github.ykysnk.utils.Editor;
 using io.github.ykysnk.utils.Editor.Extensions;
@@ -75,3 +76,4 @@ namespace Test
         }
     }
 }
+#endif
