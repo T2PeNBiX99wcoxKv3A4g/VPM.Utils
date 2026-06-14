@@ -13,13 +13,31 @@ namespace io.github.ykysnk.utils
     [PublicAPI]
     public static class Utils
     {
+        private const string LOGNameColor = "#D771C0";
+        private const float MinSpeed = 0.05f;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool _isInPrefab()
+        {
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
-        public static bool IsInPrefab => PrefabStageUtility.GetCurrentPrefabStage();
-        public static bool IsPlaying => EditorApplication.isPlayingOrWillChangePlaymode;
+            return PrefabStageUtility.GetCurrentPrefabStage();
 #else
-        public static bool IsInPrefab => false;
-        public static bool IsPlaying => true;
+            return false;
 #endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool _isPlaying()
+        {
+#if !COMPILER_UDONSHARP && UNITY_EDITOR
+            return EditorApplication.isPlayingOrWillChangePlaymode;
+#else
+            return true;
+#endif
+        }
+
+        public static bool IsInPrefab2() => _isInPrefab();
+        public static bool IsPlaying2() => _isPlaying();
 
         public static int ToLayer(LayerMask mask)
         {
@@ -34,8 +52,6 @@ namespace io.github.ykysnk.utils
 
             return result;
         }
-
-        private const string LOGNameColor = "#D771C0";
 
         [HideInCallstack]
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -91,8 +107,12 @@ namespace io.github.ykysnk.utils
             [NotNull] Object context) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
-        private const float MinSpeed = 0.05f;
-
         public static bool IsMoved(float value) => value < -MinSpeed && value > MinSpeed;
+
+        // UDON Is not supported yet
+#if !COMPILER_UDONSHARP
+        public static bool IsInPrefab => _isInPrefab();
+        public static bool IsPlaying => _isPlaying();
+#endif
     }
 }
