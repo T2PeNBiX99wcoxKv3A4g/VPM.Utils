@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.45.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.5..0.45.0) - 2026-06-14
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 0.45.0 - ([0dda774](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/0dda7746836b45c657248cad5606a60b1fd6f2e3))
+- Refactor prefab and play mode utility methods with private helpers - ([30192d2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/30192d2add93f53ce51f8c82f4fb13bbe9b61b56))
+
+### Action
+
+- Update `CHANGELOG.md` - ([0165c67](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/0165c67c8215819b72ae23feed090f9aa7b48a8f))
+
+
 ## [0.44.5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.44.4..0.44.5) - 2026-06-14
 
 ### ⚙️ Miscellaneous Tasks
