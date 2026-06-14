@@ -1,7 +1,11 @@
+#if UTILS_VRC_SDK3_BASE || COMPILER_UDONSHARP
+#define UTILS_UDONSHARP
+#endif
+
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
-#if UTILS_VRC_SDK3_BASE
+#if UTILS_UDONSHARP
 using VRC.SDKBase;
 #endif
 
@@ -142,7 +146,7 @@ namespace io.github.ykysnk.utils.Extensions
             float distance) =>
             transform.Distance2D(other) < distance;
 
-#if UTILS_VRC_SDK3_BASE
+#if UTILS_UDONSHARP
         public static bool IsPlayerCloseRange([NotNull] this Transform transform, float distance)
         {
             var player = Networking.LocalPlayer;

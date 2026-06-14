@@ -1,3 +1,7 @@
+#if UTILS_VRC_SDK3_BASE || COMPILER_UDONSHARP
+#define UTILS_UDONSHARP
+#endif
+
 using System;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -97,7 +101,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static bool IsSceneObject([NotNull] this GameObject obj) => false;
 #endif
 
-#if UTILS_VRC_SDK3_BASE
+#if UTILS_UDONSHARP
         public static bool IsPlayerCloseRange([NotNull] this GameObject obj, float distance) =>
             obj.transform.IsPlayerCloseRange(distance);
 
