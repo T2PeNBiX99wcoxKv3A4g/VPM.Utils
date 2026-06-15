@@ -16,28 +16,31 @@ namespace io.github.ykysnk.utils
         private const string LOGNameColor = "#D771C0";
         private const float MinSpeed = 0.05f;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool _isInPrefab()
+        // Udon is not supported =>
+        public static bool IsInPrefab
         {
+            get
+            {
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
-            return PrefabStageUtility.GetCurrentPrefabStage();
+                return PrefabStageUtility.GetCurrentPrefabStage();
 #else
-            return false;
+                return false;
 #endif
+            }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool _isPlaying()
+        // Udon is not supported =>
+        public static bool IsPlaying
         {
+            get
+            {
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
-            return EditorApplication.isPlayingOrWillChangePlaymode;
+                return EditorApplication.isPlayingOrWillChangePlaymode;
 #else
-            return true;
+                return true;
 #endif
+            }
         }
-
-        public static bool IsInPrefab2() => _isInPrefab();
-        public static bool IsPlaying2() => _isPlaying();
 
         public static int ToLayer(LayerMask mask)
         {
@@ -108,11 +111,5 @@ namespace io.github.ykysnk.utils
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
         public static bool IsMoved(float value) => value < -MinSpeed && value > MinSpeed;
-
-        // UDON Is not supported yet
-#if !COMPILER_UDONSHARP
-        public static bool IsInPrefab => _isInPrefab();
-        public static bool IsPlaying => _isPlaying();
-#endif
     }
 }
