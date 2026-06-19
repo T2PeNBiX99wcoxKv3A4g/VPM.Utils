@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.45.2..1.0.0) - 2026-06-19
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.0.0 - ([ae3e6d2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ae3e6d23bf62c783aa7d6bc4397e4f86b00dc62a))
+
+### Action
+
+- Update `CHANGELOG.md` - ([e4f4bed](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e4f4bed3299fa651ff0ce384ed987e2e12c7713e))
+
+
 ## [0.45.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.45.1..0.45.2) - 2026-06-15
 
 ### ⚙️ Miscellaneous Tasks
