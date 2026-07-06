@@ -22,7 +22,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         private static readonly Lazy<T> InstanceInternal = new(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
 
         public static T Instance => InstanceInternal.Value;
-        public static Type ThisType => typeof(T);
+        public static Type ThisType { get; } = typeof(T);
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
