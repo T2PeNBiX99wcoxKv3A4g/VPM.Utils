@@ -1,0 +1,55 @@
+using System;
+using System.Threading;
+using io.github.ykysnk.utils.NonUdon.Logger;
+using JetBrains.Annotations;
+using Object = UnityEngine.Object;
+
+namespace io.github.ykysnk.utils.Editor.Patches
+{
+    [PublicAPI]
+    internal interface IPatchLoader
+    {
+        string QualifiedName { get; }
+        string DisplayName { get; }
+        bool Enabled { get; }
+
+        void Load();
+        void Unload();
+    }
+
+    [PublicAPI]
+    public abstract class PatchLoader<T> : IPatchLoader, ILogger where T : PatchLoader<T>, new()
+    {
+        private static readonly Lazy<T> InstanceInternal = new(() => new(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+        public static T Instance => InstanceInternal.Value;
+        public static Type ThisType => typeof(T);
+
+        public void Log(object? message) => Utils.Log(DisplayName, message);
+        public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
+
+        public void LogWarning(object? message) => Utils.LogWarning(DisplayName, message);
+        public void LogWarning(object? message, Object context) => Utils.LogWarning(DisplayName, message, context);
+
+        public void LogError(object? message) => Utils.LogError(DisplayName, message);
+        public void LogError(object? message, Object context) => Utils.LogError(DisplayName, message, context);
+
+        public void Assert(bool condition, object? message) => Utils.Assert(condition, DisplayName, message);
+
+        public void Assert(bool condition, object? message, Object context) =>
+            Utils.Assert(condition, DisplayName, message, context);
+
+        public virtual string QualifiedName => ThisType.FullName ?? ThisType.Name;
+        public virtual string DisplayName => ThisType.Name;
+        public virtual bool Enabled => true;
+
+        void IPatchLoader.Load() => Load();
+        void IPatchLoader.Unload() => Unload();
+
+        public abstract void Load();
+
+        public virtual void Unload()
+        {
+        }
+    }
+}
