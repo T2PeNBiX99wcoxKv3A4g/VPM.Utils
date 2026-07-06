@@ -38,9 +38,9 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public void Assert(bool condition, object? message, Object context) =>
             Utils.Assert(condition, DisplayName, message, context);
 
-        public virtual string QualifiedName => ThisType.FullName ?? ThisType.Name;
-        public virtual string DisplayName => ThisType.Name;
-        public virtual bool Enabled => true;
+        public virtual string QualifiedName { get; } = ThisType.FullName ?? ThisType.Name;
+        public virtual string DisplayName { get; } = ThisType.Name;
+        public virtual bool Enabled { get; } = true;
 
         void IPatch.Execute() => Execute();
 
