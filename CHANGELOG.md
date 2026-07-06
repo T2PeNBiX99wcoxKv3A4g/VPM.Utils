@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.0..1.1.1) - 2026-07-06
+
+### 🐛 Bug Fixes
+
+- Correct `IsAssignableFrom` logic and improve `PatchCore` initialization logging - ([e18de4a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e18de4ad25fa18878cd26bb0a0bc7688ad968d36))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.1.1 - ([867fd95](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/867fd95fd8612b6e4765c944db2ba72c97616b2b))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a4674d9](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a4674d9af421949ab3f38a92c80a609585bebe0c))
+
+
 ## [1.1.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.0.0..1.1.0) - 2026-07-06
 
 ### ⛰️  Features
