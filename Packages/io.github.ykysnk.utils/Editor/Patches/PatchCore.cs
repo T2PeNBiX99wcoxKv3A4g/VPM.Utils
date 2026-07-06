@@ -11,7 +11,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
     {
         static PatchCore()
         {
-            foreach (var loader in PatchLoaders)
+            var patchLoaders = PatchLoaders.ToArray();
+            Utils.Log(nameof(PatchCore), $"Initializing patch core ({patchLoaders.Length} loaders)");
+
+            foreach (var loader in patchLoaders)
             {
                 if (!loader.Enabled) continue;
 
@@ -29,7 +32,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         private static IEnumerable<Type> PatchLoaderTypes => AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(x => x.GetCustomAttributes(typeof(ExportsPatchLoader), false)).Select(x =>
-                ((ExportsPatchLoader)x).Type).Where(x => x.IsAssignableFrom(typeof(IPatchLoader)));
+                ((ExportsPatchLoader)x).Type).Where(x => typeof(IPatchLoader).IsAssignableFrom(x));
 
         private static IEnumerable<IPatchLoader> PatchLoaders =>
             PatchLoaderTypes.Select(InstantiateLoader).Where(x => x != null)!;
