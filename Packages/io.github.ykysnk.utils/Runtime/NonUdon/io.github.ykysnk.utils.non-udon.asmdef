@@ -2,7 +2,8 @@
   "name": "io.github.ykysnk.utils.non-udon",
   "rootNamespace": "io.github.ykysnk.utils",
   "references": [
-    "VRC.SDKBase"
+    "VRC.SDKBase",
+    "io.github.ykysnk.utils"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
