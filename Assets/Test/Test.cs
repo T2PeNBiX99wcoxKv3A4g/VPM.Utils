@@ -4,6 +4,7 @@ using io.github.ykysnk.utils.Editor;
 using io.github.ykysnk.utils.Editor.Extensions;
 using io.github.ykysnk.utils.Extensions;
 using io.github.ykysnk.utils.NonUdon;
+using io.github.ykysnk.utils.NonUdon.Logger;
 using UnityEngine;
 
 namespace Test
@@ -73,6 +74,13 @@ namespace Test
         private void TestError()
         {
             Utils.LogError(nameof(TestError), "This is a test error");
+        }
+
+        [ContextMenu("TestLogger")]
+        private void TestLogger()
+        {
+            var logger = Logger<Test>.Instance;
+            logger.Log("Test");
         }
     }
 }
