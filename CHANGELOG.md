@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.1..1.1.2) - 2026-07-06
+
+### 🚜 Refactor
+
+- Convert auto-properties in `Patch` and `PatchLoader` to use initializer syntax - ([c1ea8f0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c1ea8f020aa4189678d3e7944371716d249f358b))
+- Convert `ThisType` property to use expression-bodied auto-property in `Patch` and `PatchLoader` - ([37a6ceb](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/37a6cebdde4e55a306b3e39ce8da556a4b21821b))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.1.2 - ([b3fa6cf](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/b3fa6cf1f41b88886a1820f06554ee77e4e0be08))
+
+### Action
+
+- Update `CHANGELOG.md` - ([cae8792](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/cae87928eec361093f92a04ca2dee980dbd9ad8c))
+
+
 ## [1.1.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.0..1.1.1) - 2026-07-06
 
 ### 🐛 Bug Fixes
