@@ -24,11 +24,11 @@
   },
   "locked": {
     "nadena.dev.ndmf": {
-      "version": "1.13.1",
+      "version": "1.14.0",
       "dependencies": {}
     },
     "com.vrchat.base": {
-      "version": "3.10.3",
+      "version": "3.10.4",
       "dependencies": {}
     },
     "yueby.tools.mirror-tool": {
@@ -42,13 +42,13 @@
       "dependencies": {}
     },
     "jp.lilxyzw.editortoolbox": {
-      "version": "1.11.0",
+      "version": "2.0.1",
       "dependencies": {}
     },
     "com.vrchat.worlds": {
-      "version": "3.10.3",
+      "version": "3.10.4",
       "dependencies": {
-        "com.vrchat.base": "3.10.3"
+        "com.vrchat.base": "3.10.4"
       }
     },
     "net.nekobako.mask-texture-editor": {
@@ -56,7 +56,7 @@
       "dependencies": {}
     },
     "io.github.ykysnk.yky-toolkit": {
-      "version": "0.18.2",
+      "version": "1.0.0",
       "dependencies": {
         "io.github.ykysnk.localization": ">=0.9.0",
         "io.github.ykysnk.utils": ">=0.41.0"
