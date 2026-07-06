@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.0.0..1.1.0) - 2026-07-06
+
+### ⛰️  Features
+
+- Introduce `Patch` system with `IPatch`, `PatchLoader`, and `PatchCore` components for modular runtime patch management - ([ed6def4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ed6def45f8fe6e876e2f737fcb82da2e5e177775))
+- Add `Logger` implementation and `ILogger` interface to `io.github.ykysnk.utils` package - ([e62b3bb](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e62b3bbcb6af66fcc7f0647693240ad8e747c06b))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.1.0 - ([2cc77a1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2cc77a19e489d1a751b056ad19280e4370b9e8f1))
+- Add `TestLogger` method using `Logger` in `Test` class - ([062c80c](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/062c80ce94a78d49f492da1f7dfec64813207010))
+- Add `io.github.ykysnk.utils` as a reference in `io.github.ykysnk.utils.non-udon.asmdef` - ([5e8cab3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/5e8cab365032b27df97cb6e36f0e1e4809621898))
+- Update multiple package versions in `vpm-manifest.json` - ([fab97a1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fab97a145b7e1e3413061614979b7b72f84cd26c))
+
+### Action
+
+- Update `CHANGELOG.md` - ([858e054](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/858e0542e921b1f45ff5fa558027fe327625342e))
+
+
 ## [1.0.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/0.45.2..1.0.0) - 2026-06-19
 
 ### ⚙️ Miscellaneous Tasks
