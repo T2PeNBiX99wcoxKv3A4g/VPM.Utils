@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.2.0..1.3.0) - 2026-07-07
+
+### ⛰️  Features
+
+- Add Harmony transpiler utilities `TranspilerExtensions` and `CodeCursor` for enhanced instruction context handling - ([0b45c6f](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/0b45c6f67e9c9c56de60423d4c606c37cae436c1))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.3.0 - ([4918c1d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/4918c1def756ec3bdff1ca527f896b2eb0f44e25))
+
+### Action
+
+- Update `CHANGELOG.md` - ([cb64362](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/cb6436244fc4cf31613a3320e4440c7e5fce9449))
+
+
 ## [1.2.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.2..1.2.0) - 2026-07-07
 
 ### ⛰️  Features
