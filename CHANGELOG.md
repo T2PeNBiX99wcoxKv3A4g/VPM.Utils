@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.2..1.2.0) - 2026-07-07
+
+### ⛰️  Features
+
+- Add extended logging and assertions (Log2, LogWarning2, LogError2, Assert2) to `Patch` and `PatchLoader` - ([f7a3925](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f7a39251aa6b3dd32cfcd980348abc1ef0c1c0a4))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.2.0 - ([823fb87](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/823fb874d4e6ba4ee9007c7df89598196c9ccf16))
+- Bump `jp.lilxyzw.editortoolbox` package version to 2.0.2 - ([69bbf19](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/69bbf190312d6b12a126a17e0660b28f4fca2495))
+
+### Action
+
+- Update `CHANGELOG.md` - ([fd0be62](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fd0be62a39b06c04e7aee8a96a2a38ef7380d9d9))
+
+
 ## [1.1.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.1.1..1.1.2) - 2026-07-06
 
 ### 🚜 Refactor
