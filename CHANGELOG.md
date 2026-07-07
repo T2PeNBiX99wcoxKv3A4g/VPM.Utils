@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.3.0..1.3.1) - 2026-07-07
+
+### 🚜 Refactor
+
+- Simplify `CodeCursor` initialization and improve `MoveNext` logic for better readability and consistency - ([e27cca8](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e27cca87812fded7e61f15fcdaab33e213813e5e))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.3.1 - ([241a33d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/241a33d7295743ef00a85445a20fd41af28223a7))
+
+### Action
+
+- Update `CHANGELOG.md` - ([eb8f08d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/eb8f08df3cb034acc85e83fdf295a06104c0739f))
+
+
 ## [1.3.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.2.0..1.3.0) - 2026-07-07
 
 ### ⛰️  Features
