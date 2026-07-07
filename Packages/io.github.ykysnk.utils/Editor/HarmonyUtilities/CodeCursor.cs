@@ -17,20 +17,10 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
         private readonly IEnumerator<CodeInstruction> _enumerator;
         private readonly List<CodeInstruction> _history = new();
 
-        public CodeCursor(IEnumerable<CodeInstruction> instructions)
-        {
-            _enumerator = instructions.GetEnumerator();
+        private bool _hasNextBuffered;
+        private bool _started;
 
-            if (!_enumerator.MoveNext())
-                return;
-
-            Current = _enumerator.Current;
-            Index = 0;
-
-            Next = _enumerator.MoveNext()
-                ? _enumerator.Current
-                : null;
-        }
+        public CodeCursor(IEnumerable<CodeInstruction> instructions) => _enumerator = instructions.GetEnumerator();
 
         public int Index { get; private set; } = -1;
 
@@ -40,7 +30,7 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
         public CodeInstruction? Next { get; private set; }
 
         public bool IsFirst => Index == 0;
-        public bool IsLast => Next == null;
+        public bool IsLast => _started && Next == null;
 
         /// <summary>
         ///     Negative = previous, 0 = current, +1 = next.
@@ -68,24 +58,39 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
         /// </summary>
         public bool MoveNext()
         {
+            if (!_started)
+            {
+                _started = true;
+
+                if (!_enumerator.MoveNext())
+                    return false;
+
+                Current = _enumerator.Current;
+                Index = 0;
+
+                _hasNextBuffered = _enumerator.MoveNext();
+                Next = _hasNextBuffered ? _enumerator.Current : null;
+
+                return true;
+            }
+
             if (Current == null)
                 return false;
 
             _history.Add(Current);
 
-            if (Next == null)
+            if (!_hasNextBuffered)
             {
                 Current = null;
-                Index = -1;
+                Next = null;
                 return false;
             }
 
             Current = Next;
             Index++;
 
-            Next = _enumerator.MoveNext()
-                ? _enumerator.Current
-                : null;
+            _hasNextBuffered = _enumerator.MoveNext();
+            Next = _hasNextBuffered ? _enumerator.Current : null;
 
             return true;
         }
@@ -101,8 +106,8 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
             if (distance <= 0)
                 throw new ArgumentOutOfRangeException(nameof(distance));
 
-            var idx = _history.Count - distance;
-            return idx >= 0 ? _history[idx] : null;
+            var index = _history.Count - distance;
+            return index >= 0 ? _history[index] : null;
         }
     }
 }
