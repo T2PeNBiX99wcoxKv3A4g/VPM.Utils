@@ -46,6 +46,21 @@ namespace io.github.ykysnk.utils.Editor.Patches
         void IPatchLoader.Load() => Load();
         void IPatchLoader.Unload() => Unload();
 
+        public static void Log2(object? message) => Utils.Log(ThisType.Name, message);
+        public static void Log2(object? message, Object context) => Utils.Log(ThisType.Name, message, context);
+        public static void LogWarning2(object? message) => Utils.LogWarning(ThisType.Name, message);
+
+        public static void LogWarning2(object? message, Object context) =>
+            Utils.LogWarning(ThisType.Name, message, context);
+
+        public static void LogError2(object? message) => Utils.LogError(ThisType.Name, message);
+        public static void LogError2(object? message, Object context) => Utils.LogError(ThisType.Name, message, context);
+
+        public static void Assert2(bool condition, object? message) => Utils.Assert(condition, ThisType.Name, message);
+
+        public static void Assert2(bool condition, object? message, Object context) =>
+            Utils.Assert(condition, ThisType.Name, message, context);
+
         public abstract void Load();
 
         public virtual void Unload()
