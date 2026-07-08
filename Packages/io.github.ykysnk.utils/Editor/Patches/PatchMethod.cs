@@ -5,7 +5,6 @@ using HarmonyLib;
 using JetBrains.Annotations;
 using ILogger = io.github.ykysnk.utils.NonUdon.Logger.ILogger;
 using Object = UnityEngine.Object;
-using UnityDebug = UnityEngine.Debug;
 
 namespace io.github.ykysnk.utils.Editor.Patches
 {
@@ -150,10 +149,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
             {
                 exception = Cleanup(exception, harmony, original);
                 if (exception != null)
-                {
-                    LogError($"Failed to apply patch: {exception.Message}");
-                    UnityDebug.LogException(exception);
-                }
+                    LogError($"Failed to apply patch: {exception.Message}\n{exception.StackTrace}");
             }
         }
     }
