@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.0..1.4.1) - 2026-07-08
+
+### ⛰️  Features
+
+- Add `Method` utility to `PatchMethod` for streamlined access to methods via reflection - ([dddf9b1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/dddf9b1dc9212a5992f06e71434d6a4aa4b778c2))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.1 - ([8fb5fbb](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/8fb5fbb113e9ae18204eda0d05f854894d70cb47))
+
+### Action
+
+- Update `CHANGELOG.md` - ([f0d48fa](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f0d48faa78eaffa4604557cab6277bf88ca38e6c))
+
+
 ## [1.4.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.3.1..1.4.0) - 2026-07-08
 
 ### ⛰️  Features
