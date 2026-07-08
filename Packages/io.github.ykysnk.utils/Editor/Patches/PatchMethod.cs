@@ -118,6 +118,12 @@ namespace io.github.ykysnk.utils.Editor.Patches
             var finalizer = TargetFinalizer;
             Exception? exception = null;
 
+            if (prefix == null && postfix == null && transpiler == null && finalizer == null)
+            {
+                LogWarning("Failed to apply patch: no patch methods specified.");
+                return;
+            }
+
             try
             {
                 if (!Enabled || !Prepare(original, harmony))
@@ -125,7 +131,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
                 if (original == null)
                 {
-                    LogWarning("Patch is failed! Target method is null.");
+                    LogWarning("Failed to apply patch: target method not found.");
                     return;
                 }
 
