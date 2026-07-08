@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.4..1.4.5) - 2026-07-08
+
+### 🐛 Bug Fixes
+
+- Simplify exception handling in `PatchMethod` by removing redundant `UnityDebug` logging - ([12b9e97](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/12b9e974f7f38569c103b8aa4e9215cdf905d4bb))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.5 - ([436f80e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/436f80e2697509f095229b2a44da07de8a94308b))
+
+### Action
+
+- Update `CHANGELOG.md` - ([c1c20c3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c1c20c3d4a5ad8b911d93da37af18be044459b9c))
+
+
 ## [1.4.4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.3..1.4.4) - 2026-07-08
 
 ### 🐛 Bug Fixes
