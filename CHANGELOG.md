@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.4.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.1..1.4.2) - 2026-07-08
+
+### ⛰️  Features
+
+- Add method caching to `PatchCore` and enhance `PatchMethod` with virtual method access support - ([dc3bda5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/dc3bda5ffc80cb5049f19210711d69fe7ee6c1e0))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.2 - ([ed7b5f8](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ed7b5f8024c958b9d6712f7f5a17618e22247e10))
+
+### Action
+
+- Update `CHANGELOG.md` - ([fb4eb47](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fb4eb47f66e83061a3e7f7af17c2b89af21afc0c))
+
+
 ## [1.4.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.0..1.4.1) - 2026-07-08
 
 ### ⛰️  Features
