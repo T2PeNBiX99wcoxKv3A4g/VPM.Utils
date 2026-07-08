@@ -151,7 +151,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
                 exception = Cleanup(exception, harmony, original);
                 if (exception != null)
                 {
-                    LogWarning($"Failed to apply patch: {DisplayName}");
+                    LogError($"Failed to apply patch: {exception.Message}");
                     UnityDebug.LogException(exception);
                 }
             }
