@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.3.1..1.4.0) - 2026-07-08
+
+### ⛰️  Features
+
+- Extend `IPatch` and `IPatchLoader` with Harmony integration, and introduce patch lifecycle management - ([87a4dda](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/87a4dda2007c253ead4c5ae3ed9057242c08aaa0))
+- Introduce `IPatchMethod` and generic `PatchMethod` base class for streamlined patching and logging - ([30f41ae](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/30f41aefd12fa8a8651efa4540dcd008ca617814))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.0 - ([58cf1cd](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/58cf1cdc2bc1287b7afd53e403965c8018c94f46))
+
+### Action
+
+- Update `CHANGELOG.md` - ([069a03a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/069a03a0237ac761b039f308b7928d93d5e25298))
+
+
 ## [1.3.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.3.0..1.3.1) - 2026-07-07
 
 ### 🚜 Refactor
