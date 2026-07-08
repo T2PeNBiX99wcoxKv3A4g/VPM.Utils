@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using HarmonyLib;
 using io.github.ykysnk.utils.NonUdon.Logger;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
@@ -7,11 +8,12 @@ using Object = UnityEngine.Object;
 namespace io.github.ykysnk.utils.Editor.Patches
 {
     [PublicAPI]
-    internal interface IPatchLoader
+    public interface IPatchLoader
     {
         string QualifiedName { get; }
         string DisplayName { get; }
         bool Enabled { get; }
+        Harmony? Harmony { get; internal set; }
 
         void Load();
         void Unload();
@@ -24,6 +26,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public static T Instance => InstanceInternal.Value;
         public static Type ThisType { get; } = typeof(T);
+        protected Harmony? Harmony { get; set; }
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
@@ -42,6 +45,12 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public virtual string QualifiedName { get; } = ThisType.FullName ?? ThisType.Name;
         public virtual string DisplayName { get; } = ThisType.Name;
         public virtual bool Enabled { get; } = true;
+
+        Harmony? IPatchLoader.Harmony
+        {
+            get => Harmony;
+            set => Harmony = value;
+        }
 
         void IPatchLoader.Load() => Load();
         void IPatchLoader.Unload() => Unload();
@@ -65,6 +74,12 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public virtual void Unload()
         {
+        }
+
+        protected void Run(IPatch patch)
+        {
+            patch.Harmony = Harmony;
+            patch.Run();
         }
     }
 }

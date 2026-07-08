@@ -17,8 +17,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
             foreach (var loader in patchLoaders)
             {
                 if (!loader.Enabled) continue;
-
                 var harmony = new Harmony(loader.QualifiedName);
+                loader.Harmony = harmony;
                 loader.Load();
                 harmony.PatchAll(loader.GetType().Assembly);
                 AssemblyReloadEvents.beforeAssemblyReload += () =>

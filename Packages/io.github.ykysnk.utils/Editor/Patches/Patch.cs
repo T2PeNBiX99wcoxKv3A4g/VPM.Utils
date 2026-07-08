@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
+using HarmonyLib;
 using io.github.ykysnk.utils.NonUdon.Logger;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
@@ -7,13 +11,15 @@ using Object = UnityEngine.Object;
 namespace io.github.ykysnk.utils.Editor.Patches
 {
     [PublicAPI]
-    internal interface IPatch
+    public interface IPatch
     {
         string QualifiedName { get; }
         string DisplayName { get; }
         bool Enabled { get; }
+        Harmony? Harmony { get; internal set; }
 
         void Execute();
+        void Run();
     }
 
     [PublicAPI]
@@ -23,6 +29,14 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public static T Instance => InstanceInternal.Value;
         public static Type ThisType { get; } = typeof(T);
+        protected Harmony? Harmony { get; set; }
+
+        private static IEnumerable<Type> PatchMethodTypes => ThisType
+            .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(t => typeof(IPatchMethod).IsAssignableFrom(t));
+
+        private static IEnumerable<IPatchMethod> PatchMethods =>
+            PatchMethodTypes.Select(InstantiateMethod).Where(x => x != null)!;
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
@@ -42,7 +56,14 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public virtual string DisplayName { get; } = ThisType.Name;
         public virtual bool Enabled { get; } = true;
 
+        Harmony? IPatch.Harmony
+        {
+            get => Harmony;
+            set => Harmony = value;
+        }
+
         void IPatch.Execute() => Execute();
+        void IPatch.Run() => Run();
         public static void Log2(object? message) => Utils.Log(ThisType.Name, message);
         public static void Log2(object? message, Object context) => Utils.Log(ThisType.Name, message, context);
         public static void LogWarning2(object? message) => Utils.LogWarning(ThisType.Name, message);
@@ -60,10 +81,28 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         protected abstract void Execute();
 
-        public void Run()
+        internal void Run()
         {
             if (!Enabled) return;
             Execute();
+            PatchAll();
+        }
+
+        internal void PatchAll()
+        {
+            var patchMethods = PatchMethods.ToArray();
+            if (patchMethods.Length < 1) return;
+            foreach (var patchMethod in patchMethods)
+                patchMethod.Patch(Harmony);
+        }
+
+        private static IPatchMethod? InstantiateMethod(Type methodType)
+        {
+            var loader = (IPatchMethod?)Activator.CreateInstance(methodType);
+            if (loader == null)
+                LogWarning2($"Failed to instantiate method of type {methodType}");
+
+            return loader;
         }
     }
 }

@@ -29,6 +29,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         bool Prepare(MethodInfo? original, Harmony harmony);
 
         Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original);
+        void Patch(Harmony? harmony);
     }
 
     [PublicAPI]
@@ -72,6 +73,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
         Exception? IPatchMethod.Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) =>
             Cleanup(exception, harmony, original);
 
+        void IPatchMethod.Patch(Harmony? harmony) => Patch(harmony);
+
         protected virtual bool Prepare(MethodInfo? original, Harmony harmony) => true;
         protected virtual Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) => null;
 
@@ -90,8 +93,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public static void Assert2(bool condition, object? message, Object context) =>
             Utils.Assert(condition, ThisType.Name, message, context);
 
-        public void Apply(Harmony harmony)
+        internal void Patch(Harmony? harmony)
         {
+            if (harmony == null)
+                throw new ArgumentNullException(nameof(harmony));
             var original = TargetMethod;
             var prefix = TargetPrefix;
             var postfix = TargetPostfix;
