@@ -39,6 +39,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public static T Instance => InstanceInternal.Value;
         public static Type ThisType { get; } = typeof(T);
+        public virtual string PrefixMethod { get; } = "Prefix";
+        public virtual string PostfixMethod { get; } = "Postfix";
+        public virtual string TranspilerMethod { get; } = "Transpiler";
+        public virtual string FinalizerMethod { get; } = "Finalizer";
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
@@ -58,10 +62,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public virtual string DisplayName { get; } = ThisType.Name;
         public virtual bool Enabled { get; } = true;
         public virtual MethodInfo? TargetMethod { get; }
-        public virtual MethodInfo? TargetPrefix { get; }
-        public virtual MethodInfo? TargetPostfix { get; }
-        public virtual MethodInfo? TargetTranspiler { get; }
-        public virtual MethodInfo? TargetFinalizer { get; }
+        public virtual MethodInfo? TargetPrefix => Method(PrefixMethod);
+        public virtual MethodInfo? TargetPostfix => Method(PostfixMethod);
+        public virtual MethodInfo? TargetTranspiler => Method(TranspilerMethod);
+        public virtual MethodInfo? TargetFinalizer => Method(FinalizerMethod);
 
         public virtual int Priority { get; } = -1;
         public virtual string[]? Before { get; }
@@ -93,7 +97,15 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public static void Assert2(bool condition, object? message, Object context) =>
             Utils.Assert(condition, ThisType.Name, message, context);
 
-        protected static MethodInfo? Method(string name) => AccessTools.Method(ThisType, name);
+        protected static MethodInfo? Method(string name)
+        {
+            var key = $"{ThisType.FullName}.{name}";
+            if (PatchCore.MethodCache.TryGetValue(key, out var cache))
+                return cache;
+            var method = AccessTools.Method(ThisType, name);
+            if (method == null) return null;
+            return PatchCore.MethodCache[key] = method;
+        }
 
         internal void Patch(Harmony? harmony)
         {

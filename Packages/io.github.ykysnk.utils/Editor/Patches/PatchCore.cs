@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using HarmonyLib;
 using UnityEditor;
 
@@ -9,6 +10,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
     [InitializeOnLoad]
     internal static class PatchCore
     {
+        internal static readonly Dictionary<string, MethodInfo> MethodCache = new();
+
         static PatchCore()
         {
             var patchLoaders = PatchLoaders.ToArray();
