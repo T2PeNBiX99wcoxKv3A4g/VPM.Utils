@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.2..1.4.3) - 2026-07-08
+
+### 🐛 Bug Fixes
+
+- Improve logging and validation in `PatchMethod` to handle missing patch methods - ([fedace1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/fedace12351d35453f88642b983dcec251c0f0a8))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.3 - ([e1163e6](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e1163e65a6ca652fdb7d2dec85a25ecd0d229adb))
+- Bump `io.github.ykysnk.yky-toolkit` package version to 1.1.2 - ([ed4028e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ed4028ef5e60f31b8d51ac8c92afc9c3537102de))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a64718a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a64718a5741f983236559deb04ec7d4f322bac28))
+
+
 ## [1.4.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.1..1.4.2) - 2026-07-08
 
 ### ⛰️  Features
