@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using HarmonyLib;
 using JetBrains.Annotations;
 using ILogger = io.github.ykysnk.utils.NonUdon.Logger.ILogger;
 using Object = UnityEngine.Object;
+using UnityDebug = UnityEngine.Debug;
 
 namespace io.github.ykysnk.utils.Editor.Patches
 {
@@ -80,7 +80,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         void IPatchMethod.Patch(Harmony? harmony) => Patch(harmony);
 
         protected virtual bool Prepare(MethodInfo? original, Harmony harmony) => true;
-        protected virtual Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) => null;
+        protected virtual Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) => exception;
 
         public static void Log2(object? message) => Utils.Log(ThisType.Name, message);
         public static void Log2(object? message, Object context) => Utils.Log(ThisType.Name, message, context);
@@ -150,7 +150,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
             {
                 exception = Cleanup(exception, harmony, original);
                 if (exception != null)
-                    ExceptionDispatchInfo.Capture(exception).Throw();
+                {
+                    LogWarning($"Failed to apply patch: {DisplayName}");
+                    UnityDebug.LogException(exception);
+                }
             }
         }
     }
