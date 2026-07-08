@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.3..1.4.4) - 2026-07-08
+
+### 🐛 Bug Fixes
+
+- Replace warning with error logging for patch application failures in `PatchMethod` - ([bc03d33](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/bc03d33ffde6ef2fbab618d103b585203c1de63e))
+- Enhance exception handling in `PatchMethod` with improved logging and cleanup - ([a13e848](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a13e8487d797acc6a8d95e29e1ab6a5068b59f01))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.4.4 - ([f0de06f](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f0de06faef1b6a1995e99ebfca75abe3fd17bb7d))
+
+### Action
+
+- Update `CHANGELOG.md` - ([2930426](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2930426b3857bf15837ade5e7dd0a395108177f8))
+
+
 ## [1.4.3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.2..1.4.3) - 2026-07-08
 
 ### 🐛 Bug Fixes
