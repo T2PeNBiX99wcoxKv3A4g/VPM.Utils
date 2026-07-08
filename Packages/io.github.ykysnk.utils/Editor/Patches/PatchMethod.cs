@@ -93,6 +93,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public static void Assert2(bool condition, object? message, Object context) =>
             Utils.Assert(condition, ThisType.Name, message, context);
 
+        protected static MethodInfo? Method(string name) => AccessTools.Method(ThisType, name);
+
         internal void Patch(Harmony? harmony)
         {
             if (harmony == null)
