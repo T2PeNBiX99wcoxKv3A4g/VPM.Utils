@@ -36,6 +36,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
             .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
             .Where(t => typeof(IPatchMethod).IsAssignableFrom(t));
 
+        private static IEnumerable<Type> ReversePatchMethodTypes => ThisType
+            .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(t => typeof(IReversePatchMethod).IsAssignableFrom(t));
+
         private static IEnumerable<IPatchMethod> PatchMethods =>
             PatchMethodTypes.Select(ReflectionUtils.Instantiate<IPatchMethod>).Where(x => x != null)!;
 
@@ -95,11 +99,14 @@ namespace io.github.ykysnk.utils.Editor.Patches
         internal void PatchAll()
         {
             var patchMethods = PatchMethods.ToArray();
-            if (patchMethods.Length < 1) return;
+            var reversePatchMethods = ReversePatchMethods.ToArray();
+
             foreach (var patchMethod in patchMethods)
                 patchMethod.Patch(Harmony);
         }
 
+            foreach (var reversePatchMethod in reversePatchMethods)
+                reversePatchMethod.Patch(harmony);
         }
     }
 }
