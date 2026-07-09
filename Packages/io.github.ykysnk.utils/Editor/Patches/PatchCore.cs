@@ -38,15 +38,6 @@ namespace io.github.ykysnk.utils.Editor.Patches
                 ((ExportsPatchLoader)x).Type).Where(x => typeof(IPatchLoader).IsAssignableFrom(x));
 
         private static IEnumerable<IPatchLoader> PatchLoaders =>
-            PatchLoaderTypes.Select(InstantiateLoader).Where(x => x != null)!;
-
-        private static IPatchLoader? InstantiateLoader(Type loaderType)
-        {
-            var loader = (IPatchLoader?)Activator.CreateInstance(loaderType);
-            if (loader == null)
-                Utils.LogWarning(nameof(PatchCore), $"Failed to instantiate loader of type {loaderType}");
-
-            return loader;
-        }
+            PatchLoaderTypes.Select(ReflectionUtils.Instantiate<IPatchLoader>).Where(x => x != null)!;
     }
 }

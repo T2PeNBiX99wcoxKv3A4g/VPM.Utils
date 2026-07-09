@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using HarmonyLib;
+using io.github.ykysnk.utils.NonUdon;
 using io.github.ykysnk.utils.NonUdon.Logger;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
@@ -36,7 +37,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
             .Where(t => typeof(IPatchMethod).IsAssignableFrom(t));
 
         private static IEnumerable<IPatchMethod> PatchMethods =>
-            PatchMethodTypes.Select(InstantiateMethod).Where(x => x != null)!;
+            PatchMethodTypes.Select(ReflectionUtils.Instantiate<IPatchMethod>).Where(x => x != null)!;
+
+        private static IEnumerable<IReversePatchMethod> ReversePatchMethods =>
+            ReversePatchMethodTypes.Select(ReflectionUtils.Instantiate<IReversePatchMethod>).Where(x => x != null)!;
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
@@ -96,13 +100,6 @@ namespace io.github.ykysnk.utils.Editor.Patches
                 patchMethod.Patch(Harmony);
         }
 
-        private static IPatchMethod? InstantiateMethod(Type methodType)
-        {
-            var loader = (IPatchMethod?)Activator.CreateInstance(methodType);
-            if (loader == null)
-                LogWarning2($"Failed to instantiate method of type {methodType}");
-
-            return loader;
         }
     }
 }
