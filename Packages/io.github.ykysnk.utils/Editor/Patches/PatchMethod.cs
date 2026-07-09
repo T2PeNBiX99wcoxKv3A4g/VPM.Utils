@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace io.github.ykysnk.utils.Editor.Patches
 {
     [PublicAPI]
-    internal interface IPatchMethod
+    public interface IPatchMethod
     {
         string QualifiedName { get; }
         string DisplayName { get; }
