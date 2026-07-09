@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using io.github.ykysnk.utils.NonUdon;
 using UnityEditor;
 
 namespace io.github.ykysnk.utils.Editor.Patches
@@ -21,12 +22,12 @@ namespace io.github.ykysnk.utils.Editor.Patches
             {
                 if (!loader.Enabled) continue;
                 var harmony = new Harmony(loader.QualifiedName);
-                loader.Harmony = harmony;
-                loader.Load();
+                loader.ThisHarmony = harmony;
+                loader.Load(harmony);
                 harmony.PatchAll(loader.GetType().Assembly);
                 AssemblyReloadEvents.beforeAssemblyReload += () =>
                 {
-                    loader.Unload();
+                    loader.Unload(harmony);
                     harmony.UnpatchAll(loader.QualifiedName);
                 };
                 Utils.Log(nameof(PatchCore), $"Loaded patch loader ({loader.DisplayName})");

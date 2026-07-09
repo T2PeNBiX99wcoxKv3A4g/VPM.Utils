@@ -17,10 +17,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
         string QualifiedName { get; }
         string DisplayName { get; }
         bool Enabled { get; }
-        Harmony? Harmony { get; internal set; }
+        Harmony? ThisHarmony { get; internal set; }
 
-        void Execute();
-        void Run();
+        void Execute(Harmony harmony);
+        void Run(Harmony harmony);
     }
 
     [PublicAPI]
@@ -30,7 +30,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public static T Instance => InstanceInternal.Value;
         public static Type ThisType { get; } = typeof(T);
-        protected Harmony? Harmony { get; set; }
+        protected Harmony? ThisHarmony { get; set; }
 
         private static IEnumerable<Type> PatchMethodTypes => ThisType
             .GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
@@ -64,14 +64,14 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public virtual string DisplayName { get; } = ThisType.Name;
         public virtual bool Enabled { get; } = true;
 
-        Harmony? IPatch.Harmony
+        Harmony? IPatch.ThisHarmony
         {
-            get => Harmony;
-            set => Harmony = value;
+            get => ThisHarmony;
+            set => ThisHarmony = value;
         }
 
-        void IPatch.Execute() => Execute();
-        void IPatch.Run() => Run();
+        void IPatch.Execute(Harmony harmony) => Execute(harmony);
+        void IPatch.Run(Harmony harmony) => Run(harmony);
         public static void Log2(object? message) => Utils.Log(ThisType.Name, message);
         public static void Log2(object? message, Object context) => Utils.Log(ThisType.Name, message, context);
         public static void LogWarning2(object? message) => Utils.LogWarning(ThisType.Name, message);
@@ -87,23 +87,22 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public static void Assert2(bool condition, object? message, Object context) =>
             Utils.Assert(condition, ThisType.Name, message, context);
 
-        protected abstract void Execute();
+        protected abstract void Execute(Harmony harmony);
 
-        internal void Run()
+        internal void Run(Harmony harmony)
         {
             if (!Enabled) return;
-            Execute();
-            PatchAll();
+            Execute(harmony);
+            PatchAll(harmony);
         }
 
-        internal void PatchAll()
+        internal void PatchAll(Harmony harmony)
         {
             var patchMethods = PatchMethods.ToArray();
             var reversePatchMethods = ReversePatchMethods.ToArray();
 
             foreach (var patchMethod in patchMethods)
-                patchMethod.Patch(Harmony);
-        }
+                patchMethod.Patch(harmony);
 
             foreach (var reversePatchMethod in reversePatchMethods)
                 reversePatchMethod.Patch(harmony);

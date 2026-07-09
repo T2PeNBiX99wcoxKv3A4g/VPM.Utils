@@ -13,10 +13,10 @@ namespace io.github.ykysnk.utils.Editor.Patches
         string QualifiedName { get; }
         string DisplayName { get; }
         bool Enabled { get; }
-        Harmony? Harmony { get; internal set; }
+        Harmony? ThisHarmony { get; internal set; }
 
-        void Load();
-        void Unload();
+        void Load(Harmony harmony);
+        void Unload(Harmony harmony);
     }
 
     [PublicAPI]
@@ -26,7 +26,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         public static T Instance => InstanceInternal.Value;
         public static Type ThisType { get; } = typeof(T);
-        protected Harmony? Harmony { get; set; }
+        protected Harmony? ThisHarmony { get; set; }
 
         public void Log(object? message) => Utils.Log(DisplayName, message);
         public void Log(object? message, Object context) => Utils.Log(DisplayName, message, context);
@@ -46,14 +46,14 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public virtual string DisplayName { get; } = ThisType.Name;
         public virtual bool Enabled { get; } = true;
 
-        Harmony? IPatchLoader.Harmony
+        Harmony? IPatchLoader.ThisHarmony
         {
-            get => Harmony;
-            set => Harmony = value;
+            get => ThisHarmony;
+            set => ThisHarmony = value;
         }
 
-        void IPatchLoader.Load() => Load();
-        void IPatchLoader.Unload() => Unload();
+        void IPatchLoader.Load(Harmony harmony) => Load(harmony);
+        void IPatchLoader.Unload(Harmony harmony) => Unload(harmony);
 
         public static void Log2(object? message) => Utils.Log(ThisType.Name, message);
         public static void Log2(object? message, Object context) => Utils.Log(ThisType.Name, message, context);
@@ -70,16 +70,16 @@ namespace io.github.ykysnk.utils.Editor.Patches
         public static void Assert2(bool condition, object? message, Object context) =>
             Utils.Assert(condition, ThisType.Name, message, context);
 
-        public abstract void Load();
+        public abstract void Load(Harmony harmony);
 
-        public virtual void Unload()
+        public virtual void Unload(Harmony harmony)
         {
         }
 
         protected void Run(IPatch patch)
         {
-            patch.Harmony = Harmony;
-            patch.Run();
+            patch.ThisHarmony = ThisHarmony;
+            patch.Run(ThisHarmony!);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         bool Prepare(MethodInfo? original, Harmony harmony);
 
         Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original);
-        void Patch(Harmony? harmony);
+        void Patch(Harmony harmony);
     }
 
     [PublicAPI]
@@ -72,7 +72,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         Exception? IReversePatchMethod.Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) =>
             Cleanup(exception, harmony, original);
 
-        void IReversePatchMethod.Patch(Harmony? harmony) => Patch(harmony);
+        void IReversePatchMethod.Patch(Harmony harmony) => Patch(harmony);
         public virtual bool Prepare(MethodInfo? original, Harmony harmony) => true;
 
         public virtual Exception? Cleanup(Exception? exception, Harmony harmony, MethodInfo? original) => exception;
@@ -111,10 +111,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
             return declaredMethods.FirstOrDefault(predicate);
         }
 
-        internal void Patch(Harmony? harmony)
+        internal void Patch(Harmony harmony)
         {
-            if (harmony == null)
-                throw new ArgumentNullException(nameof(harmony));
             var original = TargetMethod;
             var reverse = TargetReverse;
             var reverseTranspiler = TargetTranspiler;
