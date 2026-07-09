@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.5.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.5..1.5.0) - 2026-07-09
+
+### ⛰️  Features
+
+- Add support for reverse patch methods in `PatchAll` method - ([3e96985](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/3e96985262d8d7fe5abf125c22b0ff055f66248c))
+- Add `ReflectionUtils` with `Instantiate<T>` method for improved type instantiation and logging - ([efc0013](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/efc00131023027de7fc8ae31d18bb7ae3f8038b8))
+- Introduce `IReversePatchMethod` interface and `ReversePatchMethod` base class for reverse patching - ([20aee0e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/20aee0e86eef9339e526cebc0e02c57ec11cf0a2))
+
+### 🐛 Bug Fixes
+
+- Change `IPatchMethod` interface visibility from internal to public - ([b41bd62](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/b41bd62ea9dd1c3faddc6a690d68e12f547b5d25))
+
+### 🚜 Refactor
+
+- Update `Harmony` references for better clarity and consistency across patch methods - ([d633230](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/d633230ea744093bcafe4b13baa81de6f5c5534d))
+- Replace custom instantiation methods with `ReflectionUtils.Instantiate<T>` and add support for reverse patch methods - ([1b7bb04](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/1b7bb046f4ec38203155e93c053ac19e5d2e4bc9))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.5.0 - ([b7d239e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/b7d239ed0a818d9ebda7cb0be44a7869c8dbe864))
+
+### Action
+
+- Update `CHANGELOG.md` - ([c6dd88b](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c6dd88b862520a17b297016d70fc8df2cd4b3cda))
+
+
 ## [1.4.5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.4..1.4.5) - 2026-07-08
 
 ### 🐛 Bug Fixes
