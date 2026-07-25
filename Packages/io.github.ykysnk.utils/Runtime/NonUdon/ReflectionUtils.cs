@@ -27,16 +27,14 @@ public static class ReflectionUtils
         }
     }
 
-    public static IEnumerable<MethodInfo>? GetNestedMethods(Type? type)
-    {
-        return type?.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+    public static IEnumerable<MethodInfo>? GetNestedMethods(Type? type) =>
+        type?.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
             .SelectMany(t =>
                 t.GetMethods(
                     BindingFlags.Public |
                     BindingFlags.NonPublic |
                     BindingFlags.Static |
                     BindingFlags.Instance)).Where(m => !m.IsDefined(typeof(CompilerGeneratedAttribute), false));
-    }
 
     public static MethodInfo? GetNestedMethod(Type? type, string name, string? searchName = null)
     {
