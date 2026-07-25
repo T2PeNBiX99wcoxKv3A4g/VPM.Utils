@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.5.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.5.0..1.5.1) - 2026-07-25
+
+### 🐛 Bug Fixes
+
+- Add exception handling for TargetMethod in patching process - ([ddeb0ac](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ddeb0ac50e8cd14a901c2fd81b82d24bcb26f894))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.5.1 - ([0bcba4d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/0bcba4d13729235cdcdc90d273fed265a2bc412e))
+- Update `.gitignore` - ([3194235](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/31942357170d4979a628e8c4e9291debf5baf170))
+- Bump package versions in `vpm-manifest.json` - ([e94fa65](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e94fa6511b9f601f6d6dbf15e3072cdaee767b16))
+
+### Action
+
+- Update `CHANGELOG.md` - ([ad6394a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ad6394aac1d2df4f06a1c7c2599a5755ac6a7d45))
+
+
 ## [1.5.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.4.5..1.5.0) - 2026-07-09
 
 ### ⛰️  Features
