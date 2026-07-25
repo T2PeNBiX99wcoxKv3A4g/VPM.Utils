@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.6.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.5.1..1.6.0) - 2026-07-25
+
+### ⛰️  Features
+
+- Add `GetNestedMethods` and `GetNestedMethod` to `ReflectionUtils` for enhanced nested type and method discovery - ([8b0e732](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/8b0e73200dfad99f994e721b8346fe80ffe96e3c))
+
+### 🐛 Bug Fixes
+
+- Add exception handling to `GetNestedMethods` for improved resilience against reflection errors - ([cc895ba](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/cc895ba0f1040e256febe1f19c0000f99acf2fb2))
+- Add exception handling to `ReflectionUtils.Instantiate<T>` for improved error logging and stability - ([62052a1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/62052a104a43bee132cddc0ae2a94fa89c24d2f2))
+
+### 🚜 Refactor
+
+- Convert `GetNestedMethods` to expression-bodied member for simplicity - ([c6b62f2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c6b62f2394bc5cde3502baaebb64075718a6d570))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump `io.github.ykysnk.utils` package version to 1.6.0 - ([ce69132](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ce691320e5ce96173257688f2161666f22337dc6))
+
+### Action
+
+- Update `CHANGELOG.md` - ([6932604](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/6932604a213b4725596e6e10505f5455009e6b1d))
+
+
 ## [1.5.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.5.0..1.5.1) - 2026-07-25
 
 ### 🐛 Bug Fixes
