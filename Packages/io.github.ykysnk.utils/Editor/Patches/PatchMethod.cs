@@ -108,21 +108,23 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         internal void Patch(Harmony harmony)
         {
-            var original = TargetMethod;
-            var prefix = TargetPrefix;
-            var postfix = TargetPostfix;
-            var transpiler = TargetTranspiler;
-            var finalizer = TargetFinalizer;
             Exception? exception = null;
-
-            if (prefix == null && postfix == null && transpiler == null && finalizer == null)
-            {
-                LogWarning("Failed to apply patch: no patch methods specified.");
-                return;
-            }
+            MethodInfo? original = null;
 
             try
             {
+                original = TargetMethod;
+                var prefix = TargetPrefix;
+                var postfix = TargetPostfix;
+                var transpiler = TargetTranspiler;
+                var finalizer = TargetFinalizer;
+
+                if (prefix == null && postfix == null && transpiler == null && finalizer == null)
+                {
+                    LogWarning("Failed to apply patch: no patch methods specified.");
+                    return;
+                }
+
                 if (!Enabled || !Prepare(original, harmony))
                     return;
 
