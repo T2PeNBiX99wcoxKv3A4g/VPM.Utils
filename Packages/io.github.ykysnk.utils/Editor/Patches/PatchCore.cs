@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using io.github.ykysnk.utils.NonUdon;
+using io.github.ykysnk.utils.NonUdon.Extensions;
 using UnityEditor;
 
 namespace io.github.ykysnk.utils.Editor.Patches
@@ -12,6 +13,9 @@ namespace io.github.ykysnk.utils.Editor.Patches
     internal static class PatchCore
     {
         internal static readonly Dictionary<string, MethodInfo> MethodCache = new();
+
+        /// <summary>Names that were already looked up and do not exist; avoids resolving them again on every load.</summary>
+        internal static readonly HashSet<string> MissingMethods = new();
 
         private static readonly HashSet<Assembly> PatchedAssemblies = new();
 
@@ -23,23 +27,40 @@ namespace io.github.ykysnk.utils.Editor.Patches
             foreach (var loader in patchLoaders)
             {
                 if (!loader.Enabled) continue;
-                var harmony = new Harmony(loader.QualifiedName);
-                loader.ThisHarmony = harmony;
-                loader.Load(harmony);
 
-                // PatchAll applies every [HarmonyPatch] class of the assembly, so running it once per loader would
-                // apply the same patch several times when more than one loader lives in the same assembly.
-                var assembly = loader.GetType().Assembly;
-                if (PatchedAssemblies.Add(assembly))
-                    harmony.PatchAll(assembly);
-
-                AssemblyReloadEvents.beforeAssemblyReload += () =>
-                {
-                    loader.Unload(harmony);
-                    harmony.UnpatchAll(loader.QualifiedName);
-                };
-                Utils.Log(nameof(PatchCore), $"Loaded patch loader ({loader.DisplayName})");
+                // One broken loader must not stop the others from loading.
+                Try.Run(() => Load(loader))
+                    .OnFailure(e => Utils.LogError(nameof(PatchCore),
+                        $"Failed to load patch loader ({loader.DisplayName}): {e.Message}\n{e.StackTrace}"));
             }
+        }
+
+        private static void Load(IPatchLoader loader)
+        {
+            var harmony = new Harmony(loader.QualifiedName);
+            loader.ThisHarmony = harmony;
+            loader.Load(harmony);
+
+            // PatchAll applies every [HarmonyPatch] class of the assembly, so running it once per loader would
+            // apply the same patch several times when more than one loader lives in the same assembly.
+            var assembly = loader.GetType().Assembly;
+            if (PatchedAssemblies.Add(assembly))
+                harmony.PatchAll(assembly);
+
+            AssemblyReloadEvents.beforeAssemblyReload += () => Unload(loader, harmony);
+
+            Utils.Log(nameof(PatchCore), $"Loaded patch loader ({loader.DisplayName})");
+        }
+
+        private static void Unload(IPatchLoader loader, Harmony harmony)
+        {
+            Try.Run(() => loader.Unload(harmony))
+                .OnFailure(e => Utils.LogError(nameof(PatchCore),
+                    $"Failed to unload patch loader ({loader.DisplayName}): {e.Message}\n{e.StackTrace}"));
+
+            Try.Run(() => harmony.UnpatchAll(loader.QualifiedName))
+                .OnFailure(e => Utils.LogError(nameof(PatchCore),
+                    $"Failed to unpatch loader ({loader.DisplayName}): {e.Message}\n{e.StackTrace}"));
         }
 
         private static IEnumerable<Type> PatchLoaderTypes => AppDomain.CurrentDomain.GetAssemblies()

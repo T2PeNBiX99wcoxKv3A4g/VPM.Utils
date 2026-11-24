@@ -38,9 +38,12 @@ public static class ReflectionWrapper
     /// <param name="type">The Type instance to cache or retrieve.</param>
     /// <returns>The cached Type instance.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the provided Type is null.</exception>
-    public static Type GetType(Type type) => type == null
-        ? throw new ArgumentNullException(nameof(type))
-        : TypeCache.GetOrAdd(type.FullName, _ => type);
+    public static Type GetType(Type type)
+    {
+        if (type == null) throw new ArgumentNullException(nameof(type));
+        if (type.FullName == null) return type;
+        return TypeCache.GetOrAdd(type.FullName, _ => type);
+    }
 
     /// <summary>
     ///     Retrieves a FieldInfo object representing the specified field of a given type,
@@ -126,7 +129,8 @@ public static class ReflectionWrapper
             throw new ArgumentNullException(nameof(type));
         if (string.IsNullOrEmpty(methodName))
             throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
-        var key = $"{type.FullName}.method.{methodName}.{string.Join(",", parameterTypes.Select(t => t.FullName))}";
+        var key =
+            $"{typeof(TDelegate).FullName}|{type.FullName}.method.{methodName}.{string.Join(",", parameterTypes.Select(t => t.FullName))}";
         return (TDelegate)DelegateCache.GetOrAdd(key, _ =>
         {
             var method = GetMethod(type, methodName, parameterTypes);

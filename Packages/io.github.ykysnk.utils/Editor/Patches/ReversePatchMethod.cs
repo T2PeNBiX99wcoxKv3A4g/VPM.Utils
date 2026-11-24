@@ -97,8 +97,16 @@ namespace io.github.ykysnk.utils.Editor.Patches
             var key = $"{ThisType.FullName}.{name}";
             if (PatchCore.MethodCache.TryGetValue(key, out var cache))
                 return cache;
+            if (PatchCore.MissingMethods.Contains(key))
+                return null;
+
             var method = AccessTools.Method(ThisType, name);
-            if (method == null) return null;
+            if (method == null)
+            {
+                PatchCore.MissingMethods.Add(key);
+                return null;
+            }
+
             return PatchCore.MethodCache[key] = method;
         }
 
@@ -113,28 +121,29 @@ namespace io.github.ykysnk.utils.Editor.Patches
 
         internal void Patch(Harmony harmony)
         {
-            var original = TargetMethod;
-            var reverse = TargetReverse;
-            var reverseTranspiler = TargetTranspiler;
-            Exception? exception = null;
+            if (!Enabled) return;
 
+            var reverse = TargetReverse;
             if (reverse == null)
             {
                 LogWarning("Failed to apply reverse patch: no patch methods specified.");
                 return;
             }
 
+            var original = TargetMethod;
+            if (original == null)
+            {
+                LogWarning("Failed to apply reverse patch: target method not found.");
+                return;
+            }
+
+            if (!Prepare(original, harmony)) return;
+
+            var reverseTranspiler = TargetTranspiler;
+            Exception? exception = null;
+
             try
             {
-                if (!Enabled || !Prepare(original, harmony))
-                    return;
-
-                if (original == null)
-                {
-                    LogWarning("Failed to apply reverse patch: target method not found.");
-                    return;
-                }
-
                 Harmony.ReversePatch(original, new(reverse, Priority, Before, After, Debug),
                     reverseTranspiler == null ? GetTranspiler(reverse) : reverseTranspiler);
             }

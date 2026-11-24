@@ -101,39 +101,47 @@ namespace io.github.ykysnk.utils.Editor.Patches
             var key = $"{ThisType.FullName}.{name}";
             if (PatchCore.MethodCache.TryGetValue(key, out var cache))
                 return cache;
+            if (PatchCore.MissingMethods.Contains(key))
+                return null;
+
             var method = AccessTools.Method(ThisType, name);
-            if (method == null) return null;
+            if (method == null)
+            {
+                PatchCore.MissingMethods.Add(key);
+                return null;
+            }
+
             return PatchCore.MethodCache[key] = method;
         }
 
         internal void Patch(Harmony harmony)
         {
+            if (!Enabled) return;
+
+            var original = TargetMethod;
+            if (original == null)
+            {
+                LogWarning("Failed to apply patch: target method not found.");
+                return;
+            }
+
+            var prefix = TargetPrefix;
+            var postfix = TargetPostfix;
+            var transpiler = TargetTranspiler;
+            var finalizer = TargetFinalizer;
+
+            if (prefix == null && postfix == null && transpiler == null && finalizer == null)
+            {
+                LogWarning("Failed to apply patch: no patch methods specified.");
+                return;
+            }
+
+            if (!Prepare(original, harmony)) return;
+
             Exception? exception = null;
-            MethodInfo? original = null;
 
             try
             {
-                original = TargetMethod;
-                var prefix = TargetPrefix;
-                var postfix = TargetPostfix;
-                var transpiler = TargetTranspiler;
-                var finalizer = TargetFinalizer;
-
-                if (prefix == null && postfix == null && transpiler == null && finalizer == null)
-                {
-                    LogWarning("Failed to apply patch: no patch methods specified.");
-                    return;
-                }
-
-                if (!Enabled || !Prepare(original, harmony))
-                    return;
-
-                if (original == null)
-                {
-                    LogWarning("Failed to apply patch: target method not found.");
-                    return;
-                }
-
                 harmony.Patch(
                     original,
                     prefix == null ? null : new HarmonyMethod(prefix, Priority, Before, After, Debug),
