@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.7.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.6.0..1.7.0) - 2026-11-24
+
+### ⛰️  Features
+
+- Add a cached Reflect accessor and harden the patch system - ([4d4f45b](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/4d4f45bd622502569066005ef764e7a470357d8c))
+- Show the exception type and collapse the error details - ([3393ed9](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/3393ed9be889adb08b4cfc0e420f63a6c0819ed1))
+- Show the IMGUI editor error like the UI Toolkit one - ([32ddc76](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/32ddc7641c0ee20e0bed07df506385124b381a57))
+
+### 🐛 Bug Fixes
+
+- Drop the unused reverse patch mode and derive missing hex text - ([6ec4c47](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/6ec4c47151d46ea778d84ec553c583c8d6a22923))
+- Size the IMGUI error details box to its content - ([cefdd2f](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/cefdd2fb34b303dea4016c4a6d0dd5eba433115a))
+- Correct runtime helper bugs and complete Try/Result API - ([44ab629](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/44ab629068a86efec2c87522a04d3dcf43fe1a87))
+
+### 📚 Documentation
+
+- Refresh the package comments and fix the mismatches they exposed - ([09a8993](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/09a89938ddfcb68615e0098754678d69902394c8))
+
+### 🎨 Styling
+
+- Move the UI Toolkit error UI to a stylesheet - ([2b91ac5](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2b91ac599f8747dffb8a1d60f33320fb53facc15))
+- Tidy the UI Toolkit editor error layout - ([2ae1511](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2ae15113a89330ed1560b0c5ca41e75c7040b67a))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.7.0 - ([052e5a6](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/052e5a6aeef028a11a6d9338df8bbcce93ae5fe9))
+- Drop the copied Harmony DLLs - ([8d097bf](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/8d097bfcee31d8660a13ac33cd1835b460674a57))
+- Bump com.ivanmurzak.unity.mcp to 1.14.3 - ([c93e74d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c93e74d52df9f26820197e6038dce4f03b9477eb))
+- Update editor user settings - ([c14109a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c14109acb6b8873d30d8ad9e06621e03149761a8))
+- Add licensesUrl to package.json - ([86c8a8e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/86c8a8ec00c4968052f4e13daac094a501839651))
+- Drop the local Website copy, the listing is built from VPM-WebSite - ([14c1d06](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/14c1d064ddbc042da803a6febdb68903baf815a6))
+- Add Unity MCP package and update SDK to 3.10.6 - ([a9b8c88](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a9b8c881f557f84c442abf871a50affcda337c60))
+- Use the shared Release-Workflows release and listing workflows - ([6823d8c](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/6823d8c88797bf824c037c4363c0d195f0ce38df))
+
+### Action
+
+- Update `CHANGELOG.md` - ([c08c956](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/c08c956a1f2ad61e3670ef65478b69aac01e4879))
+
+## New Contributors ❤️
+
+* @opencode-agent[bot] made their first contribution
+
 ## [1.6.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.5.1..1.6.0) - 2026-07-25
 
 ### ⛰️  Features
