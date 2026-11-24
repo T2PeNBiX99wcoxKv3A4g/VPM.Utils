@@ -132,13 +132,23 @@ namespace io.github.ykysnk.utils.Editor
 
         /// <summary>
         ///     Draws the IMGUI error UI. It mirrors <c>BasicEditorErrorUI.uxml</c>: the message alone in a HelpBox,
-        ///     the details in a scrollable selectable box and a button that copies them.
+        ///     a header row whose button copies the details, and the details themselves in a scrollable selectable box.
         /// </summary>
         protected virtual void DrawErrorUI(Exception e)
         {
             EditorGUILayout.HelpBox(ErrorTitle(e), MessageType.Error);
 
             var details = ErrorDetails(e);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.Label("Error details", EditorStyles.boldLabel);
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Copy", EditorStyles.miniButton, GUILayout.Width(60)))
+                    EditorGUIUtility.systemCopyBuffer = details;
+            }
+
+            GUILayout.Space(2);
 
             // Grow with the content and only start scrolling once the details get long, so a short stack trace
             // does not leave an empty box behind. The width is a little conservative so the measured height
@@ -155,13 +165,6 @@ namespace io.github.ykysnk.utils.Editor
 
                 EditorGUILayout.SelectableLabel(details, ErrorDetailsStyle, GUILayout.Height(contentHeight),
                     GUILayout.ExpandWidth(true));
-            }
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                GUILayout.FlexibleSpace();
-                if (!GUILayout.Button("Copy", EditorStyles.miniButton, GUILayout.Width(80))) return;
-                EditorGUIUtility.systemCopyBuffer = details;
             }
         }
 

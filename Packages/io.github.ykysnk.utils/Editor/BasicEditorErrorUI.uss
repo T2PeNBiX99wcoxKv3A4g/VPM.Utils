@@ -1,0 +1,36 @@
+.error-root {
+    flex-grow: 1;
+    padding: 4px 2px 6px 2px;
+}
+
+.error-box {
+    margin: 0 0 6px 0;
+}
+
+.error-header {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 0 3px 0;
+    padding: 0 2px;
+}
+
+.error-title {
+    flex-grow: 1;
+    -unity-font-style: bold;
+}
+
+.error-copy {
+    margin: 0;
+    padding: 1px 10px;
+    min-width: 54px;
+    font-size: 11px;
+    -unity-text-align: middle-center;
+}
+
+.error-details {
+    white-space: normal;
+    margin: 0;
+    padding: 3px 5px;
+    min-height: 44px;
+    border-radius: 3px;
+}

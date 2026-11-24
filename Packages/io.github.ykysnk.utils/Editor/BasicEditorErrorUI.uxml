@@ -1,14 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
-    <ui:VisualElement style="flex-grow: 1; padding: 4px 2px 6px 2px;">
-        <ui:HelpBox text="Error" message-type="Error" name="errorBox" style="margin: 0 0 4px 0;"/>
+    <Style src="BasicEditorErrorUI.uss"/>
+    <ui:VisualElement class="error-root">
+        <ui:HelpBox text="Error" message-type="Error" name="errorBox" class="error-box"/>
 
-        <ui:VisualElement style="flex-direction: row; align-items: center; margin: 0 0 2px 0; padding: 0 2px;">
-            <ui:Label text="Error details" style="flex-grow: 1; -unity-font-style: bold;"/>
-            <ui:Button text="Copy" name="copy" tooltip="Copy the error message and stack trace"
-                       style="margin: 0; padding: 1px 10px;"/>
+        <ui:VisualElement class="error-header">
+            <ui:Label text="Error details" class="error-title"/>
+            <ui:Button text="Copy" name="copy" class="error-copy"
+                       tooltip="Copy the error message and stack trace"/>
         </ui:VisualElement>
 
         <ui:TextField picking-mode="Ignore" value="" readonly="true" name="errorDetails" multiline="true"
-                      style="white-space: normal; margin: 0; min-height: 40px;"/>
+                      class="error-details"/>
     </ui:VisualElement>
 </ui:UXML>
