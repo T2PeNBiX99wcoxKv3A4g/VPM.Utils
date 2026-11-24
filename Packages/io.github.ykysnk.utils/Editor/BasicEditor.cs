@@ -36,6 +36,12 @@ namespace io.github.ykysnk.utils.Editor
         /// </remarks>
         protected virtual bool ConsoleLog => false;
 
+        private const float ErrorDetailsHeight = 140f;
+
+        private static GUIStyle? _errorDetailsStyle;
+
+        private Vector2 _errorScrollPosition;
+
         // ReSharper disable once Unity.RedundantEventFunction
         /// <summary>
         ///     Called when the script is enabled in the Unity Editor.
@@ -74,7 +80,7 @@ namespace io.github.ykysnk.utils.Editor
                     Debug.LogException(e);
                 OnError(e, Type.UGUI);
                 OnErrorEvent?.Invoke(e, Type.UGUI);
-                EditorGUILayout.HelpBox($"Editor Error: {e.Message}\n{e.StackTrace}", MessageType.Error, true);
+                DrawErrorUI(e);
             });
 
             if (!EditorGUI.EndChangeCheck())
@@ -100,13 +106,57 @@ namespace io.github.ykysnk.utils.Editor
 
                 var tree = errorUxml.CloneTree();
                 var errorBox = tree.Q<HelpBox>("errorBox");
-                errorBox.text = $"Editor Error: {e.Message}";
+                errorBox.text = ErrorTitle(e);
                 var errorDetails = tree.Q<TextField>("errorDetails");
-                errorDetails.value = $"{e.Message}\n{e.StackTrace}";
+                errorDetails.value = ErrorDetails(e);
                 var copy = tree.Q<Button>("copy");
                 copy.clicked += () => EditorGUIUtility.systemCopyBuffer = errorDetails.value;
                 return tree;
             });
+        }
+
+        private static GUIStyle ErrorDetailsStyle => _errorDetailsStyle ??= new GUIStyle(EditorStyles.textArea)
+        {
+            wordWrap = true,
+            richText = false,
+            padding = new RectOffset(6, 6, 4, 4),
+            margin = new RectOffset(0, 0, 0, 0)
+        };
+
+        /// <summary>The one line title shown in the error UI.</summary>
+        protected static string ErrorTitle(Exception e) => $"Editor Error: {e.Message}";
+
+        /// <summary>The copyable error text: the message followed by the stack trace.</summary>
+        protected static string ErrorDetails(Exception e) => $"{e.Message}\n{e.StackTrace}";
+
+        /// <summary>
+        ///     Draws the IMGUI error UI. It mirrors <c>BasicEditorErrorUI.uxml</c>: the message alone in a HelpBox,
+        ///     the details in a scrollable selectable box and a button that copies them.
+        /// </summary>
+        protected virtual void DrawErrorUI(Exception e)
+        {
+            EditorGUILayout.HelpBox(ErrorTitle(e), MessageType.Error);
+
+            var details = ErrorDetails(e);
+
+            using (var scroll = new EditorGUILayout.ScrollViewScope(_errorScrollPosition, "box",
+                       GUILayout.Height(ErrorDetailsHeight)))
+            {
+                _errorScrollPosition = scroll.scrollPosition;
+
+                var width = Mathf.Max(EditorGUIUtility.currentViewWidth - 32f, 50f);
+                var height = Mathf.Max(ErrorDetailsStyle.CalcHeight(new GUIContent(details), width),
+                    ErrorDetailsStyle.lineHeight);
+                EditorGUILayout.SelectableLabel(details, ErrorDetailsStyle, GUILayout.Height(height),
+                    GUILayout.ExpandWidth(true));
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.FlexibleSpace();
+                if (!GUILayout.Button("Copy", EditorStyles.miniButton, GUILayout.Width(80))) return;
+                EditorGUIUtility.systemCopyBuffer = details;
+            }
         }
 
         public static VisualElement CreateUxmlImportErrorUI() =>
