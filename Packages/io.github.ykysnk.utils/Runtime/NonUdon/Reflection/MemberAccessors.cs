@@ -7,16 +7,15 @@ using System.Text;
 
 namespace io.github.ykysnk.utils.NonUdon.Reflection
 {
-    /// <summary>
-    ///     Member lookup and accessor cache behind <see cref="Reflect" />. Every member is resolved once and the
-    ///     accessor is compiled once, so the hot path is a delegate call. When compiling is not available (for
-    ///     example under IL2CPP) it falls back to plain reflection instead of failing.
-    /// </summary>
+    // Member lookup and accessor cache behind Reflect. Each member is resolved once and its accessor is compiled once,
+    // so the hot path is a delegate call; when compiling is not available (for example under IL2CPP) the accessor falls
+    // back to plain reflection instead of failing.
     internal static class MemberAccessors
     {
         private const BindingFlags DeclaredFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
                                                    BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
+        // Failed lookups are cached as null on purpose, so a missing member is not searched again on every access.
         private static readonly ConcurrentDictionary<(Type, string), FieldInfo?> Fields = new();
         private static readonly ConcurrentDictionary<(Type, string), PropertyInfo?> Properties = new();
         private static readonly ConcurrentDictionary<string, MethodInfo?> Methods = new();
@@ -80,12 +79,15 @@ namespace io.github.ykysnk.utils.NonUdon.Reflection
             new($"No overload of '{name}' on '{type.FullName}' matches " +
                 $"({string.Join(", ", Array.ConvertAll(arguments, a => a?.GetType().Name ?? "null"))}).");
 
+        // DeclaredOnly flags stop at each type, so walking the chain is what reaches private members of base types.
         private static IEnumerable<Type> Hierarchy(Type type)
         {
             for (var current = type; current != null; current = current.BaseType)
                 yield return current;
         }
 
+        // Overload choice depends on the runtime argument types, and a null argument is recorded as "null", so a null
+        // call gets its own key instead of colliding with a typed one.
         private static string MethodKey(Type type, string name, object?[] arguments, bool staticContext)
         {
             var builder = new StringBuilder(64);
@@ -125,6 +127,7 @@ namespace io.github.ykysnk.utils.NonUdon.Reflection
             return best;
         }
 
+        // An exact parameter type scores above an assignable one, so the most specific overload wins.
         private static int Score(ParameterInfo[] parameters, object?[] arguments, out bool matches)
         {
             var score = 0;
@@ -194,6 +197,7 @@ namespace io.github.ykysnk.utils.NonUdon.Reflection
             }
             catch (Exception)
             {
+                // Readonly and const fields cannot be assigned, so report no setter instead of failing at call time.
                 if (field.IsInitOnly || field.IsLiteral) return null;
                 return (instance, value) => field.SetValue(instance, value);
             }
@@ -260,6 +264,7 @@ namespace io.github.ykysnk.utils.NonUdon.Reflection
                     : Expression.Call(Expression.Convert(instance, method.DeclaringType!), method,
                         (IEnumerable<Expression>)callArguments);
 
+                // A void method still has to yield something for the shared invoker signature.
                 Expression body = method.ReturnType == typeof(void)
                     ? Expression.Block(call, Expression.Constant(null, typeof(object)))
                     : Expression.Convert(call, typeof(object));

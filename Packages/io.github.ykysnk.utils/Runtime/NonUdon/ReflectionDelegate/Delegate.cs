@@ -1,3 +1,8 @@
+// Delegate types that reflected members are bound to: FieldGetter/FieldSetter and PropertyGetter/PropertySetter
+// wrap field and property access, while WrapAction/WrapFunc wrap any other method. The arities mirror Func/Action —
+// 0 to 16 arguments — but are declared explicitly so the family stays Udon and Unity friendly instead of depending
+// on the BCL generics being usable in every runtime.
+
 namespace io.github.ykysnk.utils.NonUdon.ReflectionDelegate;
 
 public delegate TField FieldGetter<out TField>();

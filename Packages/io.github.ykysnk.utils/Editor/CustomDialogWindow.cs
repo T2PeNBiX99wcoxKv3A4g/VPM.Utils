@@ -7,6 +7,11 @@ using UnityEngine.UIElements;
 
 namespace io.github.ykysnk.utils.Editor
 {
+    /// <summary>
+    ///     Floating utility window with a message, an Ok button and an optional Cancel button, used by
+    ///     <see cref="EditorUtils" />. It is not modal: the window reports its result through callbacks and closes
+    ///     itself, and its text can be copied from the context menu.
+    /// </summary>
     [PublicAPI]
     public class CustomDialogWindow : EditorWindow
     {
@@ -27,6 +32,7 @@ namespace io.github.ykysnk.utils.Editor
 
         private void OnDestroy()
         {
+            // Closing without pressing Ok counts as a cancel, so the window's close button still reports a result.
             if (_isClosed) return;
             _onCancel?.Invoke();
         }
@@ -42,6 +48,7 @@ namespace io.github.ykysnk.utils.Editor
 
             var okButton = tree.Q<Button>("ok");
 
+            // waitTime keeps Ok unusable for that many seconds, so a long message cannot be dismissed unread.
             if (waitTime > 0)
             {
                 okButton.AddToClassList("dialog-button-wait");
@@ -76,6 +83,17 @@ namespace io.github.ykysnk.utils.Editor
                 cancelButton.style.display = DisplayStyle.None;
         }
 
+        /// <summary>
+        ///     Builds the dialog, shows it as a utility window and centers it over the main editor window. A dialog that
+        ///     is still open is closed first, and its pending result is reported as cancel.
+        /// </summary>
+        /// <param name="title">Window title, also used for the title bar icon.</param>
+        /// <param name="message">Text shown in the window and copied by the Copy context menu entry.</param>
+        /// <param name="ok">Caption of the confirm button.</param>
+        /// <param name="cancel">Caption of the cancel button; an empty string hides the button.</param>
+        /// <param name="waitTime">Seconds the Ok button stays disabled; zero disables the delay.</param>
+        /// <param name="onOk">Invoked when Ok is pressed.</param>
+        /// <param name="onCancel">Invoked when Cancel is pressed or the window is closed without a choice.</param>
         internal static void Show(string title, string message, string ok, string cancel, int waitTime, Action onOk,
             Action onCancel)
         {

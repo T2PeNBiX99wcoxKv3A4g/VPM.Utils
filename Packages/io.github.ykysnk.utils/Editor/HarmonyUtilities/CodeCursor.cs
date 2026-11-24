@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using HarmonyLib;
 using JetBrains.Annotations;
 
-// Made by ChatGPT
-
 namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
 {
     /// <summary>
-    ///     Streaming cursor for Harmony transpilers without calling ToList().
-    ///     Supports Current/Next/Previous/Index while enumerating only once.
+    ///     Streaming cursor over the instructions of a Harmony transpiler.
+    ///     <para>
+    ///         Gives access to <see cref="Current" />, a one-instruction <see cref="Next" /> peek, the already visited
+    ///         instructions through <see cref="Previous" /> and the current <see cref="Index" /> while enumerating the
+    ///         sequence only once, so there is no need to materialise it with <c>ToList()</c>.
+    ///     </para>
     /// </summary>
     [PublicAPI]
     public sealed class CodeCursor : IDisposable
@@ -20,22 +22,29 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
         private bool _hasNextBuffered;
         private bool _started;
 
+        /// <summary>Creates a cursor over <paramref name="instructions" />. Do not enumerate the sequence elsewhere.</summary>
         public CodeCursor(IEnumerable<CodeInstruction> instructions) => _enumerator = instructions.GetEnumerator();
 
+        /// <summary>Zero-based position of <see cref="Current" />, or -1 before the first <see cref="MoveNext" />.</summary>
         public int Index { get; private set; } = -1;
 
+        /// <summary>The instruction the cursor points at, or null before the first step and after the end.</summary>
         public CodeInstruction? Current { get; private set; }
 
-        /// <summary>Peek of the next instruction, or null if at end.</summary>
+        /// <summary>Peek of the next instruction, or null when the cursor is on the last one.</summary>
         public CodeInstruction? Next { get; private set; }
 
+        /// <summary>Whether the cursor is on the first instruction.</summary>
         public bool IsFirst => Index == 0;
+
+        /// <summary>Whether the cursor is on the last instruction, i.e. there is nothing left to peek.</summary>
         public bool IsLast => _started && Next == null;
 
         /// <summary>
-        ///     Negative = previous, 0 = current, +1 = next.
-        ///     Positive values larger than 1 are unsupported in streaming mode.
+        ///     Looks up an instruction relative to <see cref="Current" />: negative values go back in history,
+        ///     0 returns the current one and 1 returns <see cref="Next" />.
         /// </summary>
+        /// <exception cref="NotSupportedException">A positive offset larger than 1 was requested.</exception>
         public CodeInstruction? this[int offset]
         {
             get
@@ -50,11 +59,12 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
             }
         }
 
+        /// <summary>Releases the underlying enumerator.</summary>
         public void Dispose() => _enumerator.Dispose();
 
         /// <summary>
-        ///     Advances to the next instruction.
-        ///     Returns false after the last instruction has already been processed.
+        ///     Advances to the next instruction and buffers the following one for <see cref="Next" />.
+        ///     Returns false once the cursor has moved past the last instruction.
         /// </summary>
         public bool MoveNext()
         {
@@ -96,11 +106,10 @@ namespace io.github.ykysnk.utils.Editor.HarmonyUtilities
         }
 
         /// <summary>
-        ///     Gets a previous instruction.
-        ///     Previous(1) = previous instruction.
-        ///     Previous(2) = two instructions back.
-        ///     Returns null if out of range.
+        ///     Returns an already visited instruction: <c>Previous(1)</c> is the one before <see cref="Current" />,
+        ///     <c>Previous(2)</c> the one before that, and so on. Returns null when the history is not deep enough.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="distance" /> is zero or negative.</exception>
         public CodeInstruction? Previous(int distance = 1)
         {
             if (distance <= 0)

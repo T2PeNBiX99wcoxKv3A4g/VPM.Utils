@@ -7,9 +7,14 @@ using UnityEditor;
 
 namespace io.github.ykysnk.utils.Extensions
 {
+    /// <summary>
+    ///     Texture resizing and alpha trimming helpers. Trimming returns a square texture sized to the longer edge of the
+    ///     opaque area, with the content centred and the remaining margin transparent.
+    /// </summary>
     [PublicAPI]
     public static class Texture2DExtensions
     {
+        // Shader property names of TrimTransparent.compute, hashed once here instead of on every dispatch.
         private static readonly int Source = Shader.PropertyToID("source");
         private static readonly int Bounds = Shader.PropertyToID("bounds");
         private static readonly int AlphaThreshold = Shader.PropertyToID("alpha_threshold");
@@ -18,6 +23,17 @@ namespace io.github.ykysnk.utils.Extensions
         private static readonly int Out = Shader.PropertyToID("_Out");
         private static readonly int GammaCorrect = Shader.PropertyToID("gamma_correct");
 
+        /// <summary>
+        ///     Resizes the texture on the GPU: blits <paramref name="source" /> into a RenderTexture and reads it back into
+        ///     a new Texture2D.
+        /// </summary>
+        /// <param name="source">The texture to resample; sampled through the GPU, so it does not need to be CPU readable.</param>
+        /// <param name="targetWidth">Width of the returned texture in pixels; must be positive.</param>
+        /// <param name="targetHeight">Height of the returned texture in pixels; must be positive.</param>
+        /// <returns>
+        ///     A new texture in the source format, with mipmaps only when the source had them. RenderTexture.active is left
+        ///     at null afterwards rather than restored.
+        /// </returns>
         public static Texture2D ScaleGPU(this Texture2D source, int targetWidth, int targetHeight)
         {
             var rt = new RenderTexture(targetWidth, targetHeight, 24, source.graphicsFormat);
@@ -33,6 +49,16 @@ namespace io.github.ykysnk.utils.Extensions
             return result;
         }
 
+        /// <summary>
+        ///     Resizes the texture on the CPU, writing one bilinearly sampled pixel at a time.
+        /// </summary>
+        /// <param name="source">The texture to sample; must be CPU readable and is not modified.</param>
+        /// <param name="targetWidth">Width of the returned texture in pixels; must be positive.</param>
+        /// <param name="targetHeight">Height of the returned texture in pixels; must be positive.</param>
+        /// <returns>
+        ///     A new texture in the source format, with mipmaps only when the source had them. Sampling happens at pixel
+        ///     centres, so the first and last source pixels are reached.
+        /// </returns>
         public static Texture2D ScaleCPU(this Texture2D source, int targetWidth, int targetHeight)
         {
             var result = new Texture2D(targetWidth, targetHeight, source.format, source.mipmapCount > 1);
@@ -40,8 +66,8 @@ namespace io.github.ykysnk.utils.Extensions
             for (var y = 0; y < targetHeight; y++)
             for (var x = 0; x < targetWidth; x++)
             {
-                var u = (float)x / targetWidth;
-                var v = (float)y / targetHeight;
+                var u = (x + 0.5f) / targetWidth;
+                var v = (y + 0.5f) / targetHeight;
                 var color = source.GetPixelBilinear(u, v);
                 result.SetPixel(x, y, color);
             }
@@ -51,6 +77,14 @@ namespace io.github.ykysnk.utils.Extensions
         }
 
         // Refs: https://github.com/weasel-club/OneClickInventory/blob/main/Editor/Util/IconUtil.cs#L146
+        /// <summary>
+        ///     Fills the whole texture with Color.clear (0, 0, 0, 0) by writing a single full-size pixel array, which is
+        ///     cheaper than a per-pixel loop. Apply is not called, so the change only reaches the GPU once the caller
+        ///     applies the texture.
+        /// </summary>
+        /// <param name="tex2D">The texture to overwrite; it is mutated in place.</param>
+        /// <param name="width">Texture width in pixels; must match the texture's current width or SetPixels throws.</param>
+        /// <param name="height">Texture height in pixels; must match the texture's current height or SetPixels throws.</param>
         public static void MakeTexture2DClear(this Texture2D tex2D, int width, int height)
         {
             var clearColors = new Color[width * height];
@@ -72,6 +106,20 @@ namespace io.github.ykysnk.utils.Extensions
             tex2D.SetPixels(clearColors);
         }
 
+        /// <summary>
+        ///     Crops the transparent border away on the CPU. A pixel counts as content when its alpha is strictly greater
+        ///     than <paramref name="alphaThreshold" />; the bounding box of that content is copied into a new square texture
+        ///     whose side is the longer edge of the box, centred with integer division so an odd difference leaves one extra
+        ///     transparent pixel on the right and top. The square output loses the original position of the content.
+        /// </summary>
+        /// <param name="source">The texture to crop; must be CPU readable and is not modified.</param>
+        /// <param name="alphaThreshold">
+        ///     Alpha above which a pixel is content, in the 0..1 range; the comparison is strict. Defaults to 0.01.
+        /// </param>
+        /// <returns>
+        ///     A new texture in the source format, with mipmaps only when the source had them, or a 1x1 transparent texture
+        ///     when no pixel passes the threshold.
+        /// </returns>
         public static Texture2D TrimTransparentCPU(this Texture2D source, float alphaThreshold = 0.01f)
         {
             int minX = source.width, minY = source.height;
@@ -113,6 +161,26 @@ namespace io.github.ykysnk.utils.Extensions
             return empty;
         }
 
+        /// <summary>
+        ///     GPU version of <see cref="TrimTransparentCPU" /> with the same square output: one kernel finds the alpha
+        ///     bounds, a second copies that region into a square RenderTexture which is read back into a new texture.
+        ///     Content is centred with integer division and everything outside it is written as transparent.
+        /// </summary>
+        /// <param name="source">The texture to crop; sampled on the GPU, so it does not need to be CPU readable.</param>
+        /// <param name="alphaThreshold">
+        ///     Alpha above which a pixel is content, in the 0..1 range; the comparison is strict. Defaults to 0.01.
+        /// </param>
+        /// <param name="gammaCorrect">
+        ///     True (default) encodes the copied colour with pow(rgb, 1 / 2.2); false copies the raw source values.
+        /// </param>
+        /// <param name="trimShader">
+        ///     Compute shader providing the cs_find_bounds and cs_copy_to_square kernels. When null, the editor loads the
+        ///     shader shipped with this package and player builds return a 1x1 transparent texture instead.
+        /// </param>
+        /// <returns>
+        ///     A new texture in the source format, with mipmaps only when the source had them, or a 1x1 transparent texture
+        ///     when no pixel passes the threshold.
+        /// </returns>
         public static Texture2D TrimTransparentGPU(this Texture2D source, float alphaThreshold = 0.01f,
             bool gammaCorrect = true, ComputeShader trimShader = null)
         {
@@ -185,6 +253,8 @@ namespace io.github.ykysnk.utils.Extensions
         private const string TrimShaderGuid = "adc17c90949f49fb9d5413d8487e5d32";
         private static ComputeShader _trimShader;
 
+        // Loaded by GUID because a static class cannot hold a serialized asset reference; the shader stays editor-only,
+        // which is why the player build path above bails out without a caller-supplied shader.
         private static ComputeShader TrimShader => _trimShader = _trimShader ??
                                                                  AssetDatabase.LoadAssetAtPath<ComputeShader>(
                                                                      AssetDatabase.GUIDToAssetPath(TrimShaderGuid));

@@ -4,6 +4,11 @@ using UnityEngine.UIElements;
 
 namespace io.github.ykysnk.utils.Editor.UIElements
 {
+    /// <summary>
+    ///     UI Toolkit field that edits a <see cref="BooleanVector3" /> as three X/Y/Z toggles on one row. It reuses
+    ///     Unity's composite vector field USS classes so it lines up with built-in fields, and can be created from UXML
+    ///     with the <c>label</c>, <c>x</c>, <c>y</c> and <c>z</c> attributes.
+    /// </summary>
     public class BooleanVector3Field : BindableElement, INotifyValueChanged<BooleanVector3>
     {
         private readonly VisualElement _input = new();
@@ -48,6 +53,10 @@ namespace io.github.ykysnk.utils.Editor.UIElements
 
         private BooleanVector3 _value;
 
+        /// <summary>
+        ///     Builds the field with an empty label and all toggles off, and routes toggle changes into
+        ///     <see cref="value" /> so a <c>ChangeEvent</c> is sent for them.
+        /// </summary>
         public BooleanVector3Field()
         {
             AddToClassList("unity-base-field");
@@ -78,6 +87,10 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             _z.RegisterValueChangedCallback(_ => UpdateValueFromUI());
         }
 
+        /// <summary>
+        ///     Text shown in front of the toggles. An empty value removes the label element so the field can be used
+        ///     inside a row that already has one.
+        /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public string label
         {
@@ -93,6 +106,9 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             }
         }
 
+        /// <summary>
+        ///     State of the X toggle, mirrored into <see cref="value" />.
+        /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public bool x
         {
@@ -100,6 +116,9 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             set => _x.value = value;
         }
 
+        /// <summary>
+        ///     State of the Y toggle, mirrored into <see cref="value" />.
+        /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public bool y
         {
@@ -107,6 +126,9 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             set => _y.value = value;
         }
 
+        /// <summary>
+        ///     State of the Z toggle, mirrored into <see cref="value" />.
+        /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public bool z
         {
@@ -114,6 +136,10 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             set => _z.value = value;
         }
 
+        /// <summary>
+        ///     The edited vector. Setting a different value updates the three toggles and sends a
+        ///     <see cref="ChangeEvent{T}" />; setting the current value again does nothing.
+        /// </summary>
         public BooleanVector3 value
         {
             get => _value;
@@ -133,6 +159,11 @@ namespace io.github.ykysnk.utils.Editor.UIElements
             }
         }
 
+        /// <summary>
+        ///     Sets the value and updates the toggles without sending a <see cref="ChangeEvent{T}" />, for pushing data
+        ///     that originates from a binding.
+        /// </summary>
+        /// <param name="newValue">Value to display.</param>
         public void SetValueWithoutNotify(BooleanVector3 newValue)
         {
             _value = newValue;
@@ -154,10 +185,17 @@ namespace io.github.ykysnk.utils.Editor.UIElements
                 value = newValue;
         }
 
+        /// <summary>
+        ///     Creates the field from UXML.
+        /// </summary>
         public new class UxmlFactory : UxmlFactory<BooleanVector3Field, UxmlTraits>
         {
         }
 
+        /// <summary>
+        ///     Reads the <c>label</c>, <c>x</c>, <c>y</c> and <c>z</c> UXML attributes of
+        ///     <see cref="BooleanVector3Field" />.
+        /// </summary>
         public new class UxmlTraits : BindableElement.UxmlTraits
         {
             private readonly UxmlStringAttributeDescription _label = new()
@@ -180,6 +218,12 @@ namespace io.github.ykysnk.utils.Editor.UIElements
                 name = "z"
             };
 
+            /// <summary>
+            ///     Applies the UXML attributes to the created element.
+            /// </summary>
+            /// <param name="ve">Element created for this tag.</param>
+            /// <param name="bag">Attribute bag holding the UXML values.</param>
+            /// <param name="cc">Creation context of the UXML document.</param>
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);

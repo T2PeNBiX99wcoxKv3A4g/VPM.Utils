@@ -3,11 +3,17 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using io.github.ykysnk.utils.NonUdon.ReflectionDelegate;
 using JetBrains.Annotations;
 
 namespace io.github.ykysnk.utils.NonUdon;
 
+/// <summary>
+///     Cached reflection lookups for fields, properties and methods, and compiled delegates built from them.
+///     Lookups cover public and non-public instance and static members of the given type; private members that exist
+///     only on a base type are not reached. A missing member throws instead of returning null.
+/// </summary>
 [PublicAPI]
 public static class ReflectionWrapper
 {
@@ -17,14 +23,16 @@ public static class ReflectionWrapper
     private static readonly ConcurrentDictionary<string, Type> TypeCache = new();
     private static readonly ConcurrentDictionary<(Type, string), FieldInfo> FieldCache = new();
     private static readonly ConcurrentDictionary<(Type, string), PropertyInfo> PropertyCache = new();
-    private static readonly ConcurrentDictionary<(Type, string, Type[]), MethodInfo> MethodCache = new();
+    private static readonly ConcurrentDictionary<string, MethodInfo> MethodCache = new();
     private static readonly ConcurrentDictionary<string, Delegate> DelegateCache = new();
 
-    /// <summary>
-    ///     Retrieves a Type by its name and caches the result for later requests.
-    /// </summary>
-    /// <param name="typeName">The fully qualified name of the Type to retrieve.</param>
-    /// <returns>The cached Type instance matching the specified name.</returns>
+    /// <summary>Resolves a type by name and caches it under that name.</summary>
+    /// <param name="typeName">
+    ///     Name accepted by <see cref="Type.GetType(string, bool)" />, for example a full or assembly-qualified name.
+    /// </param>
+    /// <returns>The resolved type; later calls with the same name return the cached instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="typeName" /> is null.</exception>
+    /// <exception cref="TypeLoadException">Thrown when the name cannot be resolved.</exception>
     public static Type GetType(string typeName)
     {
         return typeName == null
@@ -32,12 +40,13 @@ public static class ReflectionWrapper
             : TypeCache.GetOrAdd(typeName, name => Type.GetType(name, true));
     }
 
-    /// <summary>
-    ///     Retrieves a cached Type instance or stores the provided type in the cache.
-    /// </summary>
-    /// <param name="type">The Type instance to cache or retrieve.</param>
-    /// <returns>The cached Type instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if the provided Type is null.</exception>
+    /// <summary>Caches a type by its full name, so a later call with that name returns the cached type.</summary>
+    /// <param name="type">Type to cache; null is rejected.</param>
+    /// <returns>
+    ///     The type already cached under <paramref name="type" />'s full name, otherwise <paramref name="type" /> itself.
+    ///     A type without a full name (a generic type parameter) is returned unchanged and never cached.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
     public static Type GetType(Type type)
     {
         if (type == null) throw new ArgumentNullException(nameof(type));
@@ -45,15 +54,16 @@ public static class ReflectionWrapper
         return TypeCache.GetOrAdd(type.FullName, _ => type);
     }
 
-    /// <summary>
-    ///     Retrieves a FieldInfo object representing the specified field of a given type,
-    ///     and caches the result for optimized future access.
-    /// </summary>
-    /// <param name="type">The Type containing the field to retrieve.</param>
-    /// <param name="fieldName">The name of the field to retrieve.</param>
-    /// <returns>A FieldInfo object representing the specified field of the given type.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the type or fieldName parameter is null.</exception>
-    /// <exception cref="MissingFieldException">Thrown when the specified field does not exist in the given type.</exception>
+    /// <summary>Finds a field by name and caches it by type and name.</summary>
+    /// <param name="type">Type to search; must not be null.</param>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <returns>
+    ///     The field, public or non-public, instance or static. A private field declared only on a base type is not
+    ///     found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static FieldInfo GetField(Type type, string fieldName)
     {
         if (type == null)
@@ -67,19 +77,16 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Retrieves a PropertyInfo object representing a specified property from a given type,
-    ///     and caches the result for future use.
-    /// </summary>
-    /// <param name="type">The type from which to retrieve the property information.</param>
-    /// <param name="propertyName">The name of the property to retrieve.</param>
-    /// <returns>The PropertyInfo object representing the specified property.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when either <paramref name="type" /> or <paramref name="propertyName" /> is null.
-    /// </exception>
-    /// <exception cref="MissingMemberException">
-    ///     Thrown when the specified property cannot be found in the given type.
-    /// </exception>
+    /// <summary>Finds a property by name and caches it by type and name.</summary>
+    /// <param name="type">Type to search; must not be null.</param>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <returns>
+    ///     The property, public or non-public, instance or static. A private property declared only on a base type is
+    ///     not found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static PropertyInfo GetProperty(Type type, string propertyName)
     {
         if (type == null)
@@ -93,35 +100,57 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Retrieves a MethodInfo by its name, parameter types, and declaring type, caching the result for later requests.
-    /// </summary>
-    /// <param name="type">The Type that declares the method.</param>
-    /// <param name="methodName">The name of the method to retrieve.</param>
-    /// <param name="parameterTypes">An array of Types representing the method's parameters.</param>
-    /// <returns>The cached MethodInfo instance matching the specified criteria.</returns>
+    /// <summary>Finds a method by name and exact parameter types and caches it.</summary>
+    /// <param name="type">Type to search; must not be null.</param>
+    /// <param name="methodName">Method name; must not be null or empty.</param>
+    /// <param name="parameterTypes">
+    ///     Exact parameter types, empty for a parameterless method. No conversion of arguments is applied.
+    /// </param>
+    /// <returns>The matching method, public or non-public, instance or static.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="methodName" /> is null or empty.</exception>
+    /// <exception cref="MissingMethodException">Thrown when no overload matches the parameter types.</exception>
     public static MethodInfo GetMethod(Type type, string methodName, params Type[] parameterTypes)
     {
         if (type == null)
             throw new ArgumentNullException(nameof(type));
         if (string.IsNullOrEmpty(methodName))
             throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
-        return MethodCache.GetOrAdd((type, methodName, parameterTypes), key =>
-        {
-            var (t, m, p) = key;
-            return t.GetMethod(m, Flags, null, p, null) ?? throw new MissingMethodException(t.FullName, m);
-        });
+        return MethodCache.GetOrAdd(MethodKey(type, methodName, parameterTypes), _ =>
+            type.GetMethod(methodName, Flags, null, parameterTypes, null) ??
+            throw new MissingMethodException(type.FullName, methodName));
+    }
+
+    // The parameter types take part in the cache key structurally; keying on the Type[] instance would make every
+    // call with a fresh array (which params creates) miss the cache.
+    private static string MethodKey(Type type, string methodName, Type[] parameterTypes)
+    {
+        var builder = new StringBuilder(64);
+        builder.Append(type.AssemblyQualifiedName).Append('|').Append(methodName).Append('|')
+            .Append(parameterTypes.Length);
+
+        foreach (var parameterType in parameterTypes)
+            builder.Append('|').Append(parameterType?.AssemblyQualifiedName ?? "null");
+
+        return builder.ToString();
     }
 
     /// <summary>
-    ///     Retrieves a delegate of the specified type for a method, identified by its declaring type, name,
-    ///     and parameter types, caching the result for later requests.
+    ///     Compiles a delegate for a method with an expression tree and caches it. The cache key is the delegate type,
+    ///     the declaring type, the method name and the parameter type names, so one method used with two delegate types
+    ///     is compiled twice.
     /// </summary>
-    /// <param name="type">The Type that declares the method.</param>
-    /// <param name="methodName">The name of the method to retrieve the delegate for.</param>
-    /// <param name="parameterTypes">An array of Types representing the method's parameters.</param>
-    /// <typeparam name="TDelegate">The type of the delegate to generate and return.</typeparam>
-    /// <returns>The cached delegate of the specified type for the given method.</returns>
+    /// <param name="type">Type declaring the method; must not be null.</param>
+    /// <param name="methodName">Method name; must not be null or empty.</param>
+    /// <param name="parameterTypes">Exact parameter types, empty for a parameterless method.</param>
+    /// <typeparam name="TDelegate">
+    ///     Delegate to build; its signature must match the method. For an instance method the first parameter receives
+    ///     the instance and the remaining ones match the method's own parameters.
+    /// </typeparam>
+    /// <returns>The cached delegate instance.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="methodName" /> is null or empty.</exception>
+    /// <exception cref="MissingMethodException">Thrown when no overload matches the parameter types.</exception>
     public static TDelegate GetDelegate<TDelegate>(Type type, string methodName, params Type[] parameterTypes)
         where TDelegate : Delegate
     {
@@ -129,8 +158,7 @@ public static class ReflectionWrapper
             throw new ArgumentNullException(nameof(type));
         if (string.IsNullOrEmpty(methodName))
             throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
-        var key =
-            $"{typeof(TDelegate).FullName}|{type.FullName}.method.{methodName}.{string.Join(",", parameterTypes.Select(t => t.FullName))}";
+        var key = $"{typeof(TDelegate).AssemblyQualifiedName}|{MethodKey(type, methodName, parameterTypes)}";
         return (TDelegate)DelegateCache.GetOrAdd(key, _ =>
         {
             var method = GetMethod(type, methodName, parameterTypes);
@@ -158,14 +186,16 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Creates a delegate for retrieving the value of a field from a specified type.
-    /// </summary>
-    /// <param name="type">The type that contains the field whose value will be retrieved.</param>
-    /// <param name="fieldName">The name of the field for which the getter delegate is created.</param>
-    /// <returns>A delegate for retrieving the field value, either static or instance-based, depending on the field.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the specified type is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when the field name is null or an empty string.</exception>
+    /// <summary>Builds and caches a getter delegate for a field.</summary>
+    /// <param name="type">Type declaring the field; must not be null.</param>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <returns>
+    ///     <see cref="FieldGetter{TField}" /> for a static field, <see cref="FieldGetter{TInstance, TField}" /> for an
+    ///     instance field; the generic overloads cast this result.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static Delegate GetFieldGetter(Type type, string fieldName)
     {
         if (type == null)
@@ -197,34 +227,39 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Creates a delegate that retrieves the value of a static field of a specified type.
-    /// </summary>
-    /// <typeparam name="TField">The type of the field to retrieve.</typeparam>
-    /// <param name="type">The type declaring the static field.</param>
-    /// <param name="fieldName">The name of the static field.</param>
-    /// <returns>A delegate that retrieves the value of the specified static field.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> or <paramref name="fieldName" /> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is empty or the field does not exist.</exception>
+    /// <summary>Returns the cached getter of a static field as <see cref="FieldGetter{TField}" />.</summary>
+    /// <typeparam name="TField">Field type; must match the declared field type.</typeparam>
+    /// <param name="type">Type declaring the static field; must not be null.</param>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <returns>The getter delegate, which takes no arguments.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the field is an instance field.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static FieldGetter<TField> GetFieldGetter<TField>(Type type, string fieldName) =>
         (FieldGetter<TField>)GetFieldGetter(type, fieldName);
 
-    /// <summary>
-    ///     Retrieves a delegate that provides a getter function for a specified field in a given type.
-    /// </summary>
-    /// <param name="fieldName">The name of the field for which the getter will be created.</param>
-    /// <typeparam name="TInstance">The type of the object instance from which the field value will be retrieved.</typeparam>
-    /// <typeparam name="TField">The type of the field whose value will be retrieved.</typeparam>
-    /// <returns>A delegate capable of accessing the field value from a given instance of the specified type.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when the <paramref name="fieldName" /> is null.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///     Thrown when the <paramref name="fieldName" /> is an empty string.
-    /// </exception>
+    /// <summary>Returns the cached getter of an instance field as <see cref="FieldGetter{TInstance, TField}" />.</summary>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <typeparam name="TInstance">Type searched for the field, normally the instance type.</typeparam>
+    /// <typeparam name="TField">Field type; must match the declared field type.</typeparam>
+    /// <returns>The getter delegate, which takes the instance.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the field is a static field.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static FieldGetter<TInstance, TField> GetFieldGetter<TInstance, TField>(string fieldName) =>
         (FieldGetter<TInstance, TField>)GetFieldGetter(typeof(TInstance), fieldName);
 
+    /// <summary>Builds and caches a setter delegate for a field.</summary>
+    /// <param name="type">Type declaring the field; must not be null.</param>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <returns>
+    ///     <see cref="FieldSetter{TField}" /> for a static field, <see cref="FieldSetter{TInstance, TField}" /> for an
+    ///     instance field; the generic overloads cast this result.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static Delegate GetFieldSetter(Type type, string fieldName)
     {
         if (type == null)
@@ -258,41 +293,41 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Retrieves a delegate capable of setting the value of a specified static field on a given type.
-    /// </summary>
-    /// <param name="type">The type that contains the static field.</param>
-    /// <param name="fieldName">The name of the static field to set.</param>
-    /// <typeparam name="TField">The type of the field value to set.</typeparam>
-    /// <returns>A delegate allowing the setting of the static field's value.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when the <paramref name="type" /> or <paramref name="fieldName" /> is
-    ///     null.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown when the <paramref name="fieldName" /> is empty or invalid.</exception>
+    /// <summary>Returns the cached setter of a static field as <see cref="FieldSetter{TField}" />.</summary>
+    /// <param name="type">Type declaring the static field; must not be null.</param>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <typeparam name="TField">Field type; must match the declared field type.</typeparam>
+    /// <returns>The setter delegate, which takes the new value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the field is an instance field.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static FieldSetter<TField> GetFieldSetter<TField>(Type type, string fieldName) =>
         (FieldSetter<TField>)GetFieldSetter(type, fieldName);
 
-    /// <summary>
-    ///     Creates a delegate that sets the value of a specified field on an instance of a given type.
-    /// </summary>
-    /// <param name="fieldName">The name of the field to be set.</param>
-    /// <typeparam name="TInstance">The type of the instance containing the field.</typeparam>
-    /// <typeparam name="TField">The type of the field to be set.</typeparam>
-    /// <returns>A compiled delegate that sets the value of the specified field on the given instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if the provided type or field name is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if the provided field name is empty.</exception>
+    /// <summary>Returns the cached setter of an instance field as <see cref="FieldSetter{TInstance, TField}" />.</summary>
+    /// <param name="fieldName">Field name; must not be null or empty.</param>
+    /// <typeparam name="TInstance">Type searched for the field, normally the instance type.</typeparam>
+    /// <typeparam name="TField">Field type; must match the declared field type.</typeparam>
+    /// <returns>The setter delegate, which takes the instance and the new value.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="fieldName" /> is null or empty.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the field is a static field.</exception>
+    /// <exception cref="MissingFieldException">Thrown when the type has no field with that name.</exception>
     public static FieldSetter<TInstance, TField> GetFieldSetter<TInstance, TField>(string fieldName) =>
         (FieldSetter<TInstance, TField>)GetFieldSetter(typeof(TInstance), fieldName);
 
-    /// <summary>
-    ///     Creates a delegate to retrieve the value of a specified property from a given type.
-    /// </summary>
-    /// <param name="type">The type that contains the property.</param>
-    /// <param name="propertyName">The name of the property to retrieve.</param>
-    /// <returns>A delegate that, when executed, retrieves the value of the specified property.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the provided type is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when the provided property name is null or empty.</exception>
+    /// <summary>Builds and caches a getter delegate for a property.</summary>
+    /// <param name="type">Type declaring the property; must not be null.</param>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <returns>
+    ///     <see cref="PropertyGetter{TProperty}" /> for a static property,
+    ///     <see cref="PropertyGetter{TInstance, TProperty}" /> for an instance property; the generic overloads cast this
+    ///     result.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no getter.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static Delegate GetPropertyGetter(Type type, string propertyName)
     {
         if (type == null)
@@ -328,41 +363,43 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Creates a delegate that retrieves the value of a static property from a specified type.
-    /// </summary>
-    /// <param name="type">The Type containing the static property.</param>
-    /// <param name="propertyName">The name of the static property to retrieve.</param>
-    /// <typeparam name="TProperty">The type of the property to retrieve.</typeparam>
-    /// <returns>A delegate that retrieves the value of the specified static property.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="type" /> or <paramref name="propertyName" /> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="propertyName" /> is an empty string.</exception>
+    /// <summary>Returns the cached getter of a static property as <see cref="PropertyGetter{TProperty}" />.</summary>
+    /// <param name="type">Type declaring the static property; must not be null.</param>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <typeparam name="TProperty">Property type; must match the declared property type.</typeparam>
+    /// <returns>The getter delegate, which takes no arguments.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no getter.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the property is an instance property.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static PropertyGetter<TProperty> GetPropertyGetter<TProperty>(Type type, string propertyName) =>
         (PropertyGetter<TProperty>)GetPropertyGetter(type, propertyName);
 
-    /// <summary>
-    ///     Retrieves a delegate for accessing a property getter on the specified type and caches the result.
-    /// </summary>
-    /// <param name="propertyName">The name of the property to retrieve the getter for.</param>
-    /// <typeparam name="TInstance">The type of the instance that contains the property.</typeparam>
-    /// <typeparam name="TProperty">The type of the property to be accessed.</typeparam>
-    /// <returns>A delegate that represents the property getter for the specified property.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when the provided <paramref name="propertyName" /> is null.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is an empty string.</exception>
+    /// <summary>Returns the cached getter of an instance property as <see cref="PropertyGetter{TInstance, TProperty}" />.</summary>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <typeparam name="TInstance">Type searched for the property, normally the instance type.</typeparam>
+    /// <typeparam name="TProperty">Property type; must match the declared property type.</typeparam>
+    /// <returns>The getter delegate, which takes the instance.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no getter.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the property is a static property.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static PropertyGetter<TInstance, TProperty> GetPropertyGetter<TInstance, TProperty>(string propertyName) =>
         (PropertyGetter<TInstance, TProperty>)GetPropertyGetter(typeof(TInstance), propertyName);
 
-    /// <summary>
-    ///     Retrieves a delegate for the setter of a specified property on a given type.
-    /// </summary>
-    /// <param name="type">The type to which the property belongs.</param>
-    /// <param name="propertyName">The name of the property whose setter is being retrieved.</param>
-    /// <returns>A delegate representing the setter for the specified property.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when the provided type is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when the property name is null or empty.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the specified property does not have a setter.</exception>
+    /// <summary>Builds and caches a setter delegate for a property.</summary>
+    /// <param name="type">Type declaring the property; must not be null.</param>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <returns>
+    ///     <see cref="PropertySetter{TProperty}" /> for a static property,
+    ///     <see cref="PropertySetter{TInstance, TProperty}" /> for an instance property; the generic overloads cast this
+    ///     result.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no setter.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static Delegate GetPropertySetter(Type type, string propertyName)
     {
         if (type == null)
@@ -400,33 +437,34 @@ public static class ReflectionWrapper
         });
     }
 
-    /// <summary>
-    ///     Retrieves a delegate for setting the value of a static property of the specified type.
-    /// </summary>
-    /// <typeparam name="TProperty">The type of the property to be set.</typeparam>
-    /// <param name="type">The type that defines the static property.</param>
-    /// <param name="propertyName">The name of the static property.</param>
-    /// <returns>A delegate that sets the value of the specified static property.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when <paramref name="type" /> or <paramref name="propertyName" /> is
-    ///     null.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is an empty string.</exception>
+    /// <summary>Returns the cached setter of a static property as <see cref="PropertySetter{TProperty}" />.</summary>
+    /// <typeparam name="TProperty">Property type; must match the declared property type.</typeparam>
+    /// <param name="type">Type declaring the static property; must not be null.</param>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <returns>The setter delegate, which takes the new value.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="type" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no setter.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the property is an instance property.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static PropertySetter<TProperty> GetPropertySetter<TProperty>(Type type, string propertyName) =>
         (PropertySetter<TProperty>)GetPropertySetter(type, propertyName);
 
-    /// <summary>
-    ///     Retrieves a delegate that sets a property value on an instance of the specified type.
-    /// </summary>
-    /// <param name="propertyName">The name of the property to set.</param>
-    /// <typeparam name="TInstance">The type of the instance on which the property will be set.</typeparam>
-    /// <typeparam name="TProperty">The type of the property to be set.</typeparam>
-    /// <returns>A delegate that sets the value of the specified property on the given instance.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="propertyName" /> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="propertyName" /> is an empty string.</exception>
+    /// <summary>Returns the cached setter of an instance property as <see cref="PropertySetter{TInstance, TProperty}" />.</summary>
+    /// <param name="propertyName">Property name; must not be null or empty.</param>
+    /// <typeparam name="TInstance">Type searched for the property, normally the instance type.</typeparam>
+    /// <typeparam name="TProperty">Property type; must match the declared property type.</typeparam>
+    /// <returns>The setter delegate, which takes the instance and the new value.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName" /> is null or empty.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the property has no setter.</exception>
+    /// <exception cref="InvalidCastException">Thrown when the property is a static property.</exception>
+    /// <exception cref="MissingMemberException">Thrown when the type has no property with that name.</exception>
     public static PropertySetter<TInstance, TProperty> GetPropertySetter<TInstance, TProperty>(string propertyName) =>
         (PropertySetter<TInstance, TProperty>)GetPropertySetter(typeof(TInstance), propertyName);
 
+    // Typed wrappers over GetDelegate for the common arities, for static methods only: every type argument is a method
+    // parameter type and GetFunc takes the return type last. For an instance method call GetDelegate directly and pass
+    // the declaring type as the delegate's first parameter. All of them share the delegate cache.
     public static WrapAction GetAction(Type type, string methodName)
         => GetDelegate<WrapAction>(type, methodName);
 
