@@ -42,6 +42,8 @@ namespace io.github.ykysnk.utils.Editor
 
         private Vector2 _errorScrollPosition;
 
+        private bool _errorDetailsExpanded = true;
+
         // ReSharper disable once Unity.RedundantEventFunction
         /// <summary>
         ///     Called when the script is enabled in the Unity Editor.
@@ -107,6 +109,17 @@ namespace io.github.ykysnk.utils.Editor
                 var tree = errorUxml.CloneTree();
                 var errorBox = tree.Q<HelpBox>("errorBox");
                 errorBox.text = ErrorTitle(e);
+                var errorType = tree.Q<Label>("errorType");
+                if (errorType != null)
+                {
+                    errorType.text = e.GetType().Name;
+                    errorType.tooltip = e.GetType().FullName;
+                }
+
+                var detailsFoldout = tree.Q<Foldout>("detailsFoldout");
+                if (detailsFoldout != null)
+                    detailsFoldout.value = true;
+
                 var errorDetails = tree.Q<TextField>("errorDetails");
                 errorDetails.isReadOnly = true;
                 errorDetails.value = ErrorDetails(e);
@@ -142,11 +155,14 @@ namespace io.github.ykysnk.utils.Editor
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                GUILayout.Label("Error details", EditorStyles.boldLabel);
+                GUILayout.Label(e.GetType().Name, EditorStyles.miniBoldLabel);
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Copy", EditorStyles.miniButton, GUILayout.Width(60)))
                     EditorGUIUtility.systemCopyBuffer = details;
             }
+
+            _errorDetailsExpanded = EditorGUILayout.Foldout(_errorDetailsExpanded, "Details", true);
+            if (!_errorDetailsExpanded) return;
 
             GUILayout.Space(2);
 

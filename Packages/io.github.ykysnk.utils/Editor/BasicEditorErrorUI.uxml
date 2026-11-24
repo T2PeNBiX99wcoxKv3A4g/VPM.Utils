@@ -4,12 +4,14 @@
         <ui:HelpBox text="Error" message-type="Error" name="errorBox" class="error-box"/>
 
         <ui:VisualElement class="error-header">
-            <ui:Label text="Error details" class="error-title"/>
+            <ui:Label text="Exception" name="errorType" class="error-badge"/>
             <ui:Button text="Copy" name="copy" class="error-copy"
                        tooltip="Copy the error message and stack trace"/>
         </ui:VisualElement>
 
-        <ui:TextField picking-mode="Ignore" value="" readonly="true" name="errorDetails" multiline="true"
-                      class="error-details"/>
+        <ui:Foldout text="Details" value="true" name="detailsFoldout" class="error-foldout">
+            <ui:TextField picking-mode="Ignore" value="" readonly="true" name="errorDetails" multiline="true"
+                          class="error-details"/>
+        </ui:Foldout>
     </ui:VisualElement>
 </ui:UXML>

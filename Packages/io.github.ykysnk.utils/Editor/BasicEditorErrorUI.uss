@@ -10,13 +10,18 @@
 .error-header {
     flex-direction: row;
     align-items: center;
-    margin: 0 0 3px 0;
+    justify-content: space-between;
+    margin: 0 0 2px 0;
     padding: 0 2px;
 }
 
-.error-title {
-    flex-grow: 1;
+.error-badge {
+    margin: 0;
+    padding: 1px 8px;
+    font-size: 11px;
     -unity-font-style: bold;
+    background-color: rgba(128, 128, 128, 0.22);
+    border-radius: 8px;
 }
 
 .error-copy {
@@ -25,6 +30,11 @@
     min-width: 54px;
     font-size: 11px;
     -unity-text-align: middle-center;
+}
+
+.error-foldout {
+    margin: 0;
+    padding: 0;
 }
 
 .error-details {
