@@ -38,11 +38,6 @@ namespace io.github.ykysnk.utils.Editor.Patches
         ///     declared next to the stub.
         /// </summary>
         MethodInfo? TargetTranspiler { get; }
-        /// <summary>
-        ///     Which version of the target is copied. Only <see cref="HarmonyReversePatchType.Original" /> is honoured;
-        ///     Harmony's programmatic reverse patch has no snapshot mode, so other values log a warning and are ignored.
-        /// </summary>
-        HarmonyReversePatchType ReverseType { get; }
 
         /// <summary>
         ///     Harmony priority given to this reverse patch; the default -1 means no priority is set explicitly.
@@ -171,8 +166,6 @@ namespace io.github.ykysnk.utils.Editor.Patches
         /// <summary>The nested method named <see cref="TranspilerMethod" />, or <see langword="null" /> when it does not exist.</summary>
         public virtual MethodInfo? TargetTranspiler => Method(TranspilerMethod);
         /// <inheritdoc />
-        public virtual HarmonyReversePatchType ReverseType { get; } = HarmonyReversePatchType.Original;
-        /// <inheritdoc />
         public virtual int Priority { get; } = -1;
         /// <inheritdoc />
         public virtual string[]? Before { get; }
@@ -296,10 +289,6 @@ namespace io.github.ykysnk.utils.Editor.Patches
         internal void Patch(Harmony harmony)
         {
             if (!Enabled) return;
-
-            if (ReverseType != HarmonyReversePatchType.Original)
-                LogWarning(
-                    $"Harmony.ReversePatch always copies the original IL, '{ReverseType}' is ignored.");
 
             var reverse = TargetReverse;
             if (reverse == null)

@@ -5,7 +5,8 @@ namespace io.github.ykysnk.utils.NonUdon;
 
 /// <summary>
 ///     A <see cref="Color" /> together with its HTML hex form, so a colour can be serialized and inspected as text.
-///     Only the operators update both fields at once; assigning one field directly leaves the other unchanged.
+///     Only the operators update both fields at once; assigning one field directly leaves the other unchanged, and a
+///     default-initialized struct derives its text from <see cref="color" /> when <see cref="hex" /> is null.
 /// </summary>
 [Serializable]
 public struct ColorHex
@@ -14,18 +15,23 @@ public struct ColorHex
     public Color color;
     /// <summary>
     ///     The colour as <c>#RRGGBBAA</c>, including the leading <c>#</c>. Read straight from the field, so it can be
-    ///     <see langword="null" /> on a default-initialized struct.
+    ///     <see langword="null" /> on a default-initialized struct; conversions fall back to <see cref="color" /> then.
     /// </summary>
     public string hex;
 
-    /// <summary>Renders both fields as <c>Color: …, Hex: …</c>.</summary>
-    /// <returns>The two field values as text; a null <see cref="hex" /> is rendered as an empty string.</returns>
-    public override string ToString() => $"Color: {color}, Hex: {hex}";
+    private string ResolvedHex => hex ?? $"#{ColorUtility.ToHtmlStringRGBA(color)}";
 
-    /// <summary>Returns <see cref="hex" />, so the struct can stand in wherever a colour string is expected.</summary>
-    /// <param name="colorHex">The struct to convert; only its <c>hex</c> field is read.</param>
-    /// <returns>The stored hex text, which may be <see langword="null" />.</returns>
-    public static implicit operator string(ColorHex colorHex) => colorHex.hex;
+    /// <summary>Renders both fields as <c>Color: …, Hex: …</c>.</summary>
+    /// <returns>The two values as text, with the hex derived from <see cref="color" /> when <see cref="hex" /> is null.</returns>
+    public override string ToString() => $"Color: {color}, Hex: {ResolvedHex}";
+
+    /// <summary>
+    ///     Returns the hex text, so the struct can stand in wherever a colour string is expected. A null
+    ///     <see cref="hex" /> is derived from <see cref="color" />, so the result is never null.
+    /// </summary>
+    /// <param name="colorHex">The struct to convert; <c>hex</c> is used when present, <c>color</c> otherwise.</param>
+    /// <returns><c>#RRGGBBAA</c> for the stored colour.</returns>
+    public static implicit operator string(ColorHex colorHex) => colorHex.ResolvedHex;
     /// <summary>Returns <see cref="color" />, so the struct can be used directly as a colour.</summary>
     /// <param name="colorHex">The struct to convert; only its <c>color</c> field is read.</param>
     /// <returns>The stored colour value.</returns>
