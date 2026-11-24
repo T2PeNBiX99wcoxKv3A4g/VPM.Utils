@@ -7,8 +7,6 @@ namespace io.github.ykysnk.utils.Editor
     [PublicAPI]
     public static class EditorGUILayoutUtility
     {
-        private static readonly GUIContent LabelContent = new();
-
         private static GUIStyle? _boldLabel;
 
         private static GUIStyle? _boldLabel2;
@@ -39,14 +37,7 @@ namespace io.github.ykysnk.utils.Editor
             }
         }
 
-        public static GUIContent Label(string text, string? textTip = null)
-        {
-            var label = LabelContent;
-            label.text = text;
-            label.tooltip = textTip;
-
-            return label;
-        }
+        public static GUIContent Label(string text, string? textTip = null) => new(text, null, textTip);
 
         public static void Line(Color color, float space = 20f, float lineHeight = 1f)
         {

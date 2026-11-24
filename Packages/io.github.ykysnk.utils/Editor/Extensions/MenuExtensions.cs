@@ -76,9 +76,14 @@ namespace io.github.ykysnk.utils.Editor.Extensions
 
         private static void UpdateMenuItemEvent()
         {
+            // Unity rebuilds menus on hierarchy changes; adding an item that already exists would register it again.
             foreach (var menuItemObject in MenuItemObjects.Values)
+            {
+                if (MenuWrap.MenuItemExists(menuItemObject.Name)) continue;
+
                 MenuWrap.AddMenuItem(menuItemObject.Name, menuItemObject.Shortcut, menuItemObject.Checked,
                     menuItemObject.Priority, menuItemObject.Execute, menuItemObject.Validate);
+            }
 
             EditorUtilityWrap.Internal_UpdateAllMenus();
         }

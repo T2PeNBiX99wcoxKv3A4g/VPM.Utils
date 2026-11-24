@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -18,6 +20,12 @@ public static class ResultExtensions
     {
         if (!result.IsSuccess)
             action(result.Exception!);
+        return result;
+    }
+
+    public static Result<T> OnFinally<T>(this Result<T> result, Action action)
+    {
+        action();
         return result;
     }
 
@@ -45,6 +53,13 @@ public static class ResultExtensions
         return result;
     }
 
+    public static async Task<Result<T>> OnFinally<T>(this Task<Result<T>> task, Func<Task> action)
+    {
+        var result = await task.ConfigureAwait(false);
+        await action().ConfigureAwait(false);
+        return result;
+    }
+
     public static TResult Match<T, TResult>(this Result<T> result, Func<T, TResult> onSuccess,
         Func<Exception, TResult> onFailure) => result.IsSuccess ? onSuccess(result.Value!) : onFailure(result.Exception!);
 
@@ -62,14 +77,48 @@ public static class ResultExtensions
 
     public static T? GetOrNull<T>(this Result<T> result) => result.IsSuccess ? result.Value : default;
 
+    /// <summary>
+    ///     The value, and whether the call succeeded. <see cref="GetOrNull{T}" /> cannot answer this for a
+    ///     value type — <c>T?</c> on an unconstrained parameter stays <c>T</c>, so a failed
+    ///     <c>Result&lt;int&gt;</c> would come back as <c>0</c> and look like a real value.
+    /// </summary>
+    public static bool TryGet<T>(this Result<T> result, [MaybeNullWhen(false)] out T value)
+    {
+        value = result.IsSuccess ? result.Value! : default!;
+        return result.IsSuccess;
+    }
+
     public static async Task<T?> GetOrNull<T>(this Task<Result<T>> task)
     {
         var result = await task.ConfigureAwait(false);
         return result.IsSuccess ? result.Value : default;
     }
 
+    /// <summary>
+    ///     Whether the call succeeded, and its value — the async form of <see cref="TryGet{T}" />, which
+    ///     cannot use an <c>out</c> parameter across an <c>await</c>.
+    /// </summary>
+    public static async Task<(bool Success, T? Value)> TryGet<T>(this Task<Result<T>> task)
+    {
+        var result = await task.ConfigureAwait(false);
+        return (result.IsSuccess, result.IsSuccess ? result.Value : default);
+    }
+
     public static T GetOrElse<T>(this Result<T> result, Func<Exception, T> onFailure) =>
         result.IsSuccess ? result.Value! : onFailure(result.Exception!);
+
+    public static T GetOrThrow<T>(this Result<T> result)
+    {
+        if (result.IsSuccess) return result.Value!;
+        result.ThrowOnFailure();
+        return default!;
+    }
+
+    private static void ThrowOnFailure<T>(this Result<T> result)
+    {
+        if (result.Exception is { } exception)
+            ExceptionDispatchInfo.Capture(exception).Throw();
+    }
 
     public static async Task<T> GetOrElse<T>(
         this Task<Result<T>> task,
@@ -77,6 +126,14 @@ public static class ResultExtensions
     {
         var result = await task.ConfigureAwait(false);
         return result.IsSuccess ? result.Value! : await onFailure(result.Exception!).ConfigureAwait(false);
+    }
+
+    public static async Task<T> GetOrThrow<T>(this Task<Result<T>> task)
+    {
+        var result = await task.ConfigureAwait(false);
+        if (result.IsSuccess) return result.Value!;
+        result.ThrowOnFailure();
+        return default!;
     }
 
     public static Result<TU> Select<T, TU>(this Result<T> result, Func<T, TU> selector) => result.IsSuccess
@@ -126,6 +183,23 @@ public static class ResultExtensions
 
         return inner.IsSuccess
             ? Result<TV>.Success(projector(result.Value!, inner.Value!))
+            : Result<TV>.Failure(inner.Exception!);
+    }
+
+    public static async Task<Result<TV>> SelectMany<T, TU, TV>(
+        this Task<Result<T>> task,
+        Func<T, Task<Result<TU>>> binder,
+        Func<T, TU, Task<TV>> projector)
+    {
+        var result = await task.ConfigureAwait(false);
+
+        if (!result.IsSuccess)
+            return Result<TV>.Failure(result.Exception!);
+
+        var inner = await binder(result.Value!).ConfigureAwait(false);
+
+        return inner.IsSuccess
+            ? Result<TV>.Success(await projector(result.Value!, inner.Value!).ConfigureAwait(false))
             : Result<TV>.Failure(inner.Exception!);
     }
 }

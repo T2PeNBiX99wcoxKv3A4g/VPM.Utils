@@ -107,7 +107,7 @@ namespace io.github.ykysnk.utils
             [NotNull] Object context) =>
             Debug.Assert(condition, $"[<color={LOGNameColor}>{prefix}</color>] {message}", context);
 
-        public static bool IsMoved(float value) => value < -MinSpeed && value > MinSpeed;
+        public static bool IsMoved(float value) => value < -MinSpeed || value > MinSpeed;
 
         // UDON Is not supported yet
 #if !COMPILER_UDONSHARP

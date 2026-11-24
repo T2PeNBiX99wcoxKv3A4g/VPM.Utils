@@ -75,7 +75,7 @@ namespace io.github.ykysnk.utils.Extensions
         public static Texture2D TrimTransparentCPU(this Texture2D source, float alphaThreshold = 0.01f)
         {
             int minX = source.width, minY = source.height;
-            int maxX = 0, maxY = 0;
+            int maxX = -1, maxY = -1;
 
             var pixels = source.GetPixels();
 
@@ -90,12 +90,12 @@ namespace io.github.ykysnk.utils.Extensions
                 if (y > maxY) maxY = y;
             }
 
-            var size = Mathf.Max(maxX - minX, maxY - minY);
-            if (size < 0)
-                size = 1;
+            if (maxX < minX || maxY < minY) return CreateClearTexture(source);
 
-            var trimmedSizeX = maxX - minX;
-            var trimmedSizeY = maxY - minY;
+            var trimmedSizeX = maxX - minX + 1;
+            var trimmedSizeY = maxY - minY + 1;
+            var size = Mathf.Max(trimmedSizeX, trimmedSizeY);
+
             var trimmedPixels = source.GetPixels(minX, minY, trimmedSizeX, trimmedSizeY);
             var trimmed = new Texture2D(size, size, source.format, source.mipmapCount > 1);
             trimmed.MakeTexture2DClear(size, size);
@@ -105,6 +105,14 @@ namespace io.github.ykysnk.utils.Extensions
             return trimmed;
         }
 
+        private static Texture2D CreateClearTexture(Texture2D source)
+        {
+            var empty = new Texture2D(1, 1, source.format, source.mipmapCount > 1);
+            empty.SetPixel(0, 0, Color.clear);
+            empty.Apply();
+            return empty;
+        }
+
         public static Texture2D TrimTransparentGPU(this Texture2D source, float alphaThreshold = 0.01f,
             bool gammaCorrect = true, ComputeShader trimShader = null)
         {
@@ -112,12 +120,7 @@ namespace io.github.ykysnk.utils.Extensions
 #if UNITY_EDITOR
                 trimShader = TrimShader;
 #else
-            {
-                var empty = new Texture2D(1, 1, source.format, source.mipmapCount > 1);
-                empty.SetPixel(0, 0, Color.clear);
-                empty.Apply();
-                return empty;
-            }
+                return CreateClearTexture(source);
 #endif
             var kernelFind = trimShader.FindKernel("cs_find_bounds");
             var kernelCopy = trimShader.FindKernel("cs_copy_to_square");
@@ -145,11 +148,8 @@ namespace io.github.ykysnk.utils.Extensions
 
             if (maxX < minX || maxY < minY)
             {
-                var empty = new Texture2D(1, 1, source.format, source.mipmapCount > 1);
-                empty.SetPixel(0, 0, Color.clear);
-                empty.Apply();
                 boundsBuffer.Release();
-                return empty;
+                return CreateClearTexture(source);
             }
 
             var trimmedW = maxX - minX + 1;

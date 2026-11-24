@@ -13,6 +13,8 @@ namespace io.github.ykysnk.utils.Editor.Patches
     {
         internal static readonly Dictionary<string, MethodInfo> MethodCache = new();
 
+        private static readonly HashSet<Assembly> PatchedAssemblies = new();
+
         static PatchCore()
         {
             var patchLoaders = PatchLoaders.ToArray();
@@ -24,7 +26,13 @@ namespace io.github.ykysnk.utils.Editor.Patches
                 var harmony = new Harmony(loader.QualifiedName);
                 loader.ThisHarmony = harmony;
                 loader.Load(harmony);
-                harmony.PatchAll(loader.GetType().Assembly);
+
+                // PatchAll applies every [HarmonyPatch] class of the assembly, so running it once per loader would
+                // apply the same patch several times when more than one loader lives in the same assembly.
+                var assembly = loader.GetType().Assembly;
+                if (PatchedAssemblies.Add(assembly))
+                    harmony.PatchAll(assembly);
+
                 AssemblyReloadEvents.beforeAssemblyReload += () =>
                 {
                     loader.Unload(harmony);

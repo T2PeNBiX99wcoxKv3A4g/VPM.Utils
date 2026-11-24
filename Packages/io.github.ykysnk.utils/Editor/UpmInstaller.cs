@@ -28,6 +28,18 @@ namespace io.github.ykysnk.utils.Editor
         {
             if (Interlocked.Exchange(ref _isWorking, 1) == 1) return;
 
+            try
+            {
+                await InstallCore(packages, token);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isWorking, 0);
+            }
+        }
+
+        private static async Task InstallCore(string[] packages, CancellationToken token)
+        {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
             var progressId = Progress.Start(
                 "Installing UPM Packages",
@@ -48,7 +60,7 @@ namespace io.github.ykysnk.utils.Editor
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
-                var listRequest = await Client.List().AsTask(token);
+                var listRequest = await Client.List().AsTask(cts.Token);
                 var installed = listRequest.Result.ToDictionary(p => p.name, p => p.version);
 
                 var total = packages.Length;
@@ -65,7 +77,8 @@ namespace io.github.ykysnk.utils.Editor
                     if (cts.IsCancellationRequested)
                         throw new OperationCanceledException(cts.Token);
 
-                    if (installed.TryGetValue(pkgName, out var currentVersion) && currentVersion == pkgVersion)
+                    if (installed.TryGetValue(pkgName, out var currentVersion) &&
+                        (pkgVersion == null || currentVersion == pkgVersion))
                     {
                         Utils.Log(nameof(UpmInstaller), $"Skip (already installed): {pkg}");
                         Progress.Report(progressId, progress, $"Skip (already installed): {pkg}");
@@ -75,7 +88,7 @@ namespace io.github.ykysnk.utils.Editor
                     Utils.Log(nameof(UpmInstaller), $"Installing: {pkg}");
                     Progress.Report(progressId, progress, $"Installing: {pkg}");
 
-                    var addRequest = await Client.Add(pkg).AsTask(token);
+                    var addRequest = await Client.Add(pkg).AsTask(cts.Token);
                     if (addRequest.Status == StatusCode.Success)
                         Utils.Log(nameof(UpmInstaller), $"Installed: {addRequest.Result.packageId}");
                     else
@@ -101,7 +114,7 @@ namespace io.github.ykysnk.utils.Editor
             });
 
             Progress.UnregisterCancelCallback(progressId);
-            Interlocked.Exchange(ref _isWorking, 0);
+            cts.Dispose();
         }
 
         [PublicAPI]
@@ -115,6 +128,18 @@ namespace io.github.ykysnk.utils.Editor
         {
             if (Interlocked.Exchange(ref _isWorking, 1) == 1) return;
 
+            try
+            {
+                await RemoveCore(packages, token);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isWorking, 0);
+            }
+        }
+
+        private static async Task RemoveCore(string[] packages, CancellationToken token)
+        {
             var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
             var progressId = Progress.Start(
                 "Removing UPM Packages",
@@ -135,7 +160,7 @@ namespace io.github.ykysnk.utils.Editor
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
-                var listRequest = await Client.List().AsTask(token);
+                var listRequest = await Client.List().AsTask(cts.Token);
                 var installed = listRequest.Result.ToDictionary(p => p.name, p => p.version);
 
                 var total = packages.Length;
@@ -152,7 +177,7 @@ namespace io.github.ykysnk.utils.Editor
                     Utils.Log(nameof(UpmInstaller), $"Removing: {pkg}");
                     Progress.Report(progressId, progress, $"Removing: {pkg}");
 
-                    var removeRequest = await Client.Remove(pkg).AsTask(token);
+                    var removeRequest = await Client.Remove(pkg).AsTask(cts.Token);
                     if (removeRequest.Status == StatusCode.Success)
                         Utils.Log(nameof(UpmInstaller), $"Removed: {removeRequest.PackageIdOrName}");
                     else
@@ -168,17 +193,17 @@ namespace io.github.ykysnk.utils.Editor
                 if (ex is OperationCanceledException)
                 {
                     Progress.Finish(progressId, Progress.Status.Canceled);
-                    Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
+                    Utils.LogWarning(nameof(UpmInstaller), "Removal cancelled.");
                 }
                 else
                 {
                     Progress.Finish(progressId, Progress.Status.Failed);
-                    Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+                    Utils.LogError(nameof(UpmInstaller), $"Removal Error: {ex.Message}\n{ex.StackTrace}");
                 }
             });
 
             Progress.UnregisterCancelCallback(progressId);
-            Interlocked.Exchange(ref _isWorking, 0);
+            cts.Dispose();
         }
 
         [PublicAPI]
@@ -209,7 +234,7 @@ namespace io.github.ykysnk.utils.Editor
             {
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
-                var listRequest = await Client.List().AsTask(token);
+                var listRequest = await Client.List().AsTask(cts.Token);
                 var total = listRequest.Result.Count();
                 var index = 0;
 
@@ -224,7 +249,7 @@ namespace io.github.ykysnk.utils.Editor
                     Utils.Log(nameof(UpmInstaller), $"Checking update for: {packageInfo.name}");
                     Progress.Report(progressId, progress, $"Checking update for: {packageInfo.name}");
 
-                    var searchResult = await Client.Search(packageInfo.name).AsTask(token);
+                    var searchResult = await Client.Search(packageInfo.name).AsTask(cts.Token);
                     if (searchResult.Status == StatusCode.Failure || !searchResult.Result.Any())
                     {
                         Utils.LogWarning(nameof(UpmInstaller), $"Failed to check update for: {packageInfo.name}");
@@ -247,16 +272,17 @@ namespace io.github.ykysnk.utils.Editor
                 if (ex is OperationCanceledException)
                 {
                     Progress.Finish(progressId, Progress.Status.Canceled);
-                    Utils.LogWarning(nameof(UpmInstaller), "Installation cancelled.");
+                    Utils.LogWarning(nameof(UpmInstaller), "Update check cancelled.");
                 }
                 else
                 {
                     Progress.Finish(progressId, Progress.Status.Failed);
-                    Utils.LogError(nameof(UpmInstaller), $"Installation Error: {ex.Message}\n{ex.StackTrace}");
+                    Utils.LogError(nameof(UpmInstaller), $"Update check Error: {ex.Message}\n{ex.StackTrace}");
                 }
             });
 
             Progress.UnregisterCancelCallback(progressId);
+            cts.Dispose();
 
             return packages.ToArray();
         }

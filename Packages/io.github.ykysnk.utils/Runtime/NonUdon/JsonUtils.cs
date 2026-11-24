@@ -59,11 +59,7 @@ public static class JsonUtils
 
         var (isSuccess, _, exception2) = Try.Run(() => JsonUtility.FromJsonOverwrite(json, objectToOverwrite));
 
-        if (isSuccess)
-        {
-            JsonUtility.FromJsonOverwrite(json, objectToOverwrite);
-            return true;
-        }
+        if (isSuccess) return true;
 
         exception = exception2 ?? new Exception("Failed to parse JSON");
         return false;
