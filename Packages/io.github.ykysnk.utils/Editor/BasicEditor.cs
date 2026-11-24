@@ -139,15 +139,20 @@ namespace io.github.ykysnk.utils.Editor
 
             var details = ErrorDetails(e);
 
+            // Grow with the content and only start scrolling once the details get long, so a short stack trace
+            // does not leave an empty box behind. The width is a little conservative so the measured height
+            // never comes out short of the wrapped text.
+            var width = Mathf.Max(EditorGUIUtility.currentViewWidth - 46f, 50f);
+            var contentHeight = Mathf.Max(ErrorDetailsStyle.CalcHeight(new GUIContent(details), width),
+                ErrorDetailsStyle.lineHeight);
+            var viewHeight = Mathf.Min(contentHeight + 8f, ErrorDetailsHeight);
+
             using (var scroll = new EditorGUILayout.ScrollViewScope(_errorScrollPosition, "box",
-                       GUILayout.Height(ErrorDetailsHeight)))
+                       GUILayout.Height(viewHeight)))
             {
                 _errorScrollPosition = scroll.scrollPosition;
 
-                var width = Mathf.Max(EditorGUIUtility.currentViewWidth - 32f, 50f);
-                var height = Mathf.Max(ErrorDetailsStyle.CalcHeight(new GUIContent(details), width),
-                    ErrorDetailsStyle.lineHeight);
-                EditorGUILayout.SelectableLabel(details, ErrorDetailsStyle, GUILayout.Height(height),
+                EditorGUILayout.SelectableLabel(details, ErrorDetailsStyle, GUILayout.Height(contentHeight),
                     GUILayout.ExpandWidth(true));
             }
 
