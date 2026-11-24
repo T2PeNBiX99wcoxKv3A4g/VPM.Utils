@@ -108,6 +108,7 @@ namespace io.github.ykysnk.utils.Editor
                 var errorBox = tree.Q<HelpBox>("errorBox");
                 errorBox.text = ErrorTitle(e);
                 var errorDetails = tree.Q<TextField>("errorDetails");
+                errorDetails.isReadOnly = true;
                 errorDetails.value = ErrorDetails(e);
                 var copy = tree.Q<Button>("copy");
                 copy.clicked += () => EditorGUIUtility.systemCopyBuffer = errorDetails.value;
