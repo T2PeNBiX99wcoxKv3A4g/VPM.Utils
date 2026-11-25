@@ -11,7 +11,9 @@ The package is `io.github.ykysnk.utils`, distributed through the repository at
 It has no VPM dependencies of its own. Most projects get it indirectly: [Localization](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Localization)
 and [YKYToolKit](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.YKYToolKit) declare it as a dependency.
 
-Unity 2022.3 or newer. The assemblies reference `VRC.SDKBase`, so the VRChat SDK must be present.
+Unity 2022.3 or newer. The VRChat SDK is optional: the SDK-specific helpers (`IUtilsEditorOnly`, the player distance
+checks) compile only when `com.vrchat.base` is installed, and nothing else references SDK types. The editor patch
+framework needs Harmony, which ships with the VRChat SDK.
 
 ## What is in the package
 
@@ -27,11 +29,12 @@ Unity 2022.3 or newer. The assemblies reference `VRC.SDKBase`, so the VRChat SDK
 dependency needs.
 
 ```csharp
-var type = ReflectionUtils.FindType("jp.lilxyzw.editortoolbox.ProjectExtension");
-if (type == null) return; // the plugin is not installed, skip the integration
+// Probe an editor extension that may or may not be installed.
+var type = ReflectionUtils.FindType("Some.Plugin.EditorWindow");
+if (type == null) return; // not installed, skip the integration
 
-var property = ReflectionUtils.FindProperty(type, "isIconGUI");
-var method = ReflectionUtils.FindMethod(type, "GUIDToObject");
+var property = ReflectionUtils.FindProperty(type, "IsEnabled");
+var method = ReflectionUtils.FindMethod(type, "Refresh");
 ```
 
 Lookups are cached per type and name, including confirmed misses, so repeated calls cost a dictionary lookup instead
