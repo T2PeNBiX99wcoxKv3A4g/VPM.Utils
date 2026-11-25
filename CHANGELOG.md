@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.8.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.0..1.8.1) - 2026-11-25
+
+### 🐛 Bug Fixes
+
+- Drop the assembly references the packages never use - ([d9309ec](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/d9309ecf0dbda4856dd488c1e48c0756d146dd27))
+
+### 📚 Documentation
+
+- Correct the requirements and the reflection example - ([eed5c46](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/eed5c464c512f3fc439fb3aa519a463c037011d4))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.8.1 - ([eaa1925](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/eaa1925720509bd91fde7a8a23fe5498ed66c9d7))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a8a4b0c](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a8a4b0cb4c4f0bb19c5152826a4b0c5a95b04cef))
+
+
 ## [1.8.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.7.1..1.8.0) - 2026-11-25
 
 ### ⛰️  Features
