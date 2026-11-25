@@ -29,9 +29,12 @@ namespace io.github.ykysnk.utils.Editor
         private bool _isClosed;
         private Action? _onCancel;
         private Action? _onOk;
+        private SerializedObject? _serializedObject;
 
         private void OnDestroy()
         {
+            _serializedObject?.Dispose();
+
             // Closing without pressing Ok counts as a cancel, so the window's close button still reports a result.
             if (_isClosed) return;
             _onCancel?.Invoke();
@@ -39,9 +42,10 @@ namespace io.github.ykysnk.utils.Editor
 
         private void CreateGUI()
         {
-            var serializedObject = new SerializedObject(this);
+            _serializedObject?.Dispose();
+            _serializedObject = new SerializedObject(this);
             var tree = uxml?.CloneTree();
-            tree.Bind(serializedObject);
+            tree.Bind(_serializedObject);
             rootVisualElement.Add(tree);
             rootVisualElement.AddManipulator(new ContextualMenuManipulator(contextMenuEvent =>
                 contextMenuEvent.menu.AppendAction("Copy", _ => EditorGUIUtility.systemCopyBuffer = message)));
