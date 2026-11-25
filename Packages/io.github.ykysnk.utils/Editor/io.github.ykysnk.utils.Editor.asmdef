@@ -2,10 +2,8 @@
   "name": "io.github.ykysnk.utils.Editor",
   "rootNamespace": "io.github.ykysnk.utils",
   "references": [
-    "VRC.SDKBase",
     "io.github.ykysnk.utils",
-    "io.github.ykysnk.utils.non-udon",
-    "jp.lilxyzw.editortoolbox"
+    "io.github.ykysnk.utils.non-udon"
   ],
   "includePlatforms": [
     "Editor"
@@ -16,22 +14,6 @@
   "precompiledReferences": [],
   "autoReferenced": true,
   "defineConstraints": [],
-  "versionDefines": [
-    {
-      "name": "com.vrchat.base",
-      "expression": "",
-      "define": "UTILS_VRC_SDK3_BASE"
-    },
-    {
-      "name": "nadena.dev.ndmf",
-      "expression": "",
-      "define": "UTILS_NDMF"
-    },
-    {
-      "name": "jp.lilxyzw.editortoolbox",
-      "expression": "",
-      "define": "UTILS_LILTOOLBOX"
-    }
-  ],
+  "versionDefines": [],
   "noEngineReferences": false
 }
