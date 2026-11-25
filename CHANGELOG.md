@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.7.0..1.7.1) - 2026-11-25
+
+### 🐛 Bug Fixes
+
+- Dispose the dialog window's SerializedObject - ([8118601](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/811860176f80df1ac527fed95a6768d518d15eb1))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.7.1 - ([1a3b41b](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/1a3b41bece571a5fb266e8b2915d2540c5dffc35))
+
+### Action
+
+- Update `CHANGELOG.md` - ([428a855](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/428a855b47bcb1aa940f6085e288ef3c15c059bd))
+
+
 ## [1.7.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.6.0..1.7.0) - 2026-11-24
 
 ### ⛰️  Features
