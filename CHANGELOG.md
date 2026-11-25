@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.8.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.7.1..1.8.0) - 2026-11-25
+
+### ⛰️  Features
+
+- Cache the reflection lookups and document the package - ([d97e2b1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/d97e2b1b315a9d487c0ee47d9165ef5c4cb53602))
+
+### 🚜 Refactor
+
+- Resolve the patch members through ReflectionUtils - ([8ca028f](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/8ca028ff69d54bf214834cfe61bfb29244ca14a7))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.8.0 - ([73d4e39](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/73d4e39619df892914c8db78e745a841df2e7d53))
+
+### Action
+
+- Update `CHANGELOG.md` - ([8f74674](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/8f74674e5c9e8c2f28943398f05862b6fab41102))
+
+
 ## [1.7.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.7.0..1.7.1) - 2026-11-25
 
 ### 🐛 Bug Fixes
