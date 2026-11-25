@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using HarmonyLib;
 using JetBrains.Annotations;
+using io.github.ykysnk.utils.NonUdon;
 using ILogger = io.github.ykysnk.utils.NonUdon.Logger.ILogger;
 using Object = UnityEngine.Object;
 
@@ -265,7 +266,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
             if (PatchCore.MissingMethods.Contains(key))
                 return null;
 
-            var method = AccessTools.Method(ThisType, name);
+            var method = ReflectionUtils.FindMethod(ThisType, name);
             if (method == null)
             {
                 PatchCore.MissingMethods.Add(key);
@@ -280,7 +281,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
         internal static MethodInfo? GetTranspiler(MethodInfo method)
         {
             var methodName = method.Name;
-            List<MethodInfo> declaredMethods = AccessTools.GetDeclaredMethods(method.DeclaringType);
+            var declaredMethods = ReflectionUtils.GetDeclaredMethods(method.DeclaringType);
             var ici = typeof(IEnumerable<CodeInstruction>);
             var predicate = (Func<MethodInfo, bool>)(m => !(m.ReturnType != ici) && m.Name.StartsWith($"<{methodName}>"));
             return declaredMethods.FirstOrDefault(predicate);

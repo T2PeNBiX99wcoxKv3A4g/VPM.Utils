@@ -100,4 +100,46 @@ public static class ReflectionUtils
 
         return GetNestedMethods(type).FirstOrDefault(m => m.Name.Contains(searchName));
     }
+    private const BindingFlags AllMembers = BindingFlags.Public | BindingFlags.NonPublic |
+                                            BindingFlags.Static | BindingFlags.Instance;
+
+    /// <summary>
+    ///     Resolves a type by full name in the already loaded assemblies, so an optional dependency can be probed
+    ///     without referencing it. Returns <c>null</c> instead of throwing when the name does not resolve.
+    /// </summary>
+    /// <param name="typeName">Full or assembly-qualified type name.</param>
+    public static Type? FindType(string? typeName)
+    {
+        if (string.IsNullOrEmpty(typeName)) return null;
+
+        var type = Type.GetType(typeName);
+        if (type != null) return type;
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            type = assembly.GetType(typeName, false);
+            if (type != null) return type;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    ///     Finds a method by name only, public or not, static or instance, declared on the type or inherited.
+    ///     Returns <c>null</c> when the type has no such name instead of throwing on a missing member.
+    /// </summary>
+    /// <param name="type">Type to search; <see langword="null" /> yields <c>null</c>.</param>
+    /// <param name="name">Method name; matching is by name only.</param>
+    public static MethodInfo? FindMethod(Type? type, string name) =>
+        type?.GetMethods(AllMembers).FirstOrDefault(m => m.Name == name);
+
+    /// <summary>Finds a property by name only, public or not; <c>null</c> when the type has no such name.</summary>
+    public static PropertyInfo? FindProperty(Type? type, string name) => type?.GetProperty(name, AllMembers);
+
+    /// <summary>
+    ///     Every method declared on the type itself, public or not. Unlike <see cref="GetNestedMethods" /> this does
+    ///     not look at nested types.
+    /// </summary>
+    public static IEnumerable<MethodInfo> GetDeclaredMethods(Type? type) =>
+        type == null ? Enumerable.Empty<MethodInfo>() : type.GetMethods(AllMembers | BindingFlags.DeclaredOnly);
 }

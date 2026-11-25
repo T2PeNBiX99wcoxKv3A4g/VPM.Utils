@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading;
 using HarmonyLib;
 using JetBrains.Annotations;
+using io.github.ykysnk.utils.NonUdon;
 using ILogger = io.github.ykysnk.utils.NonUdon.Logger.ILogger;
 using Object = UnityEngine.Object;
 
@@ -265,7 +266,7 @@ namespace io.github.ykysnk.utils.Editor.Patches
             if (PatchCore.MissingMethods.Contains(key))
                 return null;
 
-            var method = AccessTools.Method(ThisType, name);
+            var method = ReflectionUtils.FindMethod(ThisType, name);
             if (method == null)
             {
                 PatchCore.MissingMethods.Add(key);
