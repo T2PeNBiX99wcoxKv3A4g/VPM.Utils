@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.8.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.1..1.8.2) - 2026-11-26
+
+### 🐛 Bug Fixes
+
+- Check only registry packages and search them in parallel - ([31b8f14](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/31b8f14c5535cfc53174c680f1b2dfb57c72e3cd))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.8.2 - ([44d3caa](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/44d3caadef43c4d9a42164e570bfedf844791345))
+
+### Action
+
+- Update `CHANGELOG.md` - ([1ef937e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/1ef937ee0ef9fa2ae6900f4c9acea523f9ecec93))
+
+
 ## [1.8.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.0..1.8.1) - 2026-11-25
 
 ### 🐛 Bug Fixes
