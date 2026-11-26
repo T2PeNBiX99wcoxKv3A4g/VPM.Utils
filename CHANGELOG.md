@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.9.0..1.9.1) - 2026-11-26
+
+### 🐛 Bug Fixes
+
+- Close a dialog whose content did not survive a domain reload - ([f43c68e](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f43c68e726d683ae9a673c7f2451333b0c7a1e0a))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.9.1 - ([834ff78](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/834ff782ddb426d4e5a1487cd78627c87ae9593e))
+
+### Action
+
+- Update `CHANGELOG.md` - ([34f8706](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/34f8706fa5d86c6efccb6e1bdd5d39b080617ea3))
+
+
 ## [1.9.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.2..1.9.0) - 2026-11-26
 
 ### ⛰️  Features
