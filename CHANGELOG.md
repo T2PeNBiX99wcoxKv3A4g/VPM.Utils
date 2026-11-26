@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.9.1..1.9.2) - 2026-11-26
+
+### 🐛 Bug Fixes
+
+- Pin dialog buttons to the bottom and let long content scroll - ([2e911c0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/2e911c07d6815b2a956b1fd3c62d36b8a0164290))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.9.2 - ([64247fd](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/64247fd18c607cf269cc4758614b70ac0eb59eca))
+
+### Action
+
+- Update `CHANGELOG.md` - ([942dc04](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/942dc04c3ed486a706a422641bb62afa56fbf113))
+
+
 ## [1.9.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.9.0..1.9.1) - 2026-11-26
 
 ### 🐛 Bug Fixes
