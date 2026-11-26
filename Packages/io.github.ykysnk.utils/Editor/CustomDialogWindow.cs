@@ -1,40 +1,32 @@
 using System;
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace io.github.ykysnk.utils.Editor
 {
     /// <summary>
-    ///     Floating utility window with a message, an Ok button and an optional Cancel button, used by
+    ///     Floating utility window with a custom body, an Ok button and an optional Cancel button, used by
     ///     <see cref="EditorUtils" />. It is not modal: the window reports its result through callbacks and closes
     ///     itself, and its text can be copied from the context menu.
     /// </summary>
     [PublicAPI]
     public class CustomDialogWindow : EditorWindow
     {
-        private const int Width = 500;
-        private const int Height = 250;
-
         private static CustomDialogWindow? _instance;
         [SerializeField] private VisualTreeAsset? uxml;
-        [SerializeField] private new string title = "UnTitled";
-        [SerializeField] private string message = "UnMessage";
-        [SerializeField] private string firstOk = "";
-        [SerializeField] private string ok = "Ok";
-        [SerializeField] private string cancel = "";
-        [SerializeField] private int waitTime;
+
+        private DialogContent _content = new MessageDialogContent("");
+        private string _ok = "Ok";
+        private string _cancel = "";
+        private int _waitTime;
         private bool _isClosed;
         private Action? _onCancel;
         private Action? _onOk;
-        private SerializedObject? _serializedObject;
 
         private void OnDestroy()
         {
-            _serializedObject?.Dispose();
-
             // Closing without pressing Ok counts as a cancel, so the window's close button still reports a result.
             if (_isClosed) return;
             _onCancel?.Invoke();
@@ -42,40 +34,47 @@ namespace io.github.ykysnk.utils.Editor
 
         private void CreateGUI()
         {
-            _serializedObject?.Dispose();
-            _serializedObject = new SerializedObject(this);
-            var tree = uxml?.CloneTree();
-            tree.Bind(_serializedObject);
+            var tree = uxml!.CloneTree();
             rootVisualElement.Add(tree);
-            rootVisualElement.AddManipulator(new ContextualMenuManipulator(contextMenuEvent =>
-                contextMenuEvent.menu.AppendAction("Copy", _ => EditorGUIUtility.systemCopyBuffer = message)));
+
+            tree.Q<VisualElement>("content")?.Add(_content.CreateContent());
+
+            var copyText = _content.CopyText;
+            if (!string.IsNullOrEmpty(copyText))
+                rootVisualElement.AddManipulator(new ContextualMenuManipulator(contextMenuEvent =>
+                    contextMenuEvent.menu.AppendAction("Copy", _ => EditorGUIUtility.systemCopyBuffer = copyText)));
 
             var okButton = tree.Q<Button>("ok");
+            okButton.text = _ok;
 
             // waitTime keeps Ok unusable for that many seconds, so a long message cannot be dismissed unread.
-            if (waitTime > 0)
+            if (_waitTime > 0)
             {
                 okButton.AddToClassList("dialog-button-wait");
                 okButton.schedule.Execute(() =>
                 {
-                    if (waitTime > 0)
+                    if (_waitTime > 0)
                     {
-                        okButton.text = $"{firstOk} ({waitTime})";
-                        waitTime--;
+                        okButton.text = $"{_ok} ({_waitTime})";
+                        _waitTime--;
                     }
-                    else if (okButton.text != firstOk)
-                        okButton.text = firstOk;
+                    else if (okButton.text != _ok)
+                    {
+                        okButton.text = _ok;
+                    }
                 }).Every(1000);
             }
 
             okButton.clicked += () =>
             {
-                if (waitTime > 0) return;
+                if (_waitTime > 0) return;
                 _onOk?.Invoke();
                 _isClosed = true;
                 Close();
             };
+
             var cancelButton = tree.Q<Button>("cancel");
+            cancelButton.text = _cancel;
             cancelButton.clicked += () =>
             {
                 _onCancel?.Invoke();
@@ -83,7 +82,7 @@ namespace io.github.ykysnk.utils.Editor
                 Close();
             };
 
-            if (string.IsNullOrEmpty(cancel))
+            if (string.IsNullOrEmpty(_cancel))
                 cancelButton.style.display = DisplayStyle.None;
         }
 
@@ -92,37 +91,37 @@ namespace io.github.ykysnk.utils.Editor
         ///     is still open is closed first, and its pending result is reported as cancel.
         /// </summary>
         /// <param name="title">Window title, also used for the title bar icon.</param>
-        /// <param name="message">Text shown in the window and copied by the Copy context menu entry.</param>
+        /// <param name="content">Body of the dialog, built when the window opens.</param>
         /// <param name="ok">Caption of the confirm button.</param>
         /// <param name="cancel">Caption of the cancel button; an empty string hides the button.</param>
         /// <param name="waitTime">Seconds the Ok button stays disabled; zero disables the delay.</param>
         /// <param name="onOk">Invoked when Ok is pressed.</param>
         /// <param name="onCancel">Invoked when Cancel is pressed or the window is closed without a choice.</param>
-        internal static void Show(string title, string message, string ok, string cancel, int waitTime, Action onOk,
-            Action onCancel)
+        internal static void Show(string title, DialogContent content, string ok, string cancel, int waitTime,
+            Action onOk, Action onCancel)
         {
             if (_instance != null)
                 _instance.Close();
 
             _instance = CreateInstance<CustomDialogWindow>();
             _instance.titleContent = EditorGUIUtils.IconContent(title, "unityeditor.inspectorwindow");
-            _instance.title = title;
-            _instance.message = message;
-            _instance.firstOk = ok;
-            _instance.ok = waitTime > 0 ? $"{ok} ({waitTime})" : ok;
-            _instance.cancel = cancel;
-            _instance.waitTime = waitTime;
+            _instance._content = content;
+            _instance._ok = ok;
+            _instance._cancel = cancel;
+            _instance._waitTime = waitTime;
             _instance._onOk = onOk;
             _instance._onCancel = onCancel;
-            _instance.minSize = new(Width, Height);
-            _instance.maxSize = new(Width, Height);
+
+            var size = content.Size;
+            _instance.minSize = size;
+            _instance.maxSize = size;
             _instance.ShowUtility();
 
             var main = EditorGUIUtility.GetMainWindowPosition();
-            var x = main.x + (main.width - Width) * 0.5f;
-            var y = main.y + (main.height - Height) * 0.5f;
+            var x = main.x + (main.width - size.x) * 0.5f;
+            var y = main.y + (main.height - size.y) * 0.5f;
 
-            _instance.position = new(x, y, Width, Height);
+            _instance.position = new(x, y, size.x, size.y);
         }
     }
 }

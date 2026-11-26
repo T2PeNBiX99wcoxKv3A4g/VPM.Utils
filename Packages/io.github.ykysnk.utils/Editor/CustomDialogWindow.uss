@@ -15,11 +15,16 @@
     font-size: 14px;
 }
 
+.dialog-content {
+    flex-grow: 1;
+    min-height: 0;
+    margin-bottom: 10px;
+}
+
 .dialog-scroll {
     flex-grow: 1;
-    margin-bottom: 10px;
-    max-height: 180px;
-    min-height: 180px;
+    min-height: 0;
+    margin-bottom: 0;
 }
 
 .dialog-buttons {
