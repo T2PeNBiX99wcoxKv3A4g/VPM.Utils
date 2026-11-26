@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.9.2..1.10.0) - 2026-11-26
+
+### ⛰️  Features
+
+- Restyle the custom dialog frame and buttons - ([5acd3e6](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/5acd3e6ae6af00615cd6ea42cd136ab179751597))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.10.0 - ([240fd82](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/240fd8272e2b6b8eafde84b09a87e83632342bce))
+
+### Action
+
+- Update `CHANGELOG.md` - ([d51fbee](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/d51fbeec19c36384785302838888a731c5dd5d9b))
+
+
 ## [1.9.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.9.1..1.9.2) - 2026-11-26
 
 ### 🐛 Bug Fixes
