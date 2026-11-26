@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,6 +23,9 @@ namespace io.github.ykysnk.utils.Editor
     public static class UpmInstaller
     {
         private static int _isWorking;
+
+        /// <summary>Longest a single registry search may take before the check moves on to the next package.</summary>
+        private static readonly TimeSpan UpdateCheckTimeout = TimeSpan.FromSeconds(5);
 
         /// <summary>
         ///     Starts installing the given packages and returns immediately.
@@ -255,9 +259,10 @@ namespace io.github.ykysnk.utils.Editor
         public static async Task<string[]> UpdateAsync() => await UpdateAsync(CancellationToken.None);
 
         /// <summary>
-        ///     Checks every installed package against the registry and lists the ones that have a newer version.
+        ///     Checks every installed registry package against the registry and lists the ones that have a newer
+        ///     version. Built-in, embedded and local packages are not searched: they have no registry update.
         /// </summary>
-        /// <param name="token">Stops the check between packages; the in-flight request is not aborted.</param>
+        /// <param name="token">Stops the check; searches already in flight are not aborted.</param>
         /// <returns>
         ///     Entries of the form <c>name@version</c> for the outdated packages; empty when nothing is outdated. The
         ///     entries found before a failure are still returned.
@@ -290,34 +295,62 @@ namespace io.github.ykysnk.utils.Editor
                 Progress.Report(progressId, 0f, "Checking installed packages...");
 
                 var listRequest = await Client.List().AsTask(cts.Token);
-                var total = listRequest.Result.Count();
-                var index = 0;
 
-                foreach (var packageInfo in listRequest.Result)
+                // Built-in, embedded and local packages cannot be updated from the registry. Searching them was the
+                // bulk of the old check: one round trip per installed package, most of which could never match.
+                var candidates = listRequest.Result
+                    .Where(packageInfo => packageInfo.source == PackageSource.Registry)
+                    .ToArray();
+
+                var total = candidates.Length;
+                var completed = 0;
+                var outdated = new ConcurrentBag<string>();
+                var queue = new ConcurrentQueue<UnityEditor.PackageManager.PackageInfo>(candidates);
+
+                // Searches are latency bound, so several run at once. One at a time made the check as slow as the
+                // registry latency multiplied by the package count.
+                var workerCount = Math.Min(16, Math.Max(1, total));
+                var workers = Enumerable.Range(0, workerCount).Select(async _ =>
                 {
-                    index++;
-                    var progress = (float)index / total;
-
-                    if (cts.IsCancellationRequested)
-                        throw new OperationCanceledException(cts.Token);
-
-                    Utils.Log(nameof(UpmInstaller), $"Checking update for: {packageInfo.name}");
-                    Progress.Report(progressId, progress, $"Checking update for: {packageInfo.name}");
-
-                    var searchResult = await Client.Search(packageInfo.name).AsTask(cts.Token);
-                    if (searchResult.Status == StatusCode.Failure || !searchResult.Result.Any())
+                    while (queue.TryDequeue(out var packageInfo))
                     {
-                        Utils.LogWarning(nameof(UpmInstaller), $"Failed to check update for: {packageInfo.name}");
-                        continue;
+                        cts.Token.ThrowIfCancellationRequested();
+
+                        Utils.Log(nameof(UpmInstaller), $"Checking update for: {packageInfo.name}");
+
+                        var searchTask = Client.Search(packageInfo.name).AsTask(cts.Token);
+                        var finished = await Task.WhenAny(searchTask, Task.Delay(UpdateCheckTimeout, cts.Token));
+
+                        var done = Interlocked.Increment(ref completed);
+                        Progress.Report(progressId, (float)done / total,
+                            $"Checked {done}/{total}: {packageInfo.name}");
+
+                        if (finished != searchTask)
+                        {
+                            cts.Token.ThrowIfCancellationRequested();
+                            Utils.LogWarning(nameof(UpmInstaller),
+                                $"Timed out checking update for: {packageInfo.name}");
+                            continue;
+                        }
+
+                        var searchResult = await searchTask;
+                        if (searchResult.Status == StatusCode.Failure || !searchResult.Result.Any())
+                        {
+                            Utils.LogWarning(nameof(UpmInstaller), $"Failed to check update for: {packageInfo.name}");
+                            continue;
+                        }
+
+                        var newest = FindNewestVersion(packageInfo.name, packageInfo.version, searchResult.Result);
+                        if (newest == null) continue;
+
+                        Utils.Log(nameof(UpmInstaller),
+                            $"Update found for: {packageInfo.name} - {packageInfo.version} -> {newest}");
+                        outdated.Add($"{packageInfo.name}@{newest}");
                     }
+                }).ToArray();
 
-                    var newest = FindNewestVersion(packageInfo.name, packageInfo.version, searchResult.Result);
-                    if (newest == null) continue;
-
-                    Utils.Log(nameof(UpmInstaller),
-                        $"Update found for: {packageInfo.name} - {packageInfo.version} -> {newest}");
-                    packages.Add($"{packageInfo.name}@{newest}");
-                }
+                await Task.WhenAll(workers);
+                packages.AddRange(outdated.OrderBy(entry => entry, StringComparer.Ordinal));
 
                 Progress.Finish(progressId);
                 Utils.Log(nameof(UpmInstaller), "All packages processed.");
