@@ -42,6 +42,7 @@ namespace io.github.ykysnk.utils.Editor
             }
 
             var tree = uxml!.CloneTree();
+            tree.style.flexGrow = 1;
             rootVisualElement.Add(tree);
 
             tree.Q<VisualElement>("content")?.Add(_content.CreateContent());

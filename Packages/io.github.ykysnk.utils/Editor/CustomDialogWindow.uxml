@@ -3,9 +3,11 @@
     <Style src="project://database/Packages/io.github.ykysnk.utils/Editor/CustomDialogWindow.uss?fileID=7433441132597879392&amp;guid=bd5424873a997464a9921cedec83f4ed&amp;type=3#CustomDialogWindow"/>
     <ui:VisualElement class="dialog-root">
         <ui:VisualElement name="content" class="dialog-content"/>
-        <ui:VisualElement class="dialog-buttons">
-            <ui:Button name="ok" class="dialog-button dialog-button-ok"/>
-            <ui:Button name="cancel" class="dialog-button dialog-button-cancel"/>
+        <ui:VisualElement class="dialog-buttons-host">
+            <ui:VisualElement class="dialog-buttons">
+                <ui:Button name="ok" class="dialog-button dialog-button-ok"/>
+                <ui:Button name="cancel" class="dialog-button dialog-button-cancel"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
