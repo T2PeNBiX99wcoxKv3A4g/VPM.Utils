@@ -1,85 +1,119 @@
-.dialog-root {
-    padding: 10px;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-    align-self: stretch;
-}
+/*
+ * Look of every custom dialog: a quiet body, a hairline above the buttons, and two button weights
+ * (a filled primary and a quiet secondary). Colours are translucent greys plus one accent, so the
+ * same rules read in both editor themes.
+ */
 
-.dialog-message {
-    -unity-font-style: bold;
-    margin-bottom: 10px;
-    white-space: normal;
-    flex-wrap: wrap;
-    font-size: 14px;
+.dialog-root {
+    flex-grow: 1;
+    padding: 18px 20px 16px 20px;
 }
 
 .dialog-content {
     flex-grow: 1;
     min-height: 0;
-    margin-bottom: 10px;
 }
 
-.dialog-buttons-host {
-    align-self: stretch;
-    flex-direction: column-reverse;
-    justify-content: space-between;
-    flex-shrink: 0;
+/* ---------- message ---------- */
+
+/* A message is the whole body of the default dialog, so it gets a block of its own instead of floating
+   in the middle of the window. The accent bar is the only colour in an otherwise grey dialog. */
+.dialog-message {
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 12px;
+    white-space: normal;
+    flex-wrap: wrap;
+    background-color: rgba(128, 128, 128, 0.10);
+    border-left-width: 3px;
+    border-left-color: rgb(76, 141, 255);
+    border-top-left-radius: 4px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 6px;
 }
 
 .dialog-scroll {
     flex-grow: 1;
     min-height: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
-.dialog-buttons {
+.dialog-scroll .unity-scroll-view__content-container {
+    padding-right: 2px;
+}
+
+/* ---------- footer ---------- */
+
+.dialog-footer {
+    flex-shrink: 0;
     flex-direction: row;
     justify-content: flex-end;
-    padding-top: 10px;
-    align-self: flex-end;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top-width: 1px;
+    border-top-color: rgba(128, 128, 128, 0.22);
 }
 
+/* ---------- buttons ---------- */
+
+/* The default button is a nine-slice image with a heavy outline; clearing the image and drawing the
+   surface here keeps both weights on the same shape. */
 .dialog-button {
-    min-width: 80px;
-    height: 30px;
-    border-radius: 5px;
-    -unity-font-style: bold;
-    border-color: rgba(0, 0, 0, 0);
+    min-width: 96px;
+    height: 28px;
+    margin: 0 0 0 8px;
+    padding: 0 14px;
+    font-size: 12px;
+    -unity-text-align: middle-center;
+    background-image: none;
+    border-width: 1px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
-.dialog-button-ok {
-    background-color: rgb(59, 130, 246);
+.dialog-button--secondary {
+    background-color: rgba(128, 128, 128, 0.10);
+    border-color: rgba(128, 128, 128, 0.40);
 }
 
-.dialog-button-ok:hover {
-    background-color: rgb(37, 99, 235);
+.dialog-button--secondary:hover {
+    background-color: rgba(128, 128, 128, 0.20);
+    border-color: rgba(128, 128, 128, 0.62);
 }
 
-.dialog-button-ok:active {
-    background-color: rgb(29, 78, 216);
+.dialog-button--secondary:active {
+    background-color: rgba(128, 128, 128, 0.28);
 }
 
-.dialog-button-ok.dialog-button-wait {
-    background-color: rgb(239, 68, 68);
+.dialog-button--primary {
+    color: rgb(255, 255, 255);
+    background-color: rgb(76, 141, 255);
+    border-color: rgba(255, 255, 255, 0.20);
 }
 
-.dialog-button-ok.dialog-button-wait:hover {
-    background-color: rgb(220, 38, 38);
+.dialog-button--primary:hover {
+    background-color: rgb(96, 157, 255);
+    border-color: rgba(255, 255, 255, 0.34);
 }
 
-.dialog-button-ok.dialog-button-wait:active {
-    background-color: rgb(185, 28, 28);
+.dialog-button--primary:active {
+    background-color: rgb(58, 118, 226);
+    border-color: rgba(255, 255, 255, 0.34);
 }
 
-.dialog-button-cancel {
-    background-color: rgb(156, 163, 175);
+/* Ok is still counting down and cannot be pressed: it fades out instead of turning into an alarm. */
+.dialog-button--primary.dialog-button-wait {
+    color: rgba(255, 255, 255, 0.72);
+    background-color: rgba(76, 141, 255, 0.42);
+    border-color: rgba(76, 141, 255, 0.30);
 }
 
-.dialog-button-cancel:hover {
-    background-color: rgb(107, 114, 128);
-}
-
-.dialog-button-cancel:active {
-    background-color: rgb(75, 85, 99);
+.dialog-button--primary.dialog-button-wait:hover,
+.dialog-button--primary.dialog-button-wait:active {
+    background-color: rgba(76, 141, 255, 0.42);
+    border-color: rgba(76, 141, 255, 0.30);
 }
