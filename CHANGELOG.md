@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.0](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.2..1.9.0) - 2026-11-26
+
+### ⛰️  Features
+
+- Let dialogs host a custom body - ([d9697c1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/d9697c1867d77fac808a5b2ce1c6240ee6cf6945))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.9.0 - ([e314c9c](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/e314c9c42cf16f885f2b2fdb801d8c48cd365dd7))
+
+### Action
+
+- Update `CHANGELOG.md` - ([32ddd39](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/32ddd3925c83de56ca91bfdd4cb21a0925c95a52))
+
+
 ## [1.8.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.8.1..1.8.2) - 2026-11-26
 
 ### 🐛 Bug Fixes
