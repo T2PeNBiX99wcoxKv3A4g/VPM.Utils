@@ -17,7 +17,7 @@ namespace io.github.ykysnk.utils.Editor
         private static CustomDialogWindow? _instance;
         [SerializeField] private VisualTreeAsset? uxml;
 
-        private DialogContent _content = new MessageDialogContent("");
+        private DialogContent? _content;
         private string _ok = "Ok";
         private string _cancel = "";
         private int _waitTime;
@@ -34,6 +34,13 @@ namespace io.github.ykysnk.utils.Editor
 
         private void CreateGUI()
         {
+            // A domain reload clears the non-serialized content; the pending result is handled by OnDestroy.
+            if (_content == null)
+            {
+                Close();
+                return;
+            }
+
             var tree = uxml!.CloneTree();
             rootVisualElement.Add(tree);
 
