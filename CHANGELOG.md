@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.2..1.10.3) - 2026-11-27
+
+### 📚 Documentation
+
+- Leave only the documentation link above the readme - ([dc7799a](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/dc7799a2eac89cb4a43840dd4f8d4d2842ed3fbf))
+
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.10.3 - ([b70159f](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/b70159fb16b1f5386047320b98cff6afeca385d0))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a680d46](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a680d466d9419b4e24ffb110a51e1acaec9591e5))
+
+
 ## [1.10.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.1..1.10.2) - 2026-11-27
 
 ### ⛰️  Features
