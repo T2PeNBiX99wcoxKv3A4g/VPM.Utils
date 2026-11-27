@@ -1,14 +1,19 @@
 # Changelog
 
-## [unreleased]
+## [1.10.4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.3..1.10.4) - 2026-11-27
 
 ### 📚 Documentation
 
 - Point the package at the current documentation URLs - ([afa40e4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/afa40e4a339ffaf22062bca149b07e770d719ff4))
 - Link the VitePress pages - ([f006820](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f006820e2d88c6fa2d901e2042c7936238974659))
 
+### ⚙️ Miscellaneous Tasks
+
+- Bump version to 1.10.4 - ([cf8357d](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/cf8357d3e711e447fdabbd4c059f6c78d42a4641))
+
 ### Action
 
+- Update `CHANGELOG.md` - ([ae102a6](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/ae102a6efc687f58a8ac23106d9755055837db8f))
 - Update `CHANGELOG.md` - ([a19b649](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a19b649946d994bdf9b441ab4f0b37d3559ecaf8))
 
 
