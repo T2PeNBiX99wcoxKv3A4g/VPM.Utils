@@ -3,10 +3,7 @@
 Shared runtime and editor helpers for the VPM packages: logging, reflection accessors, an inspector base with a
 consistent error UI, GUI and menu helpers, a UPM client and a Harmony patch loader.
 
-[Documentation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview) ·
-[日本語](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=ja#/utils/Overview) ·
-[简体中文](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=zh-CN#/utils/Overview) ·
-[繁體中文](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=zh-TW#/utils/Overview)
+[Documentation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview)
 
 ## Installation
 
