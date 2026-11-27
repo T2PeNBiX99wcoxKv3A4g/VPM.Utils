@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.10.2](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.1..1.10.2) - 2026-11-27
+
+### ⛰️  Features
+
+- Point the package metadata at the documentation site - ([5a81c59](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/5a81c59974aabbaf7e7f61a6e2282e982ddcd9ef))
+
+### Action
+
+- Update `CHANGELOG.md` - ([751ba11](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/751ba11d1852215c8912ab857b5d41cf7a6d241f))
+
+
 ## [1.10.1](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.0..1.10.1) - 2026-11-27
 
 ### 📚 Documentation
