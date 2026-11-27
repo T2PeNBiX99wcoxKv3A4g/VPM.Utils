@@ -3,7 +3,7 @@
 Shared runtime and editor helpers for the VPM packages: logging, reflection accessors, an inspector base with a
 consistent error UI, GUI and menu helpers, a UPM client and a Harmony patch loader.
 
-[Documentation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview)
+[Documentation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Overview.html)
 
 ## Installation
 
@@ -67,11 +67,11 @@ internal sealed class MyLoader : PatchLoader<MyLoader>
 
 The documentation site covers setup, the editor helpers, the patch lifecycle and the full API reference:
 
-- [Overview](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview) - what the package contains and when to use it
-- [Installation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Installation) - the listing, namespaces and updates
-- [Editor helpers](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Editor-Helpers) - `BasicEditor`, the GUI helpers, dialogs and the UPM client
-- [Patches](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Patches) - the patch lifecycle, method conventions and reverse patches
-- [API](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/API) - every public type and member
+- [Overview](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Overview.html) - what the package contains and when to use it
+- [Installation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Installation.html) - the listing, namespaces and updates
+- [Editor helpers](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Editor-Helpers.html) - `BasicEditor`, the GUI helpers, dialogs and the UPM client
+- [Patches](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Patches.html) - the patch lifecycle, method conventions and reverse patches
+- [API](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/API.html) - every public type and member
 
 The site is available in English, Japanese, Simplified Chinese and Traditional Chinese; the links above open the
 English text and the language picker in the corner switches the rest.
