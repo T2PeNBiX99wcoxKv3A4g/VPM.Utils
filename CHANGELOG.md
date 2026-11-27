@@ -1,5 +1,17 @@
 # Changelog
 
+## [unreleased]
+
+### 📚 Documentation
+
+- Point the package at the current documentation URLs - ([afa40e4](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/afa40e4a339ffaf22062bca149b07e770d719ff4))
+- Link the VitePress pages - ([f006820](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/f006820e2d88c6fa2d901e2042c7936238974659))
+
+### Action
+
+- Update `CHANGELOG.md` - ([a19b649](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/commit/a19b649946d994bdf9b441ab4f0b37d3559ecaf8))
+
+
 ## [1.10.3](https://github.com/T2PeNBiX99wcoxKv3A4g/VPM.Utils/compare/1.10.2..1.10.3) - 2026-11-27
 
 ### 📚 Documentation
