@@ -1,7 +1,12 @@
 # Utils for VPM and Unity
 
-Shared helpers for the VPM packages: runtime utilities, reflection helpers, an inspector base with a consistent
-error UI, GUI and menu helpers, a UPM client, and a Harmony patch loader.
+Shared runtime and editor helpers for the VPM packages: logging, reflection accessors, an inspector base with a
+consistent error UI, GUI and menu helpers, a UPM client and a Harmony patch loader.
+
+[Documentation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview) ·
+[日本語](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=ja#/utils/Overview) ·
+[简体中文](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=zh-CN#/utils/Overview) ·
+[繁體中文](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/?lang=zh-TW#/utils/Overview)
 
 ## Installation
 
@@ -61,14 +66,18 @@ internal sealed class MyLoader : PatchLoader<MyLoader>
 }
 ```
 
-See [Patches](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Patches) for the full lifecycle, the patch
-method conventions and reverse patches.
-
 ## Documentation
 
-The full documentation is at <https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview>, with a complete API
-reference on the [API page](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/API). The site is available in
-English, Japanese, Simplified Chinese and Traditional Chinese.
+The documentation site covers setup, the editor helpers, the patch lifecycle and the full API reference:
+
+- [Overview](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview) - what the package contains and when to use it
+- [Installation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Installation) - the listing, namespaces and updates
+- [Editor helpers](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Editor-Helpers) - `BasicEditor`, the GUI helpers, dialogs and the UPM client
+- [Patches](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Patches) - the patch lifecycle, method conventions and reverse patches
+- [API](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/API) - every public type and member
+
+The site is available in English, Japanese, Simplified Chinese and Traditional Chinese; the links above open the
+English text and the language picker in the corner switches the rest.
 
 ## License
 
