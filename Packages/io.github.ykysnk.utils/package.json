@@ -3,7 +3,7 @@
   "displayName": "Utils for VPM and Unity",
   "version": "1.10.3",
   "unity": "2022.3",
-  "documentationUrl": "https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/#/utils/Overview",
+  "documentationUrl": "https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/",
   "description": "Shared runtime and editor helpers for the VPM packages: logging, reflection, an inspector base, GUI and menu helpers, a UPM client and Harmony patches.",
   "gitDependencies": {},
   "vpmDependencies": {},

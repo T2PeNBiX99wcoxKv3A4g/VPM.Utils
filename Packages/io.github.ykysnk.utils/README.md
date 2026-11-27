@@ -71,7 +71,7 @@ The documentation site covers setup, the editor helpers, the patch lifecycle and
 - [Installation](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Installation.html) - the listing, namespaces and updates
 - [Editor helpers](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Editor-Helpers.html) - `BasicEditor`, the GUI helpers, dialogs and the UPM client
 - [Patches](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/Patches.html) - the patch lifecycle, method conventions and reverse patches
-- [API](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/API.html) - every public type and member
+- [API reference](https://t2penbix99wcoxkv3a4g.github.io/VPM-Docs/en-US/utils/) - every public type on its own page
 
 The site is available in English, Japanese, Simplified Chinese and Traditional Chinese; the links above open the
 English text and the language picker in the corner switches the rest.
